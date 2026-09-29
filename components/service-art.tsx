@@ -61,7 +61,7 @@ function WebshopArt() {
   return (
     <Frame>
       <div className="grid items-end gap-3 sm:grid-cols-[1.15fr_0.85fr]">
-        <div className="rounded-2xl bg-white p-4 shadow-[0_30px_60px_-36px_rgba(0,0,0,0.45)] ring-1 ring-black/5">
+        <div className="lung-breathe rounded-2xl bg-white p-4 shadow-[0_30px_60px_-36px_rgba(0,0,0,0.45)] ring-1 ring-black/5">
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold">Producten</p>
             <span className="rounded-full bg-[#eef8f1] px-2 py-1 text-[10px] font-semibold text-brand">
@@ -78,7 +78,7 @@ function WebshopArt() {
             ))}
           </div>
         </div>
-        <div className="rounded-2xl bg-ink p-4 text-white shadow-[0_24px_40px_-28px_rgba(0,0,0,0.7)]">
+        <div className="lung-breathe-late rounded-2xl bg-ink p-4 text-white shadow-[0_24px_40px_-28px_rgba(0,0,0,0.7)]">
           <p className="text-xs text-white/60">Checkout</p>
           <p className="mt-2 text-2xl font-semibold tracking-tight">€ 86,90</p>
           <div className="mt-4 space-y-2">

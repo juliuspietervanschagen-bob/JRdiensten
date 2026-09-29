@@ -161,6 +161,27 @@
   }
 }
 
+@keyframes lung-breathe {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.028) translateY(-6px);
+  }
+}
+
+.lung-breathe {
+  animation: lung-breathe 8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.lung-breathe-late {
+  animation: lung-breathe 8s ease-in-out infinite;
+  animation-delay: -0.7s;
+  transform-origin: center;
+}
+
 .hero-in {
   animation: hero-in 0.75s ease both;
 }
@@ -183,7 +204,9 @@
   .hero-in,
   .float-slow,
   .float-phone,
-  .flow-dash {
+  .flow-dash,
+  .lung-breathe,
+  .lung-breathe-late {
     animation: none;
   }
 }
