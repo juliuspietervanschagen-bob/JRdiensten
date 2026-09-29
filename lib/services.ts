@@ -5,6 +5,50 @@ export type ServiceStep = {
   text: string
 }
 
+export type JourneyStep = {
+  word: string
+  title: string
+  text: string
+}
+
+export const webshopJourney: JourneyStep[] = [
+  {
+    word: "Contact",
+    title: "Jullie nemen contact op",
+    text: "Een korte mail is genoeg om te starten.",
+  },
+  {
+    word: "Gesprek",
+    title: "Details van jullie webshop",
+    text: "We bespreken producten, verzending en wat klanten moeten kunnen.",
+  },
+  {
+    word: "Prijs",
+    title: "Een vaste prijs",
+    text: "We spreken de prijs af, voordat er gebouwd wordt.",
+  },
+  {
+    word: "Bouwen",
+    title: "Bouwen en testen",
+    text: "We bouwen de webshop en testen hem, inclusief een echte bestelling.",
+  },
+  {
+    word: "Oplevering",
+    title: "De shop wordt opgeleverd",
+    text: "We leveren de webshop op, klaar voor jullie klanten.",
+  },
+  {
+    word: "Review",
+    title: "Samen nalopen",
+    text: "We lopen de shop samen door, zodat jullie zien hoe alles werkt.",
+  },
+  {
+    word: "Nazorg",
+    title: "Altijd bereikbaar",
+    text: "Daarna kunnen jullie ons altijd bereiken voor fixes of problemen.",
+  },
+]
+
 export type ServicePoint = {
   title: string
   text: string

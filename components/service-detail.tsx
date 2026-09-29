@@ -1,6 +1,7 @@
 import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
+import { WebshopJourney } from "@/components/webshop-journey"
 import { formatFromPrice, services, type Service } from "@/lib/services"
 import { ArrowRight, Check } from "lucide-react"
 import Link from "next/link"
@@ -73,25 +74,29 @@ export function ServiceDetail({ service }: { service: Service }) {
         </Container>
       </section>
 
-      <section id="aanpak" className="scroll-mt-24 py-16 sm:py-20">
-        <Container>
-          <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>
-          <ol className="mt-10 grid gap-6 md:grid-cols-4">
-            {service.steps.map((step, index) => (
-              <li key={step.title} className="relative">
-                {index < service.steps.length - 1 ? (
-                  <span className="absolute top-4 left-10 hidden h-px w-[calc(100%-1.5rem)] bg-[#dfe8e2] md:block" />
-                ) : null}
-                <span className="relative grid size-8 place-items-center rounded-full bg-brand text-sm font-semibold text-white">
-                  {index + 1}
-                </span>
-                <h3 className="mt-4 text-base font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-mist">{step.text}</p>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </section>
+      {service.slug === "webshop" ? (
+        <WebshopJourney />
+      ) : (
+        <section id="aanpak" className="scroll-mt-24 py-16 sm:py-20">
+          <Container>
+            <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>
+            <ol className="mt-10 grid gap-6 md:grid-cols-4">
+              {service.steps.map((step, index) => (
+                <li key={step.title} className="relative">
+                  {index < service.steps.length - 1 ? (
+                    <span className="absolute top-4 left-10 hidden h-px w-[calc(100%-1.5rem)] bg-[#dfe8e2] md:block" />
+                  ) : null}
+                  <span className="relative grid size-8 place-items-center rounded-full bg-brand text-sm font-semibold text-white">
+                    {index + 1}
+                  </span>
+                  <h3 className="mt-4 text-base font-semibold">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-mist">{step.text}</p>
+                </li>
+              ))}
+            </ol>
+          </Container>
+        </section>
+      )}
 
       <section className="bg-white py-16 sm:py-20">
         <Container>
