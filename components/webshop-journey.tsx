@@ -31,7 +31,8 @@ export function WebshopJourney() {
       const lastCenter = last.getBoundingClientRect().top - listTop + last.offsetHeight / 2
       const span = lastCenter - firstCenter
       const anchor = window.innerHeight * 0.42
-      const raw = span === 0 ? 0 : (anchor - (first.getBoundingClientRect().top + first.offsetHeight / 2)) / span
+      const raw =
+        span === 0 ? 0 : (anchor - (first.getBoundingClientRect().top + first.offsetHeight / 2)) / span
       const progress = Math.min(1, Math.max(0, raw))
       const index = Math.min(
         webshopJourney.length - 1,
@@ -42,7 +43,7 @@ export function WebshopJourney() {
 
       if (lineRef.current) {
         lineRef.current.style.top = `${firstCenter}px`
-        lineRef.current.style.height = `${span}px`
+        lineRef.current.style.height = `${Math.max(span, 0)}px`
       }
       if (markerRef.current) {
         markerRef.current.style.top = `${top}px`
@@ -67,8 +68,6 @@ export function WebshopJourney() {
     }
   }, [])
 
-  const current = webshopJourney[active]
-
   return (
     <section id="aanpak" className="scroll-mt-24 py-16 sm:py-20">
       <Container>
@@ -79,68 +78,54 @@ export function WebshopJourney() {
           </p>
         </div>
 
-        <div className="sticky top-20 z-30 mt-8 border-b border-[#e7e7e2] bg-paper/95 py-3 backdrop-blur md:hidden">
-          <p className="text-xs font-semibold tracking-[0.18em] text-brand uppercase">
-            {stepNumber(active)} {current.word}
-          </p>
-          <p className="mt-1 text-sm font-medium text-ink">{current.title}</p>
-        </div>
+        <div className="relative mt-8 rounded-3xl bg-white px-4 py-5 shadow-[0_28px_70px_-36px_rgba(20,20,20,0.5)] ring-1 ring-[#e6e6e1] sm:px-8 sm:py-7">
+          <div className="relative">
+            <div
+              ref={lineRef}
+              className="absolute left-[11px] w-px bg-[#e4e4df] md:left-[15px]"
+              aria-hidden
+            />
+            <div
+              ref={markerRef}
+              className="absolute left-[11px] z-20 -translate-x-1/2 -translate-y-1/2 md:left-[15px]"
+              aria-hidden
+            >
+              <span className="block size-3 rounded-full bg-brand shadow-[0_0_0_5px_rgba(22,163,74,0.16)]" />
+            </div>
 
-        <div className="relative mt-6 md:mt-10">
-          <div
-            ref={lineRef}
-            className="absolute left-[11px] w-px bg-[#e4e4df] md:left-[15px]"
-            aria-hidden
-          />
-          <div
-            ref={markerRef}
-            className="absolute left-[11px] z-20 -translate-x-1/2 -translate-y-1/2 md:left-[15px]"
-            aria-hidden
-          >
-            <span className="block size-3.5 rounded-full bg-brand shadow-[0_0_0_6px_rgba(22,163,74,0.16)]" />
-            <span className="absolute top-1/2 left-5 hidden -translate-y-1/2 items-center gap-2 rounded-full bg-ink px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-white md:inline-flex">
-              <span className="text-white/70">{stepNumber(active)}</span>
-              {current.word}
-            </span>
-          </div>
-
-          <ol ref={listRef} className="relative">
-            {webshopJourney.map((step, index) => {
-              const state = index < active ? "past" : index === active ? "active" : "upcoming"
-              return (
-                <li
-                  key={step.word}
-                  ref={(node) => {
-                    stepRefs.current[index] = node
-                  }}
-                  aria-current={state === "active" ? "step" : undefined}
-                  className="flex min-h-[68vh] items-center py-10 pl-12 sm:min-h-[76vh] md:pl-56"
-                >
-                  <div
-                    className={cn(
-                      "max-w-xl transition-opacity duration-300 motion-reduce:transition-none",
-                      state === "active" && "opacity-100",
-                      state === "past" && "opacity-75",
-                      state === "upcoming" && "opacity-35",
-                    )}
+            <ol ref={listRef} className="relative">
+              {webshopJourney.map((step, index) => {
+                const state = index < active ? "past" : index === active ? "active" : "upcoming"
+                return (
+                  <li
+                    key={step.word}
+                    ref={(node) => {
+                      stepRefs.current[index] = node
+                    }}
+                    aria-current={state === "active" ? "step" : undefined}
+                    className="py-1.5 pl-8 md:py-2 md:pl-12"
                   >
-                    <p className="text-sm font-semibold tracking-[0.18em] text-brand">
-                      {stepNumber(index)}
-                    </p>
-                    <p className="mt-3 text-xs font-semibold tracking-[0.22em] text-ink uppercase">
-                      {step.word}
-                    </p>
-                    <h3 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-                      {step.title}
-                    </h3>
-                    <p className="mt-4 max-w-md text-base leading-7 text-mist sm:text-lg">
-                      {step.text}
-                    </p>
-                  </div>
-                </li>
-              )
-            })}
-          </ol>
+                    <div
+                      className={cn(
+                        "rounded-2xl px-4 py-3 transition duration-300 motion-reduce:transition-none",
+                        state === "active" &&
+                          "bg-white shadow-[0_16px_40px_-22px_rgba(20,20,20,0.55)] ring-1 ring-[#e7e7e2]",
+                        state === "upcoming" && "opacity-45",
+                      )}
+                    >
+                      <p className="text-[11px] font-semibold tracking-[0.16em] text-brand">
+                        {stepNumber(index)} {step.word.toUpperCase()}
+                      </p>
+                      <h3 className="mt-1 text-lg font-semibold tracking-tight text-ink sm:text-xl">
+                        {step.title}
+                      </h3>
+                      <p className="mt-1.5 max-w-lg text-sm leading-6 text-mist">{step.text}</p>
+                    </div>
+                  </li>
+                )
+              })}
+            </ol>
+          </div>
         </div>
       </Container>
     </section>
