@@ -70,10 +70,8 @@ export function SiteHeader() {
               className="relative text-[15px] font-medium text-ink"
               aria-expanded={open}
               aria-controls={menuId}
-              onClick={(event) => {
-                const coarse = window.matchMedia("(hover: none)").matches
-                if (coarse || event.detail === 0) setOpen((value) => !value)
-              }}
+              onClick={() => setOpen((value) => !value)}
+              onFocus={showMenu}
             >
               Diensten
               <span
