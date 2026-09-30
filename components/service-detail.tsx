@@ -3,8 +3,50 @@ import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { formatFromPrice, services, type Service } from "@/lib/services"
-import { ArrowRight, Check } from "lucide-react"
+import {
+  ArrowRight,
+  BookOpen,
+  Cable,
+  Check,
+  ClipboardList,
+  CreditCard,
+  Eye,
+  Inbox,
+  LayoutGrid,
+  Mail,
+  MonitorSmartphone,
+  Palette,
+  PanelsTopLeft,
+  PenLine,
+  Search,
+  ShoppingCart,
+  Smartphone,
+  TestTube2,
+  Workflow,
+  type LucideIcon,
+} from "lucide-react"
 import Link from "next/link"
+
+const includeIcons: Record<string, LucideIcon> = {
+  "Assortiment dat klopt": LayoutGrid,
+  "Korte checkout": ShoppingCart,
+  "Betaalprovider": CreditCard,
+  "Bestellingen op één plek": ClipboardList,
+  "Gebouwd voor de telefoon": Smartphone,
+  "Automatische bevestiging": Mail,
+  "Ontwerp in jullie merk": Palette,
+  "Pagina's met een taak": PanelsTopLeft,
+  "Telefoon en desktop": MonitorSmartphone,
+  "Contact dat aankomt": Inbox,
+  "Vindbaar van start": Search,
+  "Zelf teksten aanpassen": PenLine,
+  "Het handwerk in beeld": Eye,
+  "Koppeling met wat je hebt": Cable,
+  "De volgende stap vanzelf": Workflow,
+  "Zicht op wat er liep": ClipboardList,
+  "Getest met jouw voorbeelden": TestTube2,
+  "Uitleg voor het team": BookOpen,
+}
 
 export function ServiceDetail({ service }: { service: Service }) {
   const others = services.filter((item) => item.slug !== service.slug)
@@ -58,18 +100,21 @@ export function ServiceDetail({ service }: { service: Service }) {
             </p>
           </div>
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {service.includes.map((item) => (
-              <li
-                key={item.title}
-                className="rounded-2xl bg-paper p-5 ring-1 ring-[#ecece8] transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
-              >
-                <span className="grid size-8 place-items-center rounded-full bg-[#e7f6ec] text-brand">
-                  <Check className="size-4" aria-hidden />
-                </span>
-                <h3 className="mt-4 text-base font-semibold">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-mist">{item.text}</p>
-              </li>
-            ))}
+            {service.includes.map((item) => {
+              const Icon = includeIcons[item.title] ?? LayoutGrid
+              return (
+                <li
+                  key={item.title}
+                  className="relative rounded-2xl border border-brand bg-ink px-5 pt-8 pb-5 text-white transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(22,163,74,0.55)]"
+                >
+                  <span className="absolute top-0 left-4 grid size-8 -translate-y-1/2 place-items-center rounded-md bg-ink text-brand">
+                    <Icon className="size-5" aria-hidden />
+                  </span>
+                  <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/70">{item.text}</p>
+                </li>
+              )
+            })}
           </ul>
         </Container>
       </section>
