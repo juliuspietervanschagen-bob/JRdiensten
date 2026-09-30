@@ -200,13 +200,34 @@
   animation: dash-flow 1.5s linear infinite;
 }
 
+@keyframes drift-glow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12%, -18%, 0) scale(1.18);
+  }
+}
+
+.drift-glow {
+  animation: drift-glow 16s ease-in-out infinite;
+}
+
+.drift-glow-late {
+  animation: drift-glow 20s ease-in-out infinite;
+  animation-delay: -7s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
   .float-phone,
   .flow-dash,
   .lung-breathe,
-  .lung-breathe-late {
+  .lung-breathe-late,
+  .drift-glow,
+  .drift-glow-late {
     animation: none;
   }
 }
