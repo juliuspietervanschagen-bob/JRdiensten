@@ -70,17 +70,23 @@ function WebshopArt() {
           </div>
           <div className="mt-3 grid grid-cols-3 gap-2">
             {[
-              ["Koptelefoon", "/webshop/tech-headphones.jpg"],
-              ["Telefoon", "/webshop/tech-phone.jpg"],
-              ["Horloge", "/webshop/tech-watch.jpg"],
-              ["Speaker", "/webshop/tech-speaker.jpg"],
-              ["Oortjes", "/webshop/tech-earbuds.jpg"],
-              ["Toetsenbord", "/webshop/tech-keyboard.jpg"],
-            ].map(([alt, src]) => (
-              <div key={alt} className="rounded-lg p-1.5 ring-1 ring-[#f0f0ee]">
-                <img src={src} alt={alt} className="aspect-square w-full rounded-md object-cover" />
-                <div className="mt-2 h-1.5 w-3/4 rounded-full bg-[#ecece8]" />
-                <div className="mt-1 h-1.5 w-1/2 rounded-full bg-ink" />
+              { name: "Koptelefoon", price: "€ 79", src: "/webshop/tech-headphones.jpg" },
+              { name: "Telefoon", price: "€ 249", src: "/webshop/tech-phone.jpg" },
+              { name: "Horloge", price: "€ 129", src: "/webshop/tech-watch.jpg" },
+              { name: "Speaker", price: "€ 49", src: "/webshop/tech-speaker.jpg" },
+              { name: "Oortjes", price: "€ 39", src: "/webshop/tech-earbuds.jpg" },
+              { name: "Toetsenbord", price: "€ 59", src: "/webshop/tech-keyboard.jpg" },
+            ].map((product) => (
+              <div key={product.name} className="rounded-lg p-1.5 ring-1 ring-[#f0f0ee]">
+                <img
+                  src={product.src}
+                  alt={product.name}
+                  className="aspect-square w-full rounded-md object-cover"
+                />
+                <p className="mt-1.5 truncate text-[10px] leading-tight font-medium text-ink">
+                  {product.name}
+                </p>
+                <p className="text-[10px] leading-tight font-semibold text-ink">{product.price}</p>
               </div>
             ))}
           </div>
