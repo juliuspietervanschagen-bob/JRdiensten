@@ -1,6 +1,5 @@
 import { BrandButton } from "@/components/brand-button"
 import { ContactLaptop } from "@/components/contact-laptop"
-import { ShopBuildComputer } from "@/components/shop-build-computer"
 import { Container } from "@/components/container"
 import { services, type ServiceSlug } from "@/lib/services"
 import { site } from "@/lib/site"
@@ -15,16 +14,20 @@ const icons: Record<ServiceSlug, typeof ShoppingBag> = {
 
 export function ServiceDirectory() {
   return (
-    <section className="relative overflow-hidden bg-[#2a2e2c] text-white" aria-label="Onze diensten">
+    <section className="relative overflow-hidden text-white" aria-label="Onze diensten">
       <div
-        className="drift-glow pointer-events-none absolute -top-24 -left-16 size-[28rem] rounded-full bg-brand/30 blur-3xl"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,#2a2e2c_8.5rem,#2a2e2c_100%)]"
+        aria-hidden
+      />
+      <div
+        className="drift-glow pointer-events-none absolute top-40 -left-16 size-[28rem] rounded-full bg-brand/25 blur-3xl"
         aria-hidden
       />
       <div
         className="drift-glow-late pointer-events-none absolute right-[-6rem] bottom-[-8rem] size-[24rem] rounded-full bg-brand/20 blur-3xl"
         aria-hidden
       />
-      <Container className="relative py-16 sm:py-20">
+      <Container className="relative pt-40 pb-16 sm:pt-44 sm:pb-20">
         <div className="grid items-start gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
           <div className="min-w-0">
             <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
@@ -54,7 +57,6 @@ export function ServiceDirectory() {
               </BrandButton>
             </div>
             <ContactLaptop />
-            <ShopBuildComputer />
           </div>
 
           <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2">

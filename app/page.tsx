@@ -68,7 +68,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section id="diensten" className="scroll-mt-24 bg-white py-16 sm:py-20">
+      <section id="diensten" className="section-wash scroll-mt-24 py-16 sm:py-20">
         <Container>
           <div className="max-w-2xl">
             <h2 className="text-3xl font-semibold tracking-tight">Vier diensten, verder niets</h2>

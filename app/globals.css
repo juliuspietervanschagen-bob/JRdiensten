@@ -233,24 +233,35 @@
   animation: slide-progress 5.6s linear forwards;
 }
 
-@keyframes shop-shimmer {
-  0% {
-    background-position: 120% 0;
+.section-wash {
+  background:
+    radial-gradient(ellipse 90% 58% at 50% 42%, rgba(22, 163, 74, 0.055), transparent 70%),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 12%,
+      rgba(255, 255, 255, 0.9) 24%,
+      #ffffff 38%,
+      #ffffff 62%,
+      rgba(255, 255, 255, 0.9) 76%,
+      rgba(255, 255, 255, 0.4) 88%,
+      transparent 100%
+    );
+}
+
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
   }
+  50%,
   100% {
-    background-position: -120% 0;
+    opacity: 0;
   }
 }
 
-.shop-shimmer {
-  background-image: linear-gradient(
-    100deg,
-    transparent 30%,
-    rgba(22, 163, 74, 0.16) 50%,
-    transparent 70%
-  );
-  background-size: 220% 100%;
-  animation: shop-shimmer 1.6s ease-in-out infinite;
+.caret-blink {
+  animation: caret-blink 1s steps(1) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -263,7 +274,7 @@
   .drift-glow,
   .drift-glow-late,
   .slide-progress,
-  .shop-shimmer {
+  .caret-blink {
     animation: none;
   }
 

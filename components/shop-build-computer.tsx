@@ -1,17 +1,94 @@
 "use client"
 
+import { Container } from "@/components/container"
 import { cn } from "cn"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
-const stages = [
-  { label: "Leeg scherm" },
-  { label: "De bovenbalk" },
-  { label: "De producten" },
-  { label: "De winkelwagen" },
-  { label: "De shop is live" },
-] as const
+const prompts = [
+  "Bouw een webshop voor Atelier.",
+  "Zet er zes producten in, elk met een prijs.",
+  "Voeg een winkelwagen toe en zet de shop live.",
+]
 
-const STAGE_MS = [1300, 1500, 2800, 1700, 2300]
+type Kind = "muted" | "key" | "name" | "str" | "plain"
+
+const kindClass: Record<Kind, string> = {
+  muted: "text-[#8a8a8a]",
+  key: "text-brand",
+  name: "font-semibold text-ink",
+  str: "text-[#128a3e]",
+  plain: "text-[#2a2a2a]",
+}
+
+function token(text: string, kind: Kind) {
+  return { text, kind }
+}
+
+const code = [
+  token("// Webshop voor Atelier\n", "muted"),
+  token("export function ", "key"),
+  token("Shop", "name"),
+  token("() {\n", "plain"),
+  token("  const ", "key"),
+  token("products", "plain"),
+  token(" = [\n", "plain"),
+  token("    { name: ", "plain"),
+  token('"Koptelefoon"', "str"),
+  token(", price: ", "plain"),
+  token('"€ 79"', "str"),
+  token(" },\n", "plain"),
+  token("    { name: ", "plain"),
+  token('"Telefoon"', "str"),
+  token(", price: ", "plain"),
+  token('"€ 249"', "str"),
+  token(" },\n", "plain"),
+  token("    { name: ", "plain"),
+  token('"Horloge"', "str"),
+  token(", price: ", "plain"),
+  token('"€ 129"', "str"),
+  token(" },\n", "plain"),
+  token("    { name: ", "plain"),
+  token('"Speaker"', "str"),
+  token(", price: ", "plain"),
+  token('"€ 49"', "str"),
+  token(" },\n", "plain"),
+  token("    { name: ", "plain"),
+  token('"Oortjes"', "str"),
+  token(", price: ", "plain"),
+  token('"€ 39"', "str"),
+  token(" },\n", "plain"),
+  token("    { name: ", "plain"),
+  token('"Toetsenbord"', "str"),
+  token(", price: ", "plain"),
+  token('"€ 59"', "str"),
+  token(" },\n", "plain"),
+  token("  ]\n\n", "plain"),
+  token("  return ", "key"),
+  token("(\n", "plain"),
+  token("    <", "plain"),
+  token("Store", "name"),
+  token(" name=", "plain"),
+  token('"Atelier"', "str"),
+  token(">\n", "plain"),
+  token("      {products.map((item) => (\n", "plain"),
+  token("        <", "plain"),
+  token("Product", "name"),
+  token(" name={item.name} price={item.price} />\n", "plain"),
+  token("      ))}\n", "plain"),
+  token("      <", "plain"),
+  token("Cart", "name"),
+  token(" count={3} total=", "plain"),
+  token('"€ 457"', "str"),
+  token(" />\n", "plain"),
+  token("    </", "plain"),
+  token("Store", "name"),
+  token(">\n", "plain"),
+  token("  )\n", "plain"),
+  token("}\n", "plain"),
+]
+
+const codeLength = code.reduce((total, item) => total + item.text.length, 0)
+const promptLength = prompts.reduce((total, item) => total + item.length, 0)
 
 const products = [
   { name: "Koptelefoon", price: "€ 79", src: "/webshop/tech-headphones.jpg" },
@@ -22,62 +99,152 @@ const products = [
   { name: "Toetsenbord", price: "€ 59", src: "/webshop/tech-keyboard.jpg" },
 ]
 
+type Phase = "prompt" | "code" | "shop"
+
+const phases: { id: Phase; label: string }[] = [
+  { id: "prompt", label: "De prompts" },
+  { id: "code", label: "De code" },
+  { id: "shop", label: "De shop is live" },
+]
+
 export function ShopBuildComputer() {
-  const [index, setIndex] = useState(0)
+  return (
+    <section className="py-16 sm:py-20" aria-label="De bouw van de webshop">
+      <Container>
+        <div className="grid items-center gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+          <div>
+            <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
+              <span className="h-px w-8 bg-brand" />
+              DE BOUW
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+              Eerst de prompt, dan de code
+            </h2>
+            <p className="mt-4 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
+              Je zegt wat de shop moet kunnen. Op het scherm verschijnen die prompts, daarna de
+              code, en dan de winkel zelf.
+            </p>
+          </div>
+          <Builder />
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+function Builder() {
+  const [phase, setPhase] = useState<Phase>("prompt")
+  const [promptStep, setPromptStep] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
+  const [codeIndex, setCodeIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const [reduce, setReduce] = useState(false)
+  const codeRef = useRef<HTMLPreElement>(null)
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)")
-    const sync = () => setReduce(query.matches)
+    const sync = () => {
+      setReduce(query.matches)
+      if (query.matches) setPhase("shop")
+    }
     sync()
     query.addEventListener("change", sync)
     return () => query.removeEventListener("change", sync)
   }, [])
 
-  const stage = reduce ? stages.length - 1 : index
-
   useEffect(() => {
     if (reduce || paused) return
-    const timer = window.setTimeout(() => {
-      setIndex((current) => (current + 1) % stages.length)
-    }, STAGE_MS[index])
-    return () => window.clearTimeout(timer)
-  }, [index, paused, reduce])
 
-  const showHeader = stage >= 1
-  const showProducts = stage >= 2
-  const showCart = stage >= 3
-  const showLive = stage >= 4
+    if (phase === "prompt") {
+      const current = prompts[promptStep] ?? ""
+      if (charIndex < current.length) {
+        const timer = window.setTimeout(() => setCharIndex((value) => value + 1), 32)
+        return () => window.clearTimeout(timer)
+      }
+      if (promptStep < prompts.length - 1) {
+        const timer = window.setTimeout(() => {
+          setPromptStep((value) => value + 1)
+          setCharIndex(0)
+        }, 520)
+        return () => window.clearTimeout(timer)
+      }
+      const timer = window.setTimeout(() => {
+        setCodeIndex(0)
+        setPhase("code")
+      }, 700)
+      return () => window.clearTimeout(timer)
+    }
+
+    if (phase === "code") {
+      if (codeIndex < codeLength) {
+        const timer = window.setTimeout(() => setCodeIndex((value) => value + 1), 12)
+        return () => window.clearTimeout(timer)
+      }
+      const timer = window.setTimeout(() => setPhase("shop"), 900)
+      return () => window.clearTimeout(timer)
+    }
+
+    const timer = window.setTimeout(() => {
+      setPromptStep(0)
+      setCharIndex(0)
+      setCodeIndex(0)
+      setPhase("prompt")
+    }, 4600)
+    return () => window.clearTimeout(timer)
+  }, [phase, promptStep, charIndex, codeIndex, paused, reduce])
+
+  useEffect(() => {
+    const node = codeRef.current
+    if (!node) return
+    node.scrollTop = node.scrollHeight
+  }, [codeIndex, phase])
+
+  const view = reduce ? "shop" : phase
+  const written = prompts.slice(0, promptStep).join("").length + (phase === "prompt" ? charIndex : 0)
+  const progress =
+    view === "prompt"
+      ? (written / promptLength) * 0.34
+      : view === "code"
+        ? 0.34 + (Math.min(codeIndex, codeLength) / codeLength) * 0.42
+        : 1
+
+  function jump(next: Phase) {
+    if (next === "prompt") {
+      setPromptStep(0)
+      setCharIndex(0)
+      setCodeIndex(0)
+    }
+    if (next === "code") {
+      setPromptStep(prompts.length - 1)
+      setCharIndex(prompts[prompts.length - 1].length)
+      setCodeIndex(0)
+    }
+    setPhase(next)
+  }
 
   return (
     <div
-      className="mt-10 min-w-0"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <p className="text-xs font-semibold tracking-[0.16em] text-brand">
-        ZO WORDT EEN WEBSHOP GEBOUWD
-      </p>
       <div
-        className="mt-3"
         role="region"
         aria-roledescription="animatie"
-        aria-label="Een webshop die op het scherm wordt opgebouwd"
+        aria-label="Prompts en code waarmee een webshop wordt gebouwd"
       >
-        <div className="rounded-[1.15rem] bg-gradient-to-b from-[#e6e7eb] to-[#b7b9be] p-[8px] pb-5 shadow-[0_28px_50px_-28px_rgba(0,0,0,0.65)]">
+        <div className="rounded-[1.15rem] bg-gradient-to-b from-[#e6e7eb] to-[#b7b9be] p-[8px] pb-5 shadow-[0_28px_50px_-28px_rgba(0,0,0,0.55)]">
           <div className="overflow-hidden rounded-[0.8rem] bg-[#1a1a1a] p-[6px]">
-            <div className="relative aspect-square overflow-hidden rounded-[0.5rem] bg-paper">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[0.5rem] bg-paper sm:aspect-[16/10]">
               <div className="absolute top-1.5 left-1/2 z-10 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#2a2a2a]" />
-              <ShopScreen
-                showHeader={showHeader}
-                showProducts={showProducts}
-                showCart={showCart}
-                showLive={showLive}
-                reduce={reduce}
-              />
+              {view === "prompt" ? (
+                <PromptScreen step={promptStep} charIndex={charIndex} />
+              ) : null}
+              {view === "code" ? (
+                <CodeScreen codeRef={codeRef} count={codeIndex} done={codeIndex >= codeLength} />
+              ) : null}
+              {view === "shop" ? <ShopScreen /> : null}
             </div>
           </div>
           <div className="relative mt-1.5 flex justify-center">
@@ -86,36 +253,37 @@ export function ShopBuildComputer() {
         </div>
         <div className="-mt-1 flex flex-col items-center" aria-hidden>
           <div
-            className="h-5 w-16 bg-gradient-to-b from-[#c5c6ca] to-[#a4a6ab]"
+            className="h-5 w-20 bg-gradient-to-b from-[#c5c6ca] to-[#a4a6ab]"
             style={{ clipPath: "polygon(22% 0, 78% 0, 100% 100%, 0 100%)" }}
           />
-          <div className="h-2 w-[52%] rounded-full bg-gradient-to-b from-[#b5b6bb] to-[#8d8f95] shadow-[0_8px_16px_-8px_rgba(0,0,0,0.8)]" />
+          <div className="h-2 w-[46%] rounded-full bg-gradient-to-b from-[#b5b6bb] to-[#8d8f95] shadow-[0_8px_16px_-8px_rgba(0,0,0,0.8)]" />
         </div>
 
-        <div className="mt-3 h-0.5 overflow-hidden rounded-full bg-white/15">
+        <div className="mt-3 h-0.5 overflow-hidden rounded-full bg-[#e4e4df]">
           <div
             className={cn(
               "h-full bg-brand",
-              !reduce && stage !== 0 && "transition-[width] duration-700 ease-out",
+              !reduce && !(view === "prompt" && charIndex === 0 && promptStep === 0) &&
+                "transition-[width] duration-300 ease-linear",
             )}
-            style={{ width: `${(stage / (stages.length - 1)) * 100}%` }}
+            style={{ width: `${progress * 100}%` }}
           />
         </div>
         <div className="mt-3 flex items-center justify-between gap-3">
-          <p className="text-xs text-white/70" aria-live="polite">
-            {stages[stage].label}
+          <p className="text-xs text-mist" aria-live="polite">
+            {phases.find((item) => item.id === view)?.label}
           </p>
           <div className="flex gap-1.5">
-            {stages.map((item, stageIndex) => (
+            {phases.map((item) => (
               <button
-                key={item.label}
+                key={item.id}
                 type="button"
                 aria-label={item.label}
-                aria-current={stageIndex === stage ? "true" : undefined}
-                onClick={() => setIndex(stageIndex)}
+                aria-current={item.id === view ? "true" : undefined}
+                onClick={() => jump(item.id)}
                 className={cn(
                   "size-1.5 rounded-full",
-                  stageIndex === stage ? "bg-brand" : "bg-white/30",
+                  item.id === view ? "bg-brand" : "bg-[#cfcfc8]",
                 )}
               />
             ))}
@@ -126,179 +294,128 @@ export function ShopBuildComputer() {
   )
 }
 
-function ShopScreen({
-  showHeader,
-  showProducts,
-  showCart,
-  showLive,
-  reduce,
+function Caret() {
+  return <span className="caret-blink ml-px inline-block h-[1em] w-px translate-y-[1px] bg-brand" />
+}
+
+function PromptScreen({ step, charIndex }: { step: number; charIndex: number }) {
+  return (
+    <div className="flex h-full flex-col px-4 pt-6 pb-4 sm:px-6 sm:pt-7">
+      <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">PROMPTS</p>
+      <div className="mt-3 space-y-2">
+        {prompts.map((prompt, index) => {
+          if (index > step) return null
+          const shown = index < step ? prompt : prompt.slice(0, charIndex)
+          return (
+            <div key={prompt} className="rounded-xl bg-white px-3 py-2 ring-1 ring-[#ecece8]">
+              <p className="text-[9px] font-semibold tracking-[0.14em] text-mist">PROMPT</p>
+              <p className="mt-1 text-[12px] leading-5 text-ink sm:text-[13px]">
+                {shown}
+                {index === step ? <Caret /> : null}
+              </p>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function visibleCode(count: number) {
+  let left = count
+  const shown: { text: string; kind: Kind }[] = []
+  for (const item of code) {
+    if (left <= 0) break
+    const take = Math.min(left, item.text.length)
+    shown.push({ text: item.text.slice(0, take), kind: item.kind })
+    left -= take
+  }
+  return shown
+}
+
+function CodeScreen({
+  codeRef,
+  count,
+  done,
 }: {
-  showHeader: boolean
-  showProducts: boolean
-  showCart: boolean
-  showLive: boolean
-  reduce: boolean
+  codeRef: React.RefObject<HTMLPreElement | null>
+  count: number
+  done: boolean
 }) {
-  const motion = reduce ? "" : "transition duration-500 ease-out"
+  const shown = visibleCode(count)
+  const text = shown.map((item) => item.text).join("")
+  const lineCount = Math.max(1, text.split("\n").length)
 
   return (
-    <div className="flex h-full flex-col pt-3">
-      <div className="flex items-center gap-1.5 border-b border-[#ecece8] px-2.5 py-1.5">
+    <div className="flex h-full flex-col bg-[#fbfbfa] pt-3">
+      <div className="flex items-center gap-1.5 border-b border-[#ecece8] px-3 py-1.5">
         <span className="size-1.5 rounded-full bg-[#ecece8]" />
         <span className="size-1.5 rounded-full bg-[#ecece8]" />
         <span className="size-1.5 rounded-full bg-brand" />
-        <span className="ml-1 h-3 flex-1 rounded-full bg-white ring-1 ring-[#ecece8] px-2 text-[8px] leading-3 text-mist">
+        <span className="ml-1 rounded-md bg-white px-2 py-0.5 font-mono text-[10px] text-ink ring-1 ring-[#ecece8]">
+          shop.tsx
+        </span>
+        <span className="ml-auto font-mono text-[10px] text-brand">{done ? "klaar" : "schrijft"}</span>
+      </div>
+      <pre
+        ref={codeRef}
+        className="min-h-0 flex-1 overflow-hidden px-3 py-2 font-mono text-[10px] leading-5 sm:text-[12px] sm:leading-[1.35rem]"
+      >
+        <div className="flex">
+          <div className="w-6 shrink-0 pr-2 text-right text-[#b5b5ae] select-none" aria-hidden>
+            {Array.from({ length: lineCount }, (_, index) => (
+              <div key={index}>{index + 1}</div>
+            ))}
+          </div>
+          <code className="whitespace-pre">
+            {shown.map((item, index) => (
+              <span key={index} className={kindClass[item.kind]}>
+                {item.text}
+              </span>
+            ))}
+            {done ? null : <Caret />}
+          </code>
+        </div>
+      </pre>
+    </div>
+  )
+}
+
+function ShopScreen() {
+  return (
+    <div className="flex h-full flex-col bg-paper pt-3">
+      <div className="flex items-center gap-1.5 border-b border-[#ecece8] px-3 py-1.5">
+        <span className="size-1.5 rounded-full bg-[#ecece8]" />
+        <span className="size-1.5 rounded-full bg-[#ecece8]" />
+        <span className="size-1.5 rounded-full bg-brand" />
+        <span className="ml-1 h-4 flex-1 rounded-full bg-white px-2 text-[9px] leading-4 text-mist ring-1 ring-[#ecece8]">
           atelier.nl
         </span>
       </div>
-
-      <div className="relative mx-2 mt-2 h-6">
-        <div
-          className={cn(
-            "absolute inset-0 flex items-center gap-2",
-            motion,
-            showHeader ? "opacity-0" : "opacity-100",
-          )}
-          aria-hidden
-        >
-          <span className="shop-shimmer h-2 w-14 rounded-full bg-[#e4e4df]" />
-          <span className="shop-shimmer h-2 w-10 rounded-full bg-[#ecece8]" />
-          <span className="shop-shimmer ml-auto size-3.5 rounded-full bg-[#e4e4df]" />
-        </div>
-        <div
-          className={cn(
-            "absolute inset-0 flex items-center gap-2",
-            motion,
-            showHeader ? "opacity-100" : "pointer-events-none opacity-0",
-          )}
-        >
-          <p className="text-[11px] font-semibold tracking-tight text-ink">Atelier</p>
-          <p className="text-[8px] text-mist">Shop</p>
-          <p className="text-[8px] text-mist">Contact</p>
-          <span
-            className={cn(
-              "ml-auto rounded-full bg-[#eef8f1] px-1.5 py-0.5 text-[8px] font-semibold text-brand",
-              motion,
-              showLive ? "scale-100 opacity-100" : "scale-75 opacity-0",
-            )}
-          >
-            Live
-          </span>
-          <span className="relative grid size-4 place-items-center rounded-full bg-[#f3f3f1] text-ink">
-            <BagIcon />
-            <span
-              className={cn(
-                "absolute -top-1 -right-1 grid min-w-3 place-items-center rounded-full bg-brand px-0.5 text-[7px] font-semibold text-white",
-                motion,
-                showCart ? "scale-100 opacity-100" : "scale-50 opacity-0",
-              )}
-            >
-              3
-            </span>
-          </span>
-        </div>
+      <div className="flex items-center gap-2 px-3 py-2">
+        <p className="text-[13px] font-semibold text-ink">Atelier</p>
+        <p className="text-[10px] text-mist">Shop</p>
+        <span className="ml-auto rounded-full bg-[#eef8f1] px-1.5 py-0.5 text-[9px] font-semibold text-brand">
+          Live
+        </span>
       </div>
-
-      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-3 content-start gap-1.5 px-2 pt-1 pb-11">
-        {products.map((product, productIndex) => (
-          <ProductTile
-            key={product.name}
-            product={product}
-            show={showProducts}
-            delay={productIndex * 140}
-            reduce={reduce}
-          />
+      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-3 content-start gap-1.5 px-3">
+        {products.map((product) => (
+          <div key={product.name} className="min-w-0 rounded-md bg-white p-1 ring-1 ring-[#ecece8]">
+            <img
+              src={product.src}
+              alt=""
+              className="h-8 w-full rounded-[3px] object-cover sm:h-12"
+            />
+            <p className="mt-1 truncate text-[9px] leading-3 font-medium text-ink">{product.name}</p>
+            <p className="text-[9px] leading-3 font-semibold text-ink">{product.price}</p>
+          </div>
         ))}
       </div>
-
-      <div
-        className={cn(
-          "absolute inset-x-2 bottom-2 flex items-center justify-between gap-2 rounded-lg bg-ink px-2 py-1 text-white shadow-lg",
-          motion,
-          showCart ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
-        )}
-      >
-        <div className="min-w-0">
-          <p className="text-[8px] leading-3 text-white/55">Winkelwagen</p>
-          <p className="truncate text-[10px] leading-3 font-semibold">3 artikelen · € 457</p>
-        </div>
-        <span className="rounded-full bg-brand px-2 py-1 text-[8px] font-semibold">Afrekenen</span>
+      <div className="mx-3 mt-1 mb-2 flex items-center justify-between gap-2 rounded-lg bg-ink px-2.5 py-1.5 text-white">
+        <p className="truncate text-[10px] font-semibold">3 artikelen · € 457</p>
+        <span className="rounded-full bg-brand px-2 py-1 text-[9px] font-semibold">Afrekenen</span>
       </div>
     </div>
-  )
-}
-
-function ProductTile({
-  product,
-  show,
-  delay,
-  reduce,
-}: {
-  product: (typeof products)[number]
-  show: boolean
-  delay: number
-  reduce: boolean
-}) {
-  const motion = reduce ? "" : "transition duration-500 ease-out"
-
-  return (
-    <div className="min-w-0 rounded-md bg-white p-1 ring-1 ring-[#ecece8]">
-      <div className="relative h-12 overflow-hidden rounded-[4px] bg-[#ecece8] sm:h-16">
-        <span className={cn("shop-shimmer absolute inset-0", show && "opacity-0")} aria-hidden />
-        <img
-          src={product.src}
-          alt=""
-          className={cn(
-            "size-full object-cover",
-            motion,
-            show ? "scale-100 opacity-100" : "scale-105 opacity-0",
-          )}
-          style={{ transitionDelay: reduce || !show ? "0ms" : `${delay}ms` }}
-        />
-      </div>
-      <div className="relative mt-1 h-3">
-        <span
-          className={cn(
-            "shop-shimmer absolute inset-x-0 top-0.5 h-1.5 rounded-full bg-[#e4e4df]",
-            motion,
-            show ? "opacity-0" : "opacity-100",
-          )}
-          aria-hidden
-        />
-        <p
-          className={cn(
-            "truncate text-[8px] leading-3 font-medium text-ink",
-            motion,
-            show ? "opacity-100" : "opacity-0",
-          )}
-          style={{ transitionDelay: reduce || !show ? "0ms" : `${delay + 80}ms` }}
-        >
-          {product.name}
-        </p>
-      </div>
-      <p
-        className={cn(
-          "text-[8px] leading-3 font-semibold text-ink",
-          motion,
-          show ? "opacity-100" : "opacity-0",
-        )}
-        style={{ transitionDelay: reduce || !show ? "0ms" : `${delay + 120}ms` }}
-      >
-        {product.price}
-      </p>
-    </div>
-  )
-}
-
-function BagIcon() {
-  return (
-    <svg viewBox="0 0 16 16" className="size-2.5" fill="none" aria-hidden>
-      <path
-        d="M4.5 6.5h7l-.6 6.2a1 1 0 0 1-1 .8H6.1a1 1 0 0 1-1-.8L4.5 6.5Z"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <path d="M6 6.5V5a2 2 0 0 1 4 0v1.5" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
   )
 }

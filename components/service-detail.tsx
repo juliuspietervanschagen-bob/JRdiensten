@@ -1,6 +1,7 @@
 import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
+import { ShopBuildComputer } from "@/components/shop-build-computer"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { formatFromPrice, services, type Service } from "@/lib/services"
 import {
@@ -97,7 +98,7 @@ export function ServiceDetail({ service }: { service: Service }) {
         </Container>
       </section>
 
-      <section className="bg-white py-10 sm:py-12">
+      <section className="section-wash py-10 sm:py-12">
         <Container>
           <div className="max-w-2xl">
             <h2 className="text-3xl font-semibold tracking-tight">Wat je krijgt</h2>
@@ -125,9 +126,9 @@ export function ServiceDetail({ service }: { service: Service }) {
         </Container>
       </section>
 
-      {service.slug === "webshop" ? (
-        <WebshopJourney />
-      ) : (
+      {service.slug === "webshop" ? <WebshopJourney /> : null}
+      {service.slug === "webshop" ? <ShopBuildComputer /> : null}
+      {service.slug === "webshop" ? null : (
         <section id="aanpak" className="scroll-mt-24 py-16 sm:py-20">
           <Container>
             <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>
@@ -149,7 +150,7 @@ export function ServiceDetail({ service }: { service: Service }) {
         </section>
       )}
 
-      <section className="bg-white py-16 sm:py-20">
+      <section className="section-wash py-16 sm:py-20">
         <Container>
           <h2 className="text-3xl font-semibold tracking-tight">Prijs</h2>
           <p className="mt-3 max-w-2xl text-mist">

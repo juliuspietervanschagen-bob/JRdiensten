@@ -45,7 +45,7 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <section className="bg-white py-16">
+      <section className="section-wash py-16">
         <Container className="grid gap-4 md:grid-cols-3">
           {points.map((point, index) => (
             <article key={point.title} className="rounded-2xl bg-paper p-6">
