@@ -1,5 +1,6 @@
 import { BrandButton } from "@/components/brand-button"
 import { ContactLaptop } from "@/components/contact-laptop"
+import { ShopBuildComputer } from "@/components/shop-build-computer"
 import { Container } from "@/components/container"
 import { services, type ServiceSlug } from "@/lib/services"
 import { site } from "@/lib/site"
@@ -25,7 +26,7 @@ export function ServiceDirectory() {
       />
       <Container className="relative py-16 sm:py-20">
         <div className="grid items-start gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
-          <div>
+          <div className="min-w-0">
             <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
               <span className="h-px w-8 bg-brand" />
               CONTACT
@@ -53,6 +54,7 @@ export function ServiceDirectory() {
               </BrandButton>
             </div>
             <ContactLaptop />
+            <ShopBuildComputer />
           </div>
 
           <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2">
