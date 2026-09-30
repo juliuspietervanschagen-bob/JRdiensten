@@ -15,7 +15,7 @@ const icons: Record<ServiceSlug, typeof ShoppingBag> = {
 
 export function ServiceDirectory() {
   return (
-    <section className="relative overflow-hidden bg-ink text-white" aria-label="Onze diensten">
+    <section className="relative overflow-hidden bg-[#2a2e2c] text-white" aria-label="Onze diensten">
       <div
         className="drift-glow pointer-events-none absolute -top-24 -left-16 size-[28rem] rounded-full bg-brand/30 blur-3xl"
         aria-hidden
