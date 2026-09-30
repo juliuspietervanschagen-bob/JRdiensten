@@ -69,9 +69,16 @@ function WebshopArt() {
             </span>
           </div>
           <div className="mt-3 grid grid-cols-3 gap-2">
-            {["#171717", "#f3f3f1", "#111111", "#e8f6ee", "#2a2a2a", "#f7f7f5"].map((tone, index) => (
-              <div key={tone + index} className="rounded-lg p-2 ring-1 ring-[#f0f0ee]">
-                <div className="aspect-square rounded-md" style={{ background: tone }} />
+            {[
+              ["Koptelefoon", "/webshop/tech-headphones.jpg"],
+              ["Telefoon", "/webshop/tech-phone.jpg"],
+              ["Horloge", "/webshop/tech-watch.jpg"],
+              ["Speaker", "/webshop/tech-speaker.jpg"],
+              ["Oortjes", "/webshop/tech-earbuds.jpg"],
+              ["Toetsenbord", "/webshop/tech-keyboard.jpg"],
+            ].map(([alt, src]) => (
+              <div key={alt} className="rounded-lg p-1.5 ring-1 ring-[#f0f0ee]">
+                <img src={src} alt={alt} className="aspect-square w-full rounded-md object-cover" />
                 <div className="mt-2 h-1.5 w-3/4 rounded-full bg-[#ecece8]" />
                 <div className="mt-1 h-1.5 w-1/2 rounded-full bg-ink" />
               </div>
