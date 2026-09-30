@@ -4,8 +4,7 @@ import { Container } from "@/components/container"
 import { services, type ServiceSlug } from "@/lib/services"
 import { site } from "@/lib/site"
 import { cn } from "cn"
-import { ArrowRight, ArrowUpRight, Clock, Mail, MapPin, Monitor, Phone, ShoppingBag, Workflow } from "lucide-react"
-import Link from "next/link"
+import { ArrowRight, Clock, Mail, MapPin, Monitor, Phone, ShoppingBag, Workflow } from "lucide-react"
 
 const icons: Record<ServiceSlug, typeof ShoppingBag> = {
   webshop: ShoppingBag,
@@ -73,21 +72,8 @@ export function ServiceDirectory() {
                   <ul className="mt-4 space-y-3">
                     {service.includes.map((item) => (
                       <li key={item.title}>
-                        <Link
-                          href={`/diensten/${service.slug}`}
-                          className="group grid grid-cols-[1fr_auto] items-start gap-2"
-                        >
-                          <span>
-                            <span className="block text-sm font-medium text-white group-hover:text-brand">
-                              {item.title}
-                            </span>
-                            <span className="mt-0.5 block text-xs leading-5 text-white/55">{item.text}</span>
-                          </span>
-                          <ArrowUpRight
-                            className="mt-0.5 size-3.5 shrink-0 text-brand transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                            aria-hidden
-                          />
-                        </Link>
+                        <p className="text-sm font-medium text-white">{item.title}</p>
+                        <p className="mt-0.5 text-xs leading-5 text-white/55">{item.text}</p>
                       </li>
                     ))}
                   </ul>
