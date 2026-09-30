@@ -23,8 +23,8 @@ export function ServiceDirectory() {
         className="drift-glow-late pointer-events-none absolute right-[-6rem] bottom-[-8rem] size-[24rem] rounded-full bg-brand/20 blur-3xl"
         aria-hidden
       />
-      <Container className="relative py-14 sm:py-16">
-        <div className="grid items-start gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:gap-16">
+      <Container className="relative py-16 sm:py-20">
+        <div className="grid items-start gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
           <div>
             <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
               <span className="h-px w-8 bg-brand" />
@@ -35,7 +35,7 @@ export function ServiceDirectory() {
               Een korte mail of een belletje is genoeg. We reageren met wat het kost en hoe we het
               aanpakken.
             </p>
-            <dl className="mt-6 space-y-3 text-sm">
+            <dl className="mt-6 space-y-4 text-sm">
               <Detail icon={MapPin} label="Plaats" value={site.location} />
               <Detail
                 icon={Phone}
@@ -55,22 +55,22 @@ export function ServiceDirectory() {
             <ContactLaptop />
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2">
+          <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2">
             {services.map((service) => {
               const Icon = icons[service.slug]
               return (
                 <div key={service.slug}>
-                  <div className="flex items-center gap-2.5">
-                    <span className="grid size-8 place-items-center rounded-lg bg-brand text-white">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-9 place-items-center rounded-lg bg-brand text-white">
                       <Icon className="size-4" aria-hidden />
                     </span>
-                    <h3 className="text-sm font-semibold tracking-tight">{service.title}</h3>
+                    <h3 className="text-base font-semibold tracking-tight">{service.title}</h3>
                   </div>
-                  <ul className="mt-4 space-y-3">
+                  <ul className="mt-5 space-y-4">
                     {service.includes.map((item) => (
                       <li key={item.title}>
                         <p className="text-sm font-medium text-white">{item.title}</p>
-                        <p className="mt-0.5 text-xs leading-5 text-white/55">{item.text}</p>
+                        <p className="mt-1 text-sm leading-6 text-white/60">{item.text}</p>
                       </li>
                     ))}
                   </ul>
