@@ -7,19 +7,21 @@ export function ServiceArt({ slug }: { slug: ServiceSlug }) {
   return <AutomationArt />
 }
 
-function Frame({ children }: { children: React.ReactNode }) {
+function Frame({ children, lines = true }: { children: React.ReactNode; lines?: boolean }) {
   return (
     <div className="relative">
       <div className="absolute inset-8 -z-10 rounded-full bg-brand/15 blur-3xl" />
-      <svg
-        className="pointer-events-none absolute -top-8 -right-6 h-40 w-40 text-brand"
-        viewBox="0 0 160 160"
-        fill="none"
-        aria-hidden
-      >
-        <path d="M10 40C50 10 90 70 150 30" stroke="currentColor" strokeWidth="1.4" />
-        <path d="M20 130C70 100 90 150 150 120" stroke="currentColor" strokeWidth="1.4" />
-      </svg>
+      {lines ? (
+        <svg
+          className="pointer-events-none absolute -top-8 -right-6 h-40 w-40 text-brand"
+          viewBox="0 0 160 160"
+          fill="none"
+          aria-hidden
+        >
+          <path d="M10 40C50 10 90 70 150 30" stroke="currentColor" strokeWidth="1.4" />
+          <path d="M20 130C70 100 90 150 150 120" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
+      ) : null}
       {children}
     </div>
   )
@@ -60,7 +62,7 @@ function WebsiteArt() {
 
 function WebshopArt() {
   return (
-    <Frame>
+    <Frame lines={false}>
       <div className="grid items-end gap-3 sm:grid-cols-[1.15fr_0.85fr]">
         <div className="lung-breathe rounded-2xl bg-white p-4 shadow-[0_30px_60px_-36px_rgba(0,0,0,0.45)] ring-1 ring-black/5">
           <div className="flex items-center justify-between">
@@ -95,10 +97,9 @@ function WebshopArt() {
         <div className="lung-breathe-late rounded-2xl bg-ink p-4 text-white shadow-[0_24px_40px_-28px_rgba(0,0,0,0.7)]">
           <p className="text-xs text-white/60">Checkout</p>
           <p className="mt-2 text-2xl font-semibold tracking-tight">€ 86,90</p>
-          <div className="mt-4 space-y-2">
-            <div className="h-2 rounded-full bg-white/15" />
-            <div className="h-2 w-4/5 rounded-full bg-white/15" />
-          </div>
+          <p className="mt-2 text-xs leading-5 text-white/70">
+            Twee artikelen. Verzending zit erbij.
+          </p>
           <div className="mt-5 rounded-full bg-brand py-2 text-center text-xs font-semibold">
             Betaal
           </div>
