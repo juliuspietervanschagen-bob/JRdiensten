@@ -219,6 +219,20 @@
   animation-delay: -7s;
 }
 
+@keyframes slide-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.slide-progress {
+  width: 0%;
+  animation: slide-progress 5.6s linear forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -227,7 +241,12 @@
   .lung-breathe,
   .lung-breathe-late,
   .drift-glow,
-  .drift-glow-late {
+  .drift-glow-late,
+  .slide-progress {
     animation: none;
+  }
+
+  .slide-progress {
+    width: 100%;
   }
 }

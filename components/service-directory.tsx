@@ -1,9 +1,10 @@
 import { BrandButton } from "@/components/brand-button"
+import { ContactLaptop } from "@/components/contact-laptop"
 import { Container } from "@/components/container"
 import { services, type ServiceSlug } from "@/lib/services"
 import { site } from "@/lib/site"
 import { cn } from "cn"
-import { ArrowRight, ArrowUpRight, Mail, Monitor, ShoppingBag, Workflow } from "lucide-react"
+import { ArrowRight, ArrowUpRight, Clock, Mail, MapPin, Monitor, Phone, ShoppingBag, Workflow } from "lucide-react"
 import Link from "next/link"
 
 const icons: Record<ServiceSlug, typeof ShoppingBag> = {
@@ -32,21 +33,27 @@ export function ServiceDirectory() {
             </p>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">Neem contact op</h2>
             <p className="mt-4 max-w-sm text-sm leading-6 text-white/70">
-              Een korte mail is genoeg. We reageren met wat het kost en hoe we het aanpakken.
+              Een korte mail of een belletje is genoeg. We reageren met wat het kost en hoe we het
+              aanpakken.
             </p>
-            <a
-              href={`mailto:${site.email}`}
-              className="mt-6 inline-flex items-center gap-2 text-base font-semibold text-white hover:text-brand"
-            >
-              <Mail className="size-4 text-brand" aria-hidden />
-              {site.email}
-            </a>
+            <dl className="mt-6 space-y-3 text-sm">
+              <Detail icon={MapPin} label="Plaats" value={site.location} />
+              <Detail
+                icon={Phone}
+                label="Telefoon"
+                value={site.phone}
+                href={site.phoneHref}
+              />
+              <Detail icon={Mail} label="E-mail" value={site.email} href={`mailto:${site.email}`} />
+              <Detail icon={Clock} label="Reactie" value={site.responseTime} />
+            </dl>
             <div className="mt-6">
               <BrandButton href="/contact">
                 Start vandaag
                 <ArrowRight className="size-4" />
               </BrandButton>
             </div>
+            <ContactLaptop />
           </div>
 
           <div className="grid gap-10 sm:grid-cols-3 sm:gap-6">
@@ -91,5 +98,37 @@ export function ServiceDirectory() {
         </div>
       </Container>
     </section>
+  )
+}
+
+function Detail({
+  icon: Icon,
+  label,
+  value,
+  href,
+}: {
+  icon: typeof Mail
+  label: string
+  value: string
+  href?: string
+}) {
+  const body = (
+    <>
+      <Icon className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
+      <span>
+        <span className="block text-[11px] tracking-[0.12em] text-white/45 uppercase">{label}</span>
+        <span className="mt-0.5 block font-medium text-white">{value}</span>
+      </span>
+    </>
+  )
+
+  if (!href) {
+    return <div className="flex items-start gap-3">{body}</div>
+  }
+
+  return (
+    <a href={href} className="flex items-start gap-3 hover:text-brand">
+      {body}
+    </a>
   )
 }

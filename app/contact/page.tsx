@@ -40,6 +40,22 @@ export default async function ContactPage({
               </dd>
             </div>
             <div>
+              <dt className="text-mist">Telefoon</dt>
+              <dd className="mt-1 font-medium">
+                <a href={site.phoneHref} className="hover:text-brand">
+                  {site.phone}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-mist">Plaats</dt>
+              <dd className="mt-1 font-medium">{site.location}</dd>
+            </div>
+            <div>
+              <dt className="text-mist">Reactie</dt>
+              <dd className="mt-1 font-medium">{site.responseTime}</dd>
+            </div>
+            <div>
               <dt className="text-mist">Waar we op reageren</dt>
               <dd className="mt-1 max-w-sm leading-6">
                 Een website, een webshop, of automatisering van een site of shop die je al hebt.
