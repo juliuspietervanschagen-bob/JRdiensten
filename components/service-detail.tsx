@@ -91,27 +91,27 @@ export function ServiceDetail({ service }: { service: Service }) {
         </Container>
       </section>
 
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-white py-10 sm:py-12">
         <Container>
           <div className="max-w-2xl">
             <h2 className="text-3xl font-semibold tracking-tight">Wat je krijgt</h2>
-            <p className="mt-3 text-mist">
+            <p className="mt-2 text-mist">
               Een afgebakend pakket. De vaste prijs volgt uit dit startpunt, voordat we beginnen.
             </p>
           </div>
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-6 grid grid-cols-1 gap-x-2 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
             {service.includes.map((item) => {
               const Icon = includeIcons[item.title] ?? LayoutGrid
               return (
                 <li
                   key={item.title}
-                  className="relative rounded-2xl border border-brand bg-ink px-5 pt-8 pb-5 text-white transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(22,163,74,0.55)]"
+                  className="relative rounded-2xl border border-brand bg-ink px-4 pt-6 pb-4 text-white transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(22,163,74,0.55)]"
                 >
-                  <span className="absolute top-0 left-4 grid size-8 -translate-y-1/2 place-items-center rounded-md bg-ink text-brand">
+                  <span className="absolute top-0 left-3 grid size-8 -translate-y-2 place-items-center rounded-md bg-ink text-brand">
                     <Icon className="size-5" aria-hidden />
                   </span>
                   <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-white/70">{item.text}</p>
+                  <p className="mt-1.5 text-sm leading-5 text-white/70">{item.text}</p>
                 </li>
               )
             })}
