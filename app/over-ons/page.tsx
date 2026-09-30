@@ -6,7 +6,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Over ons",
   description:
-    "JR Intelligence is een klein bureau dat websites en webshops bouwt en werk daaromheen automatiseert.",
+    "JR Intelligence bouwt websites, webshops en apps, en automatiseert werk daaromheen.",
 }
 
 const points = [
@@ -15,8 +15,8 @@ const points = [
     text: "Geen doorgeefluik. Ontwerp, bouw en de koppeling komen uit hetzelfde team.",
   },
   {
-    title: "Alleen deze drie dingen",
-    text: "Een website, een webshop, of automatisering van wat je al online hebt. Daar zijn we scherp in.",
+    title: "Alleen deze vier dingen",
+    text: "Een website, een webshop, een app voor de App Store en de Play Store, of automatisering van wat je al online hebt.",
   },
   {
     title: "Eerst de prijs, dan het werk",
@@ -34,12 +34,13 @@ export default function AboutPage() {
             OVER ONS
           </p>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl sm:leading-[1.05]">
-            Een klein bureau voor sites, shops en het werk eromheen
+            Een klein bureau voor sites, shops, apps en het werk eromheen
           </h1>
           <p className="mt-6 text-lg leading-8 text-mist">
-            JR Intelligence bouwt websites en webshops voor andere bedrijven. Loopt er al iets
-            online, dan automatiseren we het handwerk dat daar nu nog aan vastzit: orders
-            overtikken, aanvragen doorzetten, statussen bijhouden.
+            JR Intelligence bouwt websites, webshops en apps voor andere bedrijven. De app komt
+            in de App Store en de Play Store. Loopt er al iets online, dan automatiseren we het
+            handwerk dat daar nu nog aan vastzit: orders overtikken, aanvragen doorzetten,
+            statussen bijhouden.
           </p>
         </Container>
       </section>

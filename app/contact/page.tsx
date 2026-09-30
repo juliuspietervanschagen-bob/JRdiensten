@@ -5,7 +5,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Vraag een website, webshop of automatisering aan bij JR Intelligence.",
+  description: "Vraag een website, webshop, app of automatisering aan bij JR Intelligence.",
 }
 
 export default async function ContactPage({
@@ -58,7 +58,8 @@ export default async function ContactPage({
             <div>
               <dt className="text-mist">Waar we op reageren</dt>
               <dd className="mt-1 max-w-sm leading-6">
-                Een website, een webshop, of automatisering van een site of shop die je al hebt.
+                Een website, een webshop, een app voor de App Store en de Play Store, of
+                automatisering van een site of shop die je al hebt.
               </dd>
             </div>
           </dl>

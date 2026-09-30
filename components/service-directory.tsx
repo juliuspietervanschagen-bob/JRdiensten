@@ -3,12 +3,12 @@ import { ContactLaptop } from "@/components/contact-laptop"
 import { Container } from "@/components/container"
 import { services, type ServiceSlug } from "@/lib/services"
 import { site } from "@/lib/site"
-import { cn } from "cn"
-import { ArrowRight, Clock, Mail, MapPin, Monitor, Phone, ShoppingBag, Workflow } from "lucide-react"
+import { ArrowRight, Clock, Mail, MapPin, Monitor, Phone, ShoppingBag, Smartphone, Workflow } from "lucide-react"
 
 const icons: Record<ServiceSlug, typeof ShoppingBag> = {
   webshop: ShoppingBag,
   website: Monitor,
+  app: Smartphone,
   automatisering: Workflow,
 }
 
@@ -55,14 +55,11 @@ export function ServiceDirectory() {
             <ContactLaptop />
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-3 sm:gap-6">
-            {services.map((service, index) => {
+          <div className="grid gap-8 sm:grid-cols-2">
+            {services.map((service) => {
               const Icon = icons[service.slug]
               return (
-                <div
-                  key={service.slug}
-                  className={cn(index > 0 && "sm:border-l sm:border-white/10 sm:pl-6")}
-                >
+                <div key={service.slug}>
                   <div className="flex items-center gap-2.5">
                     <span className="grid size-8 place-items-center rounded-lg bg-brand text-white">
                       <Icon className="size-4" aria-hidden />

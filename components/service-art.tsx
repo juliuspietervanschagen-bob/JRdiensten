@@ -3,6 +3,7 @@ import type { ServiceSlug } from "@/lib/services"
 export function ServiceArt({ slug }: { slug: ServiceSlug }) {
   if (slug === "website") return <WebsiteArt />
   if (slug === "webshop") return <WebshopArt />
+  if (slug === "app") return <AppArt />
   return <AutomationArt />
 }
 
@@ -100,6 +101,38 @@ function WebshopArt() {
           </div>
           <div className="mt-5 rounded-full bg-brand py-2 text-center text-xs font-semibold">
             Betaal
+          </div>
+        </div>
+      </div>
+    </Frame>
+  )
+}
+
+function AppArt() {
+  return (
+    <Frame>
+      <div className="mx-auto w-full max-w-[280px] rounded-[2rem] bg-ink p-3 shadow-[0_30px_60px_-36px_rgba(0,0,0,0.55)] ring-1 ring-white/10">
+        <div className="overflow-hidden rounded-[1.5rem] bg-white">
+          <div className="flex items-center justify-between px-4 pt-3">
+            <p className="text-[10px] font-extrabold tracking-[-0.04em]">JR</p>
+            <span className="size-1.5 rounded-full bg-brand" />
+          </div>
+          <div className="px-4 pt-4 pb-5">
+            <p className="text-[10px] font-semibold tracking-[0.14em] text-brand">JOUW APP</p>
+            <div className="mt-2 h-2.5 w-4/5 rounded-full bg-ink" />
+            <div className="mt-2 h-2 w-3/5 rounded-full bg-[#ecece8]" />
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <div className="h-16 rounded-xl bg-[#f4f4f2]" />
+              <div className="h-16 rounded-xl bg-[#eef8f1]" />
+            </div>
+            <div className="mt-4 flex gap-2">
+              <span className="rounded-lg bg-ink px-2 py-1.5 text-[9px] font-semibold text-white">
+                App Store
+              </span>
+              <span className="rounded-lg bg-brand px-2 py-1.5 text-[9px] font-semibold text-white">
+                Play Store
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -46,6 +46,12 @@ const includeIcons: Record<string, LucideIcon> = {
   "Zicht op wat er liep": ClipboardList,
   "Getest met jouw voorbeelden": TestTube2,
   "Uitleg voor het team": BookOpen,
+  "App Store en Play Store": Smartphone,
+  "Schermen in jullie merk": Palette,
+  "iPhone en Android": MonitorSmartphone,
+  "Account voor de klant": Inbox,
+  "Getest op echte toestellen": TestTube2,
+  "Eerste update inbegrepen": PenLine,
 }
 
 export function ServiceDetail({ service }: { service: Service }) {

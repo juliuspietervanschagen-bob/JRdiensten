@@ -4,7 +4,7 @@ import { Logo } from "@/components/logo"
 import { BrandButton } from "@/components/brand-button"
 import { services, type ServiceSlug } from "@/lib/services"
 import { cn } from "cn"
-import { ArrowRight, ArrowUpRight, Menu, Monitor, ShoppingBag, Workflow, X } from "lucide-react"
+import { ArrowRight, ArrowUpRight, Menu, Monitor, ShoppingBag, Smartphone, Workflow, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useId, useRef, useState } from "react"
@@ -12,6 +12,7 @@ import { useEffect, useId, useRef, useState } from "react"
 const icons: Record<ServiceSlug, typeof ShoppingBag> = {
   webshop: ShoppingBag,
   website: Monitor,
+  app: Smartphone,
   automatisering: Workflow,
 }
 
@@ -110,7 +111,7 @@ export function SiteHeader() {
           onMouseEnter={showMenu}
           onMouseLeave={hideMenu}
         >
-          <div className="mx-auto grid w-full max-w-[920px] grid-cols-3 divide-x divide-[#e7e7e2] rounded-2xl bg-[#f3f3f1] p-2 shadow-[0_28px_70px_-32px_rgba(0,0,0,0.45)] ring-1 ring-black/5">
+          <div className="mx-auto grid w-full max-w-[1120px] grid-cols-4 divide-x divide-[#e7e7e2] rounded-2xl bg-[#f3f3f1] p-2 shadow-[0_28px_70px_-32px_rgba(0,0,0,0.45)] ring-1 ring-black/5">
             {services.map((service) => {
               const Icon = icons[service.slug]
               return (

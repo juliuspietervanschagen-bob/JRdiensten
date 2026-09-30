@@ -2,19 +2,20 @@ import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import { DeviceShowcase } from "@/components/device-showcase"
 import { formatFromPrice, services, type ServiceSlug } from "@/lib/services"
-import { ArrowRight, ArrowUpRight, Monitor, ShoppingBag, Workflow } from "lucide-react"
+import { ArrowRight, ArrowUpRight, Monitor, ShoppingBag, Smartphone, Workflow } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: { absolute: "JR Intelligence — Website, webshop en automatisering" },
+  title: { absolute: "JR Intelligence — Website, webshop, app en automatisering" },
   description:
-    "JR Intelligence bouwt websites en webshops voor bedrijven, en automatiseert werk dat nu nog handmatig via die site of shop loopt.",
+    "JR Intelligence bouwt websites, webshops en apps voor de App Store en de Play Store, en automatiseert werk dat nu nog handmatig loopt.",
 }
 
 const icons: Record<ServiceSlug, typeof ShoppingBag> = {
   webshop: ShoppingBag,
   website: Monitor,
+  app: Smartphone,
   automatisering: Workflow,
 }
 
@@ -29,7 +30,7 @@ const approach = [
   },
   {
     title: "Bouw",
-    text: "We maken de website, de webshop of de koppeling, en leveren hem werkend op.",
+    text: "We maken de website, de webshop, de app of de koppeling, en leveren hem werkend op.",
   },
 ]
 
@@ -44,11 +45,12 @@ export default function HomePage() {
               JR INTELLIGENCE
             </p>
             <h1 className="mt-5 text-[2.6rem] leading-[1.05] font-semibold tracking-tight text-ink sm:text-5xl lg:text-[3.35rem]">
-              Website, webshop of automatisering voor jouw bedrijf
+              Website, webshop, app of automatisering voor jouw bedrijf
             </h1>
             <p className="mt-6 max-w-md text-base leading-7 text-[#4d4d4d] sm:text-lg sm:leading-8">
               Wij bouwen digitale oplossingen die werken. Van een professionele website tot een
-              webshop die verkoopt, of automatisering van processen die je al hebt.
+              webshop die verkoopt, een app in de App Store en de Play Store, of automatisering van
+              processen die je al hebt.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <BrandButton href="/contact">
@@ -69,12 +71,12 @@ export default function HomePage() {
       <section id="diensten" className="scroll-mt-24 bg-white py-16 sm:py-20">
         <Container>
           <div className="max-w-2xl">
-            <h2 className="text-3xl font-semibold tracking-tight">Drie diensten, verder niets</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">Vier diensten, verder niets</h2>
             <p className="mt-3 text-mist">
-              We bouwen je website, we bouwen je webshop, of we automatiseren wat je al online hebt.
+              We bouwen je website, je webshop of je app, of we automatiseren wat je al online hebt.
             </p>
           </div>
-          <div className="mt-10 grid gap-4 lg:grid-cols-3">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {services.map((service) => {
               const Icon = icons[service.slug]
               return (

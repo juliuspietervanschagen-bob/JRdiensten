@@ -6,5 +6,5 @@ export const site = {
   location: "Reeuwijk",
   responseTime: "Meestal binnen één werkdag",
   description:
-    "JR Intelligence bouwt websites en webshops voor andere bedrijven, en automatiseert werk dat nu nog handmatig via die site of shop loopt.",
+    "JR Intelligence bouwt websites, webshops en apps voor de App Store en de Play Store, en automatiseert werk dat nu nog handmatig loopt.",
 }

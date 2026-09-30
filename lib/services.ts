@@ -1,4 +1,4 @@
-export type ServiceSlug = "webshop" | "website" | "automatisering"
+export type ServiceSlug = "webshop" | "website" | "app" | "automatisering"
 
 export type ServiceStep = {
   title: string
@@ -185,6 +185,65 @@ export const services: Service[] = [
       "Een duidelijke knop naar contact of aanvraag",
       "Pagina's die goed werken op een telefoon",
       "Een basis waar je later pagina's aan toevoegt",
+    ],
+  },
+  {
+    slug: "app",
+    title: "App bouwen",
+    menuDescription: "Apps voor de App Store en de Play Store",
+    summary: "Een app die klanten downloaden in de App Store en de Play Store.",
+    audience:
+      "Voor bedrijven die een eigen app willen, op iPhone en Android, niet alleen een site in de browser.",
+    fromPrice: 3990,
+    includes: [
+      {
+        title: "App Store en Play Store",
+        text: "We richten de app in voor publicatie in beide stores, inclusief de vermelding en de eerste versie.",
+      },
+      {
+        title: "Schermen in jullie merk",
+        text: "De app voelt als jullie bedrijf: zelfde toon, kleur en de taken die een klant echt doet.",
+      },
+      {
+        title: "iPhone en Android",
+        text: "Eén app, gebouwd zodat hij prettig werkt op beide platformen.",
+      },
+      {
+        title: "Account voor de klant",
+        text: "Inloggen, een profiel en de gegevens die bij jullie dienst horen.",
+      },
+      {
+        title: "Getest op echte toestellen",
+        text: "We lopen de belangrijkste schermen na op een iPhone en een Android-telefoon.",
+      },
+      {
+        title: "Eerste update inbegrepen",
+        text: "Na livegang lossen we de eerste fouten op die in de stores naar boven komen.",
+      },
+    ],
+    steps: [
+      {
+        title: "Wat de app moet doen",
+        text: "We bespreken de taken, de gebruikers en of de app in beide stores moet.",
+      },
+      {
+        title: "De schermen",
+        text: "Je ziet de belangrijkste schermen voordat we de app bouwen.",
+      },
+      {
+        title: "Bouwen en testen",
+        text: "We bouwen de app en testen hem op iPhone en Android.",
+      },
+      {
+        title: "In de stores",
+        text: "We dienen de app in bij de App Store en de Play Store en begeleiden de publicatie.",
+      },
+    ],
+    outcomes: [
+      "Een app die in de App Store en de Play Store kan",
+      "Schermen die passen bij jullie merk",
+      "Getest op iPhone en Android",
+      "Een vaste prijs voordat we beginnen",
     ],
   },
   {
