@@ -69,7 +69,7 @@ export function WebshopJourney() {
   }, [])
 
   return (
-    <section id="aanpak" className="scroll-mt-24 py-16 sm:py-20">
+    <section id="aanpak" className="scroll-mt-24 pt-16 pb-8 sm:pt-20 sm:pb-10">
       <Container>
         <div className="max-w-2xl">
           <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>

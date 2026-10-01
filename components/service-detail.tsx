@@ -126,10 +126,10 @@ export function ServiceDetail({ service }: { service: Service }) {
         </Container>
       </section>
 
-      {service.slug === "webshop" ? <WebshopJourney /> : null}
-      {service.slug === "webshop" ? <ShopBuildComputer /> : null}
-      {service.slug === "webshop" ? null : (
-        <section id="aanpak" className="scroll-mt-24 py-16 sm:py-20">
+      {service.slug === "webshop" ? (
+        <WebshopJourney />
+      ) : (
+        <section id="aanpak" className="scroll-mt-24 pt-16 pb-8 sm:pt-20 sm:pb-10">
           <Container>
             <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>
             <ol className="mt-10 grid gap-6 md:grid-cols-4">
@@ -150,50 +150,61 @@ export function ServiceDetail({ service }: { service: Service }) {
         </section>
       )}
 
-      <section className="section-wash py-16 sm:py-20">
+      <section className="pb-16 sm:pb-20">
         <Container>
-          <h2 className="text-3xl font-semibold tracking-tight">Prijs</h2>
-          <p className="mt-3 max-w-2xl text-mist">
-            Dit zijn startprijzen. Na een kort gesprek krijg je een vaste prijs voor jouw situatie,
-            voordat er gebouwd wordt.
-          </p>
-          <div className="mt-10 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-3xl bg-ink p-7 text-white shadow-[0_24px_50px_-32px_rgba(0,0,0,0.7)] transition duration-200 hover:-translate-y-1">
-              <p className="text-sm text-white/60">Start</p>
-              <p className="mt-3 text-4xl font-semibold tracking-tight">
-                {formatFromPrice(service.fromPrice)}
-              </p>
-              <ul className="mt-6 space-y-3">
-                {service.outcomes.map((outcome) => (
-                  <li key={outcome} className="flex gap-3 text-sm leading-6 text-white/85">
-                    <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
-                    {outcome}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8">
-                <BrandButton href={`/contact?dienst=${service.slug}`}>
-                  Vraag deze start aan
-                  <ArrowRight className="size-4" />
-                </BrandButton>
+          <div className="rounded-3xl bg-white px-6 py-8 ring-1 ring-[#e8e8e3] sm:px-10 sm:py-10">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold tracking-[0.18em] text-brand">PRIJS</p>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+                  Eerst de prijs, dan het werk
+                </h2>
               </div>
-            </article>
-            <article className="rounded-3xl bg-paper p-7 ring-1 ring-[#e6e6e1] transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-28px_rgba(0,0,0,0.35)]">
-              <p className="text-sm text-mist">Groter traject</p>
-              <p className="mt-3 text-4xl font-semibold tracking-tight">Op aanvraag</p>
-              <p className="mt-6 text-sm leading-7 text-mist">
-                Meerdere talen, een groter assortiment, extra koppelingen of een systeem dat al
-                draait en mee moet. We schrijven eerst op wat erin zit, en daarna pas de prijs.
+              <p className="max-w-md text-sm leading-6 text-mist">
+                Dit zijn startprijzen. Na een kort gesprek krijg je een vaste prijs voor jouw
+                situatie, voordat er gebouwd wordt.
               </p>
-              <div className="mt-8">
-                <BrandButton href={`/contact?dienst=${service.slug}`} variant="outline">
-                  Bespreek je situatie
-                </BrandButton>
+            </div>
+            <div className="mt-8 grid gap-8 border-t border-[#eee] pt-8 lg:grid-cols-2 lg:gap-0">
+              <div className="flex h-full flex-col lg:pr-12">
+                <p className="text-sm text-mist">Start</p>
+                <p className="mt-2 text-4xl font-semibold tracking-tight">
+                  {formatFromPrice(service.fromPrice)}
+                </p>
+                <ul className="mt-6 space-y-3">
+                  {service.outcomes.map((outcome) => (
+                    <li key={outcome} className="flex gap-3 text-sm leading-6 text-ink">
+                      <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
+                      {outcome}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto pt-7">
+                  <BrandButton href={`/contact?dienst=${service.slug}`}>
+                    Vraag deze start aan
+                    <ArrowRight className="size-4" />
+                  </BrandButton>
+                </div>
               </div>
-            </article>
+              <div className="flex h-full flex-col border-t border-[#eee] pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-12">
+                <p className="text-sm text-mist">Groter traject</p>
+                <p className="mt-2 text-4xl font-semibold tracking-tight">Op aanvraag</p>
+                <p className="mt-6 text-sm leading-7 text-mist">
+                  Meerdere talen, een groter assortiment, extra koppelingen of een systeem dat al
+                  draait en mee moet. We schrijven eerst op wat erin zit, en daarna pas de prijs.
+                </p>
+                <div className="mt-auto pt-7">
+                  <BrandButton href={`/contact?dienst=${service.slug}`} variant="outline">
+                    Bespreek je situatie
+                  </BrandButton>
+                </div>
+              </div>
+            </div>
           </div>
         </Container>
       </section>
+
+      {service.slug === "webshop" ? <ShopBuildComputer /> : null}
 
       <section className="py-16">
         <Container>
