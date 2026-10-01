@@ -71,8 +71,8 @@ function positions(sec: number) {
   const points = [{ x: hub.x, y: hub.y }]
   for (const node of orbiters) {
     points.push({
-      x: node.x + Math.sin(sec * 0.42 + node.phase) * 6,
-      y: node.y + Math.cos(sec * 0.36 + node.phase) * 5,
+      x: node.x + Math.sin(sec * 0.45 + node.phase) * 14,
+      y: node.y + Math.cos(sec * 0.38 + node.phase) * 10,
     })
   }
   return points
@@ -266,13 +266,14 @@ function ConnectivityMap() {
           : "translate(-50%, 22px)"
     })
 
-    const pulse = 34 + Math.sin(sec * 0.7) * 3
+    const pulse = 40 + Math.sin(sec * 0.5) * 6
     pulseRef.current?.setAttribute("r", pulse.toFixed(1))
 
     links.forEach((link, index) => {
+      const breath = link.outward ? Math.sin(sec * 0.5 + index * 0.8) * 8 : 0
       underRefs.current[index]?.setAttribute(
         "d",
-        arcPath(pts[link.from], pts[link.to], link.bow, link.outward),
+        arcPath(pts[link.from], pts[link.to], link.bow + breath, link.outward),
       )
     })
 

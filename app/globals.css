@@ -369,12 +369,12 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.1);
+    transform: scale(1.06);
   }
 }
 
 .node-breathe {
-  animation: node-breathe 6.8s ease-in-out infinite;
+  animation: node-breathe 8.5s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
