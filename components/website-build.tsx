@@ -35,42 +35,48 @@ const rows = [
 ]
 
 const view = { w: 560, h: 420 }
-const hub = { x: 280, y: 62 }
+const hub = { x: 280, y: 210 }
+const ringRadius = { x: 156, y: 118 }
 
 const orbiters = [
-  { label: "Diensten", icon: PanelsTopLeft, x: 118, y: 158, labelPlace: "below" as const, phase: 0.4 },
-  { label: "Over", icon: UserRound, x: 442, y: 158, labelPlace: "below" as const, phase: 1.8 },
-  { label: "Contact", icon: Mail, x: 280, y: 278, labelPlace: "right" as const, phase: 2.6 },
-  { label: "Inbox", icon: Inbox, x: 280, y: 368, labelPlace: "left" as const, phase: 3.5 },
+  { label: "Diensten", icon: PanelsTopLeft, angle: -Math.PI / 2, labelPlace: "above" as const, phase: 0.2 },
+  { label: "Over", icon: UserRound, angle: 0, labelPlace: "right" as const, phase: 1.2 },
+  { label: "Contact", icon: Mail, angle: Math.PI / 2, labelPlace: "below" as const, phase: 2.3 },
+  { label: "Inbox", icon: Inbox, angle: Math.PI, labelPlace: "left" as const, phase: 3.4 },
 ]
 
-const marks = [{ label: "Home", icon: House, labelPlace: "below" as const }, ...orbiters]
+const marks = [{ label: "Home", icon: House, labelPlace: "corner" as const }, ...orbiters]
 
 const links = [
-  { from: 0, to: 1, amp: 16, phase: 0 },
-  { from: 0, to: 2, amp: 16, phase: 1.4 },
-  { from: 1, to: 3, amp: 14, phase: 0.7 },
-  { from: 2, to: 3, amp: 14, phase: 2.2 },
-  { from: 3, to: 4, amp: 12, phase: 0.5 },
+  { from: 0, to: 1, amp: 10, phase: 0 },
+  { from: 0, to: 2, amp: 10, phase: 0.9 },
+  { from: 0, to: 3, amp: 10, phase: 1.8 },
+  { from: 0, to: 4, amp: 10, phase: 2.7 },
+  { from: 1, to: 2, amp: 14, phase: 0.4 },
+  { from: 2, to: 3, amp: 14, phase: 1.3 },
+  { from: 3, to: 4, amp: 14, phase: 2.1 },
+  { from: 4, to: 1, amp: 14, phase: 3.0 },
 ]
 
 const tour = [
-  [0, 1],
-  [1, 3],
-  [3, 4],
-  [4, 3],
-  [3, 2],
-  [2, 0],
-  [0, 2],
+  [1, 2],
   [2, 3],
+  [3, 4],
+  [4, 1],
+  [1, 0],
+  [0, 4],
+  [4, 3],
+  [0, 2],
 ] as const
 
 function positions(sec: number) {
   const points = [{ x: hub.x, y: hub.y }]
   for (const node of orbiters) {
+    const breathe = Math.sin(sec * 0.42 + node.phase) * 7
+    const angle = node.angle + Math.sin(sec * 0.3 + node.phase) * 0.07
     points.push({
-      x: node.x + Math.sin(sec * 0.4 + node.phase) * 8,
-      y: node.y + Math.cos(sec * 0.34 + node.phase) * 6,
+      x: hub.x + Math.cos(angle) * (ringRadius.x + breathe),
+      y: hub.y + Math.sin(angle) * (ringRadius.y + breathe * 0.72),
     })
   }
   return points
@@ -78,9 +84,10 @@ function positions(sec: number) {
 
 function labelShift(place: (typeof marks)[number]["labelPlace"]) {
   if (place === "above") return "translate(-50%, calc(-100% - 20px))"
+  if (place === "below") return "translate(-50%, 22px)"
   if (place === "left") return "translate(calc(-100% - 18px), -50%)"
   if (place === "right") return "translate(20px, -50%)"
-  return "translate(-50%, 22px)"
+  return "translate(26px, 24px)"
 }
 
 function flowPath(
@@ -265,7 +272,7 @@ function ConnectivityMap() {
       button.style.left = `${(point.x / view.w) * 100}%`
       button.style.top = `${(point.y / view.h) * 100}%`
       const label = labelRefs.current[index]
-      if (!label || index === 0) return
+      if (!label) return
       label.style.transform = labelShift(marks[index].labelPlace)
     })
 
@@ -546,7 +553,7 @@ function ConnectivityMap() {
                   }}
                   className={cn(
                     "pointer-events-none absolute whitespace-nowrap rounded-full bg-[#101412]/90 px-1.5 text-[11px] font-medium tracking-wide",
-                    core ? "top-full left-1/2 mt-2 -translate-x-1/2" : "top-1/2 left-1/2",
+                    "top-1/2 left-1/2",
                     on ? "text-white" : "text-white/55",
                   )}
                 >
