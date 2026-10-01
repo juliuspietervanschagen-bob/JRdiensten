@@ -3,8 +3,19 @@
 import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
 import { cn } from "cn"
-import { Inbox, MonitorSmartphone, Palette, PanelsTopLeft, PenLine, Search, type LucideIcon } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import {
+  House,
+  Inbox,
+  Mail,
+  MonitorSmartphone,
+  Palette,
+  PanelsTopLeft,
+  PenLine,
+  Search,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 
 const includeIcons: Record<string, LucideIcon> = {
   "Ontwerp in jullie merk": Palette,
@@ -23,13 +34,17 @@ const rows = [
   { label: "Contact", text: "Hoe je ons bereikt" },
 ]
 
-const nodes = [
-  { label: "Home", x: 72, y: 168, side: "right" as const },
-  { label: "Diensten", x: 248, y: 64, side: "right" as const },
-  { label: "Over", x: 332, y: 168, side: "left" as const },
-  { label: "Contact", x: 214, y: 276, side: "right" as const },
-  { label: "Inbox", x: 468, y: 276, side: "left" as const },
+const view = { w: 560, h: 340 }
+const hub = { x: 280, y: 168 }
+
+const orbiters = [
+  { label: "Diensten", icon: PanelsTopLeft, angle: -Math.PI / 2, radius: 118, sway: 0.42, rate: 0.34, phase: 0.4, breathe: 16 },
+  { label: "Over", icon: UserRound, angle: 0.12, radius: 136, sway: 0.34, rate: 0.27, phase: 1.4, breathe: 18 },
+  { label: "Contact", icon: Mail, angle: Math.PI / 2, radius: 124, sway: 0.4, rate: 0.31, phase: 2.3, breathe: 14 },
+  { label: "Inbox", icon: Inbox, angle: Math.PI, radius: 132, sway: 0.36, rate: 0.24, phase: 3.2, breathe: 16 },
 ]
+
+const marks = [{ label: "Home", icon: House }, ...orbiters]
 
 const links = [
   [0, 1],
@@ -37,8 +52,6 @@ const links = [
   [0, 3],
   [3, 4],
 ] as const
-
-const view = { w: 560, h: 340 }
 
 const tour = [
   [0, 1],
@@ -51,30 +64,42 @@ const tour = [
   [3, 0],
 ] as const
 
-function curve(from: number, to: number) {
-  const start = nodes[from]
-  const end = nodes[to]
-  const bend = Math.abs(start.y - end.y) < 24 ? 0 : -36
-  return {
-    start,
-    end,
-    cx: (start.x + end.x) / 2,
-    cy: (start.y + end.y) / 2 + bend,
+function positions(sec: number) {
+  const points = [{ x: hub.x, y: hub.y }]
+  for (const node of orbiters) {
+    const angle = node.angle + Math.sin(sec * node.rate + node.phase) * node.sway
+    const radius = node.radius + Math.sin(sec * (node.rate + 0.18) + node.phase) * node.breathe
+    points.push({
+      x: hub.x + Math.cos(angle) * radius,
+      y: hub.y + Math.sin(angle) * radius * 0.76,
+    })
   }
+  return points
 }
 
-function pathD(from: number, to: number) {
-  const { start, end, cx, cy } = curve(from, to)
-  return `M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}`
-}
-
-function pointOn(from: number, to: number, t: number) {
-  const { start, end, cx, cy } = curve(from, to)
-  const u = 1 - t
-  return {
-    x: u * u * start.x + 2 * u * t * cx + t * t * end.x,
-    y: u * u * start.y + 2 * u * t * cy + t * t * end.y,
+function flowPath(
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+  phase: number,
+  amp: number,
+  waves: number,
+) {
+  const steps = 36
+  const dx = b.x - a.x
+  const dy = b.y - a.y
+  const len = Math.hypot(dx, dy) || 1
+  const nx = -dy / len
+  const ny = dx / len
+  let d = ""
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps
+    const envelope = Math.sin(t * Math.PI)
+    const wave = Math.sin(t * Math.PI * waves + phase) * amp * envelope
+    const x = a.x + dx * t + nx * wave
+    const y = a.y + dy * t + ny * wave
+    d += `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`
   }
+  return d
 }
 
 export function WebsiteBuild({ service }: { service: Service }) {
@@ -212,40 +237,126 @@ function ConnectivityMap() {
   const [destination, setDestination] = useState(1)
   const [pinned, setPinned] = useState<number | null>(null)
   const elapsedRef = useRef(0)
+  const clockRef = useRef(0)
   const drawRef = useRef<SVGPathElement>(null)
   const glowRef = useRef<SVGPathElement>(null)
   const dotRef = useRef<SVGCircleElement>(null)
   const haloRef = useRef<SVGCircleElement>(null)
+  const pulseRef = useRef<SVGCircleElement>(null)
+  const underRefs = useRef<(SVGPathElement | null)[]>([])
+  const ghostRefs = useRef<(SVGPathElement | null)[]>([])
+  const nodeRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const labelRefs = useRef<(HTMLSpanElement | null)[]>([])
   const trailRefs = useRef<(SVGCircleElement | null)[]>([])
   const history = useRef<{ x: number; y: number }[]>([])
   const arrivedRef = useRef<number | null>(null)
   const destinationRef = useRef(1)
   const hopRef = useRef(-1)
 
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const home = nodes[0]
+  const paint = (sec: number, travel: { from: number; to: number; t: number } | null) => {
+    const pts = positions(sec)
+    pts.forEach((point, index) => {
+      const button = nodeRefs.current[index]
+      if (!button) return
+      button.style.left = `${(point.x / view.w) * 100}%`
+      button.style.top = `${(point.y / view.h) * 100}%`
+      const label = labelRefs.current[index]
+      if (!label || index === 0) return
+      const dx = point.x - hub.x
+      const dy = point.y - hub.y
+      const len = Math.hypot(dx, dy) || 1
+      label.style.transform = `translate(calc(-50% + ${(dx / len) * 22}px), calc(-50% + ${(dy / len) * 16}px))`
+    })
+
+    const pulse = 36 + Math.sin(sec * 0.85) * 7
+    pulseRef.current?.setAttribute("r", pulse.toFixed(1))
+
+    links.forEach(([from, to], index) => {
+      const outer = from !== 0 && to !== 0
+      const phase = sec * 1.7 + index * 1.35
+      const amp = outer ? 26 : 34
+      const waves = outer ? 3 : 2
+      const d = flowPath(pts[from], pts[to], phase, amp, waves)
+      underRefs.current[index]?.setAttribute("d", d)
+      ghostRefs.current[index]?.setAttribute("d", flowPath(pts[from], pts[to], phase + Math.PI, amp * 0.72, waves))
+    })
+
     const place = (x: number, y: number, visible: boolean) => {
       dotRef.current?.setAttribute("cx", String(x))
       dotRef.current?.setAttribute("cy", String(y))
       haloRef.current?.setAttribute("cx", String(x))
       haloRef.current?.setAttribute("cy", String(y))
       dotRef.current?.setAttribute("opacity", visible ? "1" : "0")
-      haloRef.current?.setAttribute("opacity", visible ? "0.45" : "0")
+      haloRef.current?.setAttribute("opacity", visible ? "0.5" : "0")
     }
+
+    if (!travel) {
+      place(pts[0].x, pts[0].y, true)
+      drawRef.current?.setAttribute("opacity", "0")
+      glowRef.current?.setAttribute("opacity", "0")
+      return pts
+    }
+
+    const link = links.findIndex(
+      ([a, b]) =>
+        (a === travel.from && b === travel.to) || (a === travel.to && b === travel.from),
+    )
+    const path = drawRef.current
+    const glow = glowRef.current
+    if (path && glow && link >= 0) {
+      const d = path.getAttribute("d") ? underRefs.current[link]?.getAttribute("d") : null
+      const drawn = d || flowPath(pts[travel.from], pts[travel.to], sec * 1.7 + link * 1.35, 34, 2)
+      path.setAttribute("d", drawn)
+      glow.setAttribute("d", drawn)
+      const len = path.getTotalLength() || 1
+      path.setAttribute("opacity", "1")
+      glow.setAttribute("opacity", "1")
+      path.style.strokeDasharray = `${len}`
+      glow.style.strokeDasharray = `${len}`
+      path.style.strokeDashoffset = `${len * (1 - travel.t)}`
+      glow.style.strokeDashoffset = `${len * (1 - travel.t)}`
+      const at = path.getPointAtLength(len * travel.t)
+      place(at.x, at.y, true)
+      const hopId = travel.from * 10 + travel.to
+      if (hopRef.current !== hopId) {
+        hopRef.current = hopId
+        history.current = []
+      }
+      history.current.unshift({ x: at.x, y: at.y })
+      if (history.current.length > 8) history.current.length = 8
+      history.current.forEach((pt, i) => {
+        const circle = trailRefs.current[i]
+        if (!circle) return
+        circle.setAttribute("cx", String(pt.x))
+        circle.setAttribute("cy", String(pt.y))
+        circle.setAttribute("opacity", String(Math.max(0, 0.55 - i * 0.07)))
+        circle.setAttribute("r", String(Math.max(0.6, 2.8 - i * 0.28)))
+      })
+    }
+    return pts
+  }
+
+  useLayoutEffect(() => {
+    paint(0, null)
+  }, [])
+
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     if (reduce) {
-      place(home.x, home.y, true)
+      paint(0, null)
       arrivedRef.current = 0
       setArrived(0)
       setDestination(0)
       return
     }
     if (pinned !== null) {
-      const node = nodes[pinned]
-      place(node.x, node.y, true)
+      paint(clockRef.current, null)
+      const point = positions(clockRef.current)[pinned]
+      dotRef.current?.setAttribute("cx", String(point.x))
+      dotRef.current?.setAttribute("cy", String(point.y))
+      haloRef.current?.setAttribute("cx", String(point.x))
+      haloRef.current?.setAttribute("cy", String(point.y))
       trailRefs.current.forEach((circle) => circle?.setAttribute("opacity", "0"))
-      if (drawRef.current) drawRef.current.setAttribute("opacity", "0")
-      if (glowRef.current) glowRef.current.setAttribute("opacity", "0")
       return
     }
 
@@ -257,39 +368,14 @@ function ConnectivityMap() {
     let frame = 0
 
     const tick = (now: number) => {
+      const sec = clockRef.current + (now - started) / 1000
       const elapsed = (elapsedRef.current + now - started) % loop
       const index = Math.floor(elapsed / slot) % tour.length
       const local = elapsed % slot
       const [from, to] = tour[index]
       const raw = Math.min(1, local / hop)
       const t = raw < 0.5 ? 2 * raw * raw : 1 - (-2 * raw + 2) ** 2 / 2
-      const point = pointOn(from, to, t)
-      place(point.x, point.y, true)
-      if (hopRef.current !== index) {
-        hopRef.current = index
-        history.current = []
-      }
-
-      history.current.unshift(point)
-      if (history.current.length > 7) history.current.length = 7
-      history.current.forEach((pt, i) => {
-        const circle = trailRefs.current[i]
-        if (!circle) return
-        circle.setAttribute("cx", String(pt.x))
-        circle.setAttribute("cy", String(pt.y))
-        circle.setAttribute("opacity", String(Math.max(0, 0.5 - i * 0.07)))
-        circle.setAttribute("r", String(Math.max(0.6, 2.6 - i * 0.28)))
-      })
-
-      const d = pathD(from, to)
-      for (const path of [drawRef.current, glowRef.current]) {
-        if (!path) continue
-        if (path.getAttribute("d") !== d) path.setAttribute("d", d)
-        const len = path.getTotalLength() || 1
-        path.setAttribute("opacity", "1")
-        path.style.strokeDasharray = `${len}`
-        path.style.strokeDashoffset = `${len * (1 - t)}`
-      }
+      paint(sec, { from, to, t })
 
       const lit = t > 0.9 ? to : null
       if (lit !== arrivedRef.current) {
@@ -305,6 +391,8 @@ function ConnectivityMap() {
 
     frame = window.requestAnimationFrame(tick)
     return () => {
+      const delta = (performance.now() - started) / 1000
+      clockRef.current += delta
       elapsedRef.current = (elapsedRef.current + performance.now() - started) % loop
       window.cancelAnimationFrame(frame)
     }
@@ -313,10 +401,10 @@ function ConnectivityMap() {
   const lit = pinned ?? arrived
   const readout =
     pinned !== null
-      ? nodes[pinned].label
+      ? marks[pinned].label
       : arrived !== null
-        ? nodes[arrived].label
-        : nodes[destination].label
+        ? marks[arrived].label
+        : marks[destination].label
   const readoutState = pinned !== null || arrived !== null ? "Verlicht" : "Onderweg"
 
   return (
@@ -335,48 +423,88 @@ function ConnectivityMap() {
           className="signal-veil pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 28% 38%, rgba(22,163,74,0.2), transparent 58%), radial-gradient(ellipse at 78% 78%, rgba(22,163,74,0.1), transparent 46%)",
+              "radial-gradient(ellipse at 50% 48%, rgba(22,163,74,0.22), transparent 58%), radial-gradient(ellipse at 78% 78%, rgba(22,163,74,0.08), transparent 46%)",
           }}
         />
         <div
-          className="pointer-events-none absolute inset-0 opacity-35"
+          className="pointer-events-none absolute inset-0 opacity-30"
           style={{
-            backgroundImage: "radial-gradient(rgba(255,255,255,0.16) 0.6px, transparent 0.7px)",
-            backgroundSize: "22px 22px",
-            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)",
+            backgroundImage: "radial-gradient(rgba(255,255,255,0.18) 0.6px, transparent 0.7px)",
+            backgroundSize: "18px 18px",
+            maskImage: "radial-gradient(ellipse at center, black 35%, transparent 78%)",
           }}
         />
         <div className="absolute inset-0">
-          <svg
-            viewBox={`0 0 ${view.w} ${view.h}`}
-            preserveAspectRatio="none"
-            className="h-full w-full"
-            aria-hidden
-          >
+          <svg viewBox={`0 0 ${view.w} ${view.h}`} className="h-full w-full" aria-hidden>
             <defs>
               <filter id="site-signal-glow" x="-80%" y="-80%" width="260%" height="260%">
                 <feGaussianBlur stdDeviation="5" />
               </filter>
             </defs>
-            {links.map(([from, to]) => {
-              const hot = pinned !== null && (pinned === from || pinned === to)
-              return (
-                <path
-                  key={`${from}-${to}`}
-                  d={pathD(from, to)}
-                  fill="none"
-                  stroke={hot ? "rgba(22,163,74,0.85)" : "rgba(255,255,255,0.16)"}
-                  strokeWidth={hot ? 1.6 : 1.15}
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                />
-              )
-            })}
+            <g className="signal-spin">
+              <circle
+                cx={hub.x}
+                cy={hub.y}
+                r="86"
+                fill="none"
+                stroke="rgba(255,255,255,0.16)"
+                strokeWidth="1"
+                strokeDasharray="2 9"
+                vectorEffect="non-scaling-stroke"
+              />
+              <circle
+                cx={hub.x}
+                cy={hub.y}
+                r="118"
+                fill="none"
+                stroke="rgba(22,163,74,0.28)"
+                strokeWidth="1"
+                strokeDasharray="1 12"
+                vectorEffect="non-scaling-stroke"
+              />
+            </g>
+            <circle
+              ref={pulseRef}
+              cx={hub.x}
+              cy={hub.y}
+              r="36"
+              fill="none"
+              stroke="rgba(22,163,74,0.45)"
+              strokeWidth="1"
+              vectorEffect="non-scaling-stroke"
+            />
+            {links.map(([from, to], index) => (
+              <path
+                key={`ghost-${from}-${to}`}
+                ref={(el) => {
+                  ghostRefs.current[index] = el
+                }}
+                fill="none"
+                stroke="rgba(22,163,74,0.35)"
+                strokeWidth="1"
+                strokeLinecap="round"
+                strokeDasharray="1.5 8"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+            {links.map(([from, to], index) => (
+              <path
+                key={`line-${from}-${to}`}
+                ref={(el) => {
+                  underRefs.current[index] = el
+                }}
+                fill="none"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="1.15"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
             <path
               ref={glowRef}
               fill="none"
               stroke="#16a34a"
-              strokeWidth="8"
+              strokeWidth="7"
               strokeLinecap="round"
               vectorEffect="non-scaling-stroke"
               filter="url(#site-signal-glow)"
@@ -391,7 +519,7 @@ function ConnectivityMap() {
               vectorEffect="non-scaling-stroke"
               opacity="0"
             />
-            {Array.from({ length: 7 }, (_, i) => (
+            {Array.from({ length: 8 }, (_, i) => (
               <circle
                 key={i}
                 ref={(el) => {
@@ -403,47 +531,59 @@ function ConnectivityMap() {
               />
             ))}
             <circle ref={haloRef} r="11" fill="#16a34a" opacity="0" filter="url(#site-signal-glow)" />
-            <circle ref={dotRef} r="2.6" fill="#f4fff8" opacity="0" />
+            <circle ref={dotRef} r="2.5" fill="#f4fff8" opacity="0" />
           </svg>
-          {nodes.map((node, index) => {
+          {marks.map((mark, index) => {
             const on = lit === index
+            const Icon = mark.icon
+            const core = index === 0
             return (
               <button
-                key={node.label}
+                key={mark.label}
+                ref={(el) => {
+                  nodeRefs.current[index] = el
+                }}
                 type="button"
                 aria-pressed={on}
                 onMouseEnter={() => setPinned(index)}
                 onFocus={() => setPinned(index)}
                 onBlur={() => setPinned(null)}
-                style={{
-                  left: `${(node.x / view.w) * 100}%`,
-                  top: `${(node.y / view.h) * 100}%`,
-                }}
                 className={cn(
-                  "signal-node absolute size-8 -translate-x-1/2 -translate-y-1/2 rounded-full",
-                  on ? "text-white" : "text-white/55 hover:text-white/80",
+                  "signal-node absolute -translate-x-1/2 -translate-y-1/2",
+                  core ? "z-10" : "z-[1]",
+                  on ? "text-white" : "text-white/70 hover:text-white",
                 )}
               >
                 <span
                   className={cn(
-                    "absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full",
-                    on ? "bg-white shadow-[0_0_16px_5px_rgba(22,163,74,0.9)]" : "bg-white/30",
+                    "node-breathe grid place-items-center rounded-full bg-[#101412] ring-1",
+                    core ? "size-11" : "size-8",
+                    on
+                      ? "text-white ring-brand shadow-[0_0_18px_4px_rgba(22,163,74,0.75)]"
+                      : "text-white/80 ring-white/20",
                   )}
-                />
+                  style={{ animationDelay: `${-index * 1.4}s` }}
+                >
+                  <Icon className={core ? "size-4" : "size-3.5"} aria-hidden />
+                </span>
                 <span
+                  ref={(el) => {
+                    labelRefs.current[index] = el
+                  }}
                   className={cn(
-                    "absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[#101412]/85 px-2 py-0.5 text-xs font-medium",
-                    node.side === "left" ? "right-5" : "left-5",
+                    "pointer-events-none absolute whitespace-nowrap text-[11px] font-medium tracking-wide",
+                    core ? "top-full left-1/2 mt-2 -translate-x-1/2" : "top-1/2 left-1/2",
+                    on ? "text-white" : "text-white/55",
                   )}
                 >
-                  {node.label}
+                  {mark.label}
                 </span>
               </button>
             )
           })}
         </div>
       </div>
-      <div className="flex items-center justify-between border-t border-white/10 px-5 py-3 text-[11px] tracking-[0.14em] text-white/55 sm:px-6">
+      <div className="mt-auto flex items-center justify-between border-t border-white/10 px-5 py-3 text-[11px] tracking-[0.14em] text-white/55 sm:px-6">
         <span>ROUTE</span>
         <span className="text-white/80">
           {readoutState}

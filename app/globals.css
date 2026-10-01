@@ -351,6 +351,32 @@
     box-shadow 280ms ease;
 }
 
+@keyframes signal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.signal-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: signal-spin 42s linear infinite;
+}
+
+@keyframes node-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.node-breathe {
+  animation: node-breathe 6.8s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -366,7 +392,9 @@
   .shop-float,
   .shop-hero,
   .prompt-scan,
-  .signal-veil {
+  .signal-veil,
+  .signal-spin,
+  .node-breathe {
     animation: none;
   }
 
