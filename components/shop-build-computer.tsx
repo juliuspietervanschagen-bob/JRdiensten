@@ -5,9 +5,21 @@ import { cn } from "cn"
 import { useEffect, useRef, useState } from "react"
 
 const prompts = [
-  "Bouw een webshop voor Atelier.",
-  "Zet er zes producten in, elk met een prijs.",
-  "Voeg een winkelwagen toe en zet de shop live.",
+  {
+    channel: "ARCH",
+    title: "catalogus",
+    text: "Modelleer Atelier als Product, Variant en SKU. Prijs in centen, btw 21% pas bij weergave, voorraad daalt atomair nadat de betaling slaagt. De homepage leest alleen de live feed.",
+  },
+  {
+    channel: "TX",
+    title: "checkout",
+    text: "Checkout is één transactie: drie regels, subtotaal € 457, verzending na postcodecheck. Zet een idempotency-key op de betaalcall, zodat een dubbele klik geen tweede order schrijft.",
+  },
+  {
+    channel: "RUNTIME",
+    title: "publish",
+    text: "Publiceer atelier.nl met een client-store. Hero roteert uit de feed, de ticker filtert op voorraad > 0, en de winkelwagen hydrateert uit session state zonder reload.",
+  },
 ]
 
 type Kind = "muted" | "key" | "name" | "str" | "plain"
@@ -88,7 +100,7 @@ const code = [
 ]
 
 const codeLength = code.reduce((total, item) => total + item.text.length, 0)
-const promptLength = prompts.reduce((total, item) => total + item.length, 0)
+const promptLength = prompts.reduce((total, item) => total + item.text.length, 0)
 
 const products = [
   { name: "Koptelefoon", price: "€ 79", src: "/webshop/tech-headphones.jpg" },
@@ -156,9 +168,9 @@ function Builder() {
     if (reduce || paused) return
 
     if (phase === "prompt") {
-      const current = prompts[promptStep] ?? ""
+      const current = prompts[promptStep]?.text ?? ""
       if (charIndex < current.length) {
-        const timer = window.setTimeout(() => setCharIndex((value) => value + 1), 32)
+        const timer = window.setTimeout(() => setCharIndex((value) => value + 1), 16)
         return () => window.clearTimeout(timer)
       }
       if (promptStep < prompts.length - 1) {
@@ -200,7 +212,9 @@ function Builder() {
   }, [codeIndex, phase])
 
   const view = reduce ? "shop" : phase
-  const written = prompts.slice(0, promptStep).join("").length + (phase === "prompt" ? charIndex : 0)
+  const written =
+    prompts.slice(0, promptStep).reduce((total, item) => total + item.text.length, 0) +
+    (phase === "prompt" ? charIndex : 0)
   const progress =
     view === "prompt"
       ? (written / promptLength) * 0.34
@@ -216,7 +230,7 @@ function Builder() {
     }
     if (next === "code") {
       setPromptStep(prompts.length - 1)
-      setCharIndex(prompts[prompts.length - 1].length)
+      setCharIndex(prompts[prompts.length - 1].text.length)
       setCodeIndex(0)
     }
     setPhase(next)
@@ -299,8 +313,20 @@ function Caret() {
 }
 
 function PromptScreen({ step, charIndex }: { step: number; charIndex: number }) {
-  const doneChars = prompts.slice(0, step).reduce((total, prompt) => total + prompt.length, 0) + charIndex
+  const listRef = useRef<HTMLDivElement>(null)
+  const doneChars =
+    prompts.slice(0, step).reduce((total, prompt) => total + prompt.text.length, 0) + charIndex
   const percent = Math.round((doneChars / promptLength) * 100)
+
+  useEffect(() => {
+    const list = listRef.current
+    const active = list?.querySelector<HTMLElement>("[data-active='true']")
+    if (!list || !active) return
+    const bottom = active.offsetTop + active.offsetHeight
+    if (bottom > list.scrollTop + list.clientHeight) {
+      list.scrollTop = bottom - list.clientHeight + 6
+    }
+  }, [step, charIndex])
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-[#0c100e] pt-3 text-white">
@@ -329,18 +355,28 @@ function PromptScreen({ step, charIndex }: { step: number; charIndex: number }) 
         <span>ctx 4.096</span>
         <span>{doneChars} tok</span>
       </div>
-      <div className="relative mt-2 min-h-0 flex-1 space-y-1.5 overflow-hidden px-3">
+      <div
+        ref={listRef}
+        className="relative mt-2 min-h-0 flex-1 space-y-1.5 overflow-y-auto px-3 [scrollbar-width:none]"
+      >
         {prompts.map((prompt, index) => {
           if (index > step) return null
-          const shown = index < step ? prompt : prompt.slice(0, charIndex)
+          const shown = index < step ? prompt.text : prompt.text.slice(0, charIndex)
           const streaming = index === step
           return (
-            <div key={prompt} className="rounded-md border border-brand/25 bg-black/35 px-2 py-1.5">
-              <div className="flex items-center justify-between font-mono text-[8px] tracking-[0.14em] text-brand">
-                <span>0{index + 1} USER</span>
+            <div
+              key={prompt.title}
+              data-active={streaming ? "true" : undefined}
+              className="rounded-md border border-brand/25 bg-black/35 px-2 py-1.5"
+            >
+              <div className="flex items-center justify-between gap-2 font-mono text-[8px] tracking-[0.14em] text-brand">
+                <span>
+                  0{index + 1} {prompt.channel}
+                  <span className="text-white/35"> / {prompt.title}</span>
+                </span>
                 <span className="text-white/40">{streaming ? "STREAM" : "OK"}</span>
               </div>
-              <p className="mt-0.5 font-mono text-[11px] leading-4 text-white sm:text-[12px]">
+              <p className="mt-0.5 font-mono text-[10px] leading-4 text-white sm:text-[11px]">
                 <span className="text-brand">› </span>
                 {shown}
                 {streaming ? <Caret /> : null}
