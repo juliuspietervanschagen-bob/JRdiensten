@@ -330,6 +330,27 @@
   transform: scaleX(1);
 }
 
+@keyframes signal-veil {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.signal-veil {
+  animation: signal-veil 8s ease-in-out infinite;
+}
+
+.signal-node {
+  transition:
+    color 280ms ease,
+    background-color 280ms ease,
+    box-shadow 280ms ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -344,8 +365,17 @@
   .shop-marquee,
   .shop-float,
   .shop-hero,
-  .prompt-scan {
+  .prompt-scan,
+  .signal-veil {
     animation: none;
+  }
+
+  .signal-veil {
+    opacity: 0.65;
+  }
+
+  .signal-node {
+    transition: none;
   }
 
   .site-reveal {

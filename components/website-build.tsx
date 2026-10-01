@@ -4,7 +4,7 @@ import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
 import { cn } from "cn"
 import { Inbox, MonitorSmartphone, Palette, PanelsTopLeft, PenLine, Search, type LucideIcon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const includeIcons: Record<string, LucideIcon> = {
   "Ontwerp in jullie merk": Palette,
@@ -24,11 +24,11 @@ const rows = [
 ]
 
 const nodes = [
-  { label: "Home", x: 86, y: 170 },
-  { label: "Diensten", x: 268, y: 62 },
-  { label: "Over", x: 310, y: 170 },
-  { label: "Contact", x: 250, y: 278 },
-  { label: "Inbox", x: 470, y: 278 },
+  { label: "Home", x: 72, y: 168, side: "right" as const },
+  { label: "Diensten", x: 248, y: 64, side: "right" as const },
+  { label: "Over", x: 332, y: 168, side: "left" as const },
+  { label: "Contact", x: 214, y: 276, side: "right" as const },
+  { label: "Inbox", x: 468, y: 276, side: "left" as const },
 ]
 
 const links = [
@@ -39,6 +39,43 @@ const links = [
 ] as const
 
 const view = { w: 560, h: 340 }
+
+const tour = [
+  [0, 1],
+  [1, 0],
+  [0, 2],
+  [2, 0],
+  [0, 3],
+  [3, 4],
+  [4, 3],
+  [3, 0],
+] as const
+
+function curve(from: number, to: number) {
+  const start = nodes[from]
+  const end = nodes[to]
+  const bend = Math.abs(start.y - end.y) < 24 ? 0 : -36
+  return {
+    start,
+    end,
+    cx: (start.x + end.x) / 2,
+    cy: (start.y + end.y) / 2 + bend,
+  }
+}
+
+function pathD(from: number, to: number) {
+  const { start, end, cx, cy } = curve(from, to)
+  return `M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}`
+}
+
+function pointOn(from: number, to: number, t: number) {
+  const { start, end, cx, cy } = curve(from, to)
+  const u = 1 - t
+  return {
+    x: u * u * start.x + 2 * u * t * cx + t * t * end.x,
+    y: u * u * start.y + 2 * u * t * cy + t * t * end.y,
+  }
+}
 
 export function WebsiteBuild({ service }: { service: Service }) {
   return (
@@ -61,7 +98,7 @@ export function WebsiteBuild({ service }: { service: Service }) {
           <div className="hero-in lg:[grid-area:translate]">
             <DataTranslation />
           </div>
-          <div className="lg:z-10 lg:-mt-6 lg:-ml-6 lg:[grid-area:graph]">
+          <div className="self-stretch lg:[grid-area:graph]">
             <ConnectivityMap />
           </div>
           <div className="lg:[grid-area:bento]">
@@ -171,74 +208,244 @@ function DataTranslation() {
 }
 
 function ConnectivityMap() {
-  const [active, setActive] = useState(0)
-  const [hovering, setHovering] = useState(false)
+  const [arrived, setArrived] = useState<number | null>(null)
+  const [destination, setDestination] = useState(1)
+  const [pinned, setPinned] = useState<number | null>(null)
+  const elapsedRef = useRef(0)
+  const drawRef = useRef<SVGPathElement>(null)
+  const glowRef = useRef<SVGPathElement>(null)
+  const dotRef = useRef<SVGCircleElement>(null)
+  const haloRef = useRef<SVGCircleElement>(null)
+  const trailRefs = useRef<(SVGCircleElement | null)[]>([])
+  const history = useRef<{ x: number; y: number }[]>([])
+  const arrivedRef = useRef<number | null>(null)
+  const destinationRef = useRef(1)
+  const hopRef = useRef(-1)
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (hovering || reduce) return
-    const timer = window.setInterval(() => {
-      setActive((current) => (current + 1) % nodes.length)
-    }, 2400)
-    return () => window.clearInterval(timer)
-  }, [hovering])
+    const home = nodes[0]
+    const place = (x: number, y: number, visible: boolean) => {
+      dotRef.current?.setAttribute("cx", String(x))
+      dotRef.current?.setAttribute("cy", String(y))
+      haloRef.current?.setAttribute("cx", String(x))
+      haloRef.current?.setAttribute("cy", String(y))
+      dotRef.current?.setAttribute("opacity", visible ? "1" : "0")
+      haloRef.current?.setAttribute("opacity", visible ? "0.45" : "0")
+    }
+    if (reduce) {
+      place(home.x, home.y, true)
+      arrivedRef.current = 0
+      setArrived(0)
+      setDestination(0)
+      return
+    }
+    if (pinned !== null) {
+      const node = nodes[pinned]
+      place(node.x, node.y, true)
+      trailRefs.current.forEach((circle) => circle?.setAttribute("opacity", "0"))
+      if (drawRef.current) drawRef.current.setAttribute("opacity", "0")
+      if (glowRef.current) glowRef.current.setAttribute("opacity", "0")
+      return
+    }
+
+    const hop = 1680
+    const hold = 720
+    const slot = hop + hold
+    const loop = tour.length * slot
+    const started = performance.now()
+    let frame = 0
+
+    const tick = (now: number) => {
+      const elapsed = (elapsedRef.current + now - started) % loop
+      const index = Math.floor(elapsed / slot) % tour.length
+      const local = elapsed % slot
+      const [from, to] = tour[index]
+      const raw = Math.min(1, local / hop)
+      const t = raw < 0.5 ? 2 * raw * raw : 1 - (-2 * raw + 2) ** 2 / 2
+      const point = pointOn(from, to, t)
+      place(point.x, point.y, true)
+      if (hopRef.current !== index) {
+        hopRef.current = index
+        history.current = []
+      }
+
+      history.current.unshift(point)
+      if (history.current.length > 7) history.current.length = 7
+      history.current.forEach((pt, i) => {
+        const circle = trailRefs.current[i]
+        if (!circle) return
+        circle.setAttribute("cx", String(pt.x))
+        circle.setAttribute("cy", String(pt.y))
+        circle.setAttribute("opacity", String(Math.max(0, 0.5 - i * 0.07)))
+        circle.setAttribute("r", String(Math.max(0.6, 2.6 - i * 0.28)))
+      })
+
+      const d = pathD(from, to)
+      for (const path of [drawRef.current, glowRef.current]) {
+        if (!path) continue
+        if (path.getAttribute("d") !== d) path.setAttribute("d", d)
+        const len = path.getTotalLength() || 1
+        path.setAttribute("opacity", "1")
+        path.style.strokeDasharray = `${len}`
+        path.style.strokeDashoffset = `${len * (1 - t)}`
+      }
+
+      const lit = t > 0.9 ? to : null
+      if (lit !== arrivedRef.current) {
+        arrivedRef.current = lit
+        setArrived(lit)
+      }
+      if (to !== destinationRef.current) {
+        destinationRef.current = to
+        setDestination(to)
+      }
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    frame = window.requestAnimationFrame(tick)
+    return () => {
+      elapsedRef.current = (elapsedRef.current + performance.now() - started) % loop
+      window.cancelAnimationFrame(frame)
+    }
+  }, [pinned])
+
+  const lit = pinned ?? arrived
+  const readout =
+    pinned !== null
+      ? nodes[pinned].label
+      : arrived !== null
+        ? nodes[arrived].label
+        : nodes[destination].label
+  const readoutState = pinned !== null || arrived !== null ? "Verlicht" : "Onderweg"
 
   return (
     <article
-      className="rounded-3xl bg-white p-5 shadow-[0_28px_60px_-32px_rgba(20,20,20,0.45)] ring-1 ring-[#e8e8e3] backdrop-blur-sm sm:p-6"
-      onMouseLeave={() => setHovering(false)}
+      className="flex h-full flex-col overflow-hidden rounded-3xl bg-[#101412] text-white ring-1 ring-white/10"
+      onMouseLeave={() => setPinned(null)}
     >
-      <p className="text-xs font-semibold tracking-[0.16em] text-brand">VERBINDINGEN</p>
-      <h3 className="mt-2 text-xl font-semibold tracking-tight">Pagina's die naar elkaar wijzen</h3>
-      <div className="relative mt-4 aspect-[560/340]">
-        <svg viewBox={`0 0 ${view.w} ${view.h}`} className="absolute inset-0 h-full w-full" aria-hidden>
-          {links.map(([from, to]) => {
-            const start = nodes[from]
-            const end = nodes[to]
-            const lit = from === active || to === active
-            const bend = Math.abs(start.y - end.y) < 24 ? 0 : -28
-            const midX = (start.x + end.x) / 2
-            const midY = (start.y + end.y) / 2 + bend
-            return (
-              <path
-                key={`${from}-${to}`}
-                d={`M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`}
-                fill="none"
-                stroke={lit ? "#16a34a" : "#d5e4da"}
-                strokeWidth={lit ? 2 : 1.4}
-                className="flow-dash"
+      <div className="px-5 pt-5 sm:px-6">
+        <p className="text-xs font-semibold tracking-[0.16em] text-brand">VERBINDINGEN</p>
+        <h3 className="mt-2 text-xl font-semibold tracking-tight text-white">
+          Pagina's die naar elkaar wijzen
+        </h3>
+      </div>
+      <div className="relative mx-3 mt-4 mb-2 flex min-h-[250px] flex-1 items-center sm:mx-4">
+        <div
+          className="signal-veil pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at 28% 42%, rgba(22,163,74,0.22), transparent 58%), radial-gradient(ellipse at 78% 72%, rgba(22,163,74,0.1), transparent 46%)",
+          }}
+        />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: "radial-gradient(rgba(255,255,255,0.16) 0.6px, transparent 0.7px)",
+            backgroundSize: "22px 22px",
+            maskImage: "radial-gradient(ellipse at center, black 42%, transparent 78%)",
+          }}
+        />
+        <div className="relative aspect-[560/340] w-full">
+          <svg
+            viewBox={`0 0 ${view.w} ${view.h}`}
+            className="absolute inset-0 h-full w-full"
+            aria-hidden
+          >
+            <defs>
+              <filter id="site-signal-glow" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="5" />
+              </filter>
+            </defs>
+            {links.map(([from, to]) => {
+              const hot = pinned !== null && (pinned === from || pinned === to)
+              return (
+                <path
+                  key={`${from}-${to}`}
+                  d={pathD(from, to)}
+                  fill="none"
+                  stroke={hot ? "rgba(22,163,74,0.85)" : "rgba(255,255,255,0.14)"}
+                  strokeWidth={hot ? 1.6 : 1.1}
+                  strokeLinecap="round"
+                />
+              )
+            })}
+            <path
+              ref={glowRef}
+              fill="none"
+              stroke="#16a34a"
+              strokeWidth="8"
+              strokeLinecap="round"
+              filter="url(#site-signal-glow)"
+              opacity="0"
+            />
+            <path
+              ref={drawRef}
+              fill="none"
+              stroke="#e9fff2"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0"
+            />
+            {Array.from({ length: 7 }, (_, i) => (
+              <circle
+                key={i}
+                ref={(el) => {
+                  trailRefs.current[i] = el
+                }}
+                r="2"
+                fill="#7dffb0"
+                opacity="0"
               />
+            ))}
+            <circle ref={haloRef} r="11" fill="#16a34a" opacity="0" filter="url(#site-signal-glow)" />
+            <circle ref={dotRef} r="2.6" fill="#f4fff8" opacity="0" />
+          </svg>
+          {nodes.map((node, index) => {
+            const on = lit === index
+            return (
+              <button
+                key={node.label}
+                type="button"
+                aria-pressed={on}
+                onMouseEnter={() => setPinned(index)}
+                onFocus={() => setPinned(index)}
+                onBlur={() => setPinned(null)}
+                style={{
+                  left: `${(node.x / view.w) * 100}%`,
+                  top: `${(node.y / view.h) * 100}%`,
+                }}
+                className={cn(
+                  "signal-node absolute size-8 -translate-x-1/2 -translate-y-1/2 rounded-full",
+                  on ? "text-white" : "text-white/55 hover:text-white/80",
+                )}
+              >
+                <span
+                  className={cn(
+                    "absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full",
+                    on ? "bg-white shadow-[0_0_16px_5px_rgba(22,163,74,0.9)]" : "bg-white/30",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[#101412]/85 px-2 py-0.5 text-xs font-medium",
+                    node.side === "left" ? "right-5" : "left-5",
+                  )}
+                >
+                  {node.label}
+                </span>
+              </button>
             )
           })}
-        </svg>
-        {nodes.map((node, index) => (
-          <button
-            key={node.label}
-            type="button"
-            aria-pressed={index === active}
-            onMouseEnter={() => {
-              setHovering(true)
-              setActive(index)
-            }}
-            onFocus={() => {
-              setHovering(true)
-              setActive(index)
-            }}
-            onBlur={() => setHovering(false)}
-            style={{
-              left: `${(node.x / view.w) * 100}%`,
-              top: `${(node.y / view.h) * 100}%`,
-            }}
-            className={cn(
-              "absolute -translate-x-1/2 -translate-y-1/2 rounded-xl px-3 py-2 text-xs font-semibold shadow-[0_10px_24px_-16px_rgba(20,20,20,0.45)] transition duration-200",
-              index === active
-                ? "bg-brand text-white"
-                : "bg-white text-ink ring-1 ring-[#e8e8e3] hover:ring-brand/40",
-            )}
-          >
-            {node.label}
-          </button>
-        ))}
+        </div>
+      </div>
+      <div className="flex items-center justify-between border-t border-white/10 px-5 py-3 text-[11px] tracking-[0.14em] text-white/55 sm:px-6">
+        <span>ROUTE</span>
+        <span className="text-white/80">
+          {readoutState}
+          <span className="px-1.5 text-white/30">·</span>
+          {readout}
+        </span>
       </div>
     </article>
   )
