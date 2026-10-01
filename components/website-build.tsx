@@ -35,70 +35,76 @@ const rows = [
 ]
 
 const view = { w: 560, h: 420 }
-const hub = { x: 280, y: 210 }
+const hub = { x: 280, y: 62 }
 
 const orbiters = [
-  { label: "Diensten", icon: PanelsTopLeft, x: 102, y: 76, labelPlace: "below" as const, phase: 0.2 },
-  { label: "Over", icon: UserRound, x: 458, y: 76, labelPlace: "below" as const, phase: 1.4 },
-  { label: "Contact", icon: Mail, x: 458, y: 344, labelPlace: "above" as const, phase: 2.2 },
-  { label: "Inbox", icon: Inbox, x: 102, y: 344, labelPlace: "above" as const, phase: 3.1 },
+  { label: "Diensten", icon: PanelsTopLeft, x: 118, y: 158, labelPlace: "below" as const, phase: 0.4 },
+  { label: "Over", icon: UserRound, x: 442, y: 158, labelPlace: "below" as const, phase: 1.8 },
+  { label: "Contact", icon: Mail, x: 280, y: 278, labelPlace: "right" as const, phase: 2.6 },
+  { label: "Inbox", icon: Inbox, x: 280, y: 368, labelPlace: "left" as const, phase: 3.5 },
 ]
 
 const marks = [{ label: "Home", icon: House, labelPlace: "below" as const }, ...orbiters]
 
 const links = [
-  { from: 0, to: 1, bow: 0 },
-  { from: 0, to: 2, bow: 0 },
-  { from: 0, to: 3, bow: 0 },
-  { from: 1, to: 2, bow: 34, outward: true },
-  { from: 2, to: 3, bow: 34, outward: true },
-  { from: 3, to: 4, bow: 34, outward: true },
-  { from: 4, to: 1, bow: 34, outward: true },
+  { from: 0, to: 1, amp: 16, phase: 0 },
+  { from: 0, to: 2, amp: 16, phase: 1.4 },
+  { from: 1, to: 3, amp: 14, phase: 0.7 },
+  { from: 2, to: 3, amp: 14, phase: 2.2 },
+  { from: 3, to: 4, amp: 12, phase: 0.5 },
 ]
 
 const tour = [
   [0, 1],
-  [1, 2],
-  [2, 3],
+  [1, 3],
   [3, 4],
-  [4, 1],
-  [3, 0],
-  [0, 2],
+  [4, 3],
+  [3, 2],
   [2, 0],
+  [0, 2],
+  [2, 3],
 ] as const
 
 function positions(sec: number) {
   const points = [{ x: hub.x, y: hub.y }]
   for (const node of orbiters) {
     points.push({
-      x: node.x + Math.sin(sec * 0.45 + node.phase) * 14,
-      y: node.y + Math.cos(sec * 0.38 + node.phase) * 10,
+      x: node.x + Math.sin(sec * 0.4 + node.phase) * 8,
+      y: node.y + Math.cos(sec * 0.34 + node.phase) * 6,
     })
   }
   return points
 }
 
-function arcPath(
+function labelShift(place: (typeof marks)[number]["labelPlace"]) {
+  if (place === "above") return "translate(-50%, calc(-100% - 20px))"
+  if (place === "left") return "translate(calc(-100% - 18px), -50%)"
+  if (place === "right") return "translate(20px, -50%)"
+  return "translate(-50%, 22px)"
+}
+
+function flowPath(
   a: { x: number; y: number },
   b: { x: number; y: number },
-  bow: number,
-  outward = false,
+  phase: number,
+  amp: number,
 ) {
-  const mx = (a.x + b.x) / 2
-  const my = (a.y + b.y) / 2
+  const steps = 32
   const dx = b.x - a.x
   const dy = b.y - a.y
   const len = Math.hypot(dx, dy) || 1
-  let nx = -dy / len
-  let ny = dx / len
-  if (outward) {
-    const away = nx * (mx - hub.x) + ny * (my - hub.y)
-    if (away < 0) {
-      nx = -nx
-      ny = -ny
-    }
+  const nx = -dy / len
+  const ny = dx / len
+  let d = ""
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps
+    const envelope = Math.sin(t * Math.PI)
+    const wave = Math.sin(t * Math.PI * 2 - phase) * envelope * amp
+    const x = a.x + dx * t + nx * wave
+    const y = a.y + dy * t + ny * wave
+    d += `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`
   }
-  return `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} Q ${(mx + nx * bow).toFixed(1)} ${(my + ny * bow).toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`
+  return d
 }
 
 export function WebsiteBuild({ service }: { service: Service }) {
@@ -260,20 +266,16 @@ function ConnectivityMap() {
       button.style.top = `${(point.y / view.h) * 100}%`
       const label = labelRefs.current[index]
       if (!label || index === 0) return
-      label.style.transform =
-        marks[index].labelPlace === "above"
-          ? "translate(-50%, calc(-100% - 20px))"
-          : "translate(-50%, 22px)"
+      label.style.transform = labelShift(marks[index].labelPlace)
     })
 
-    const pulse = 40 + Math.sin(sec * 0.5) * 6
+    const pulse = 32 + Math.sin(sec * 0.5) * 4
     pulseRef.current?.setAttribute("r", pulse.toFixed(1))
 
     links.forEach((link, index) => {
-      const breath = link.outward ? Math.sin(sec * 0.5 + index * 0.8) * 8 : 0
       underRefs.current[index]?.setAttribute(
         "d",
-        arcPath(pts[link.from], pts[link.to], link.bow + breath, link.outward),
+        flowPath(pts[link.from], pts[link.to], sec * 1.05 + link.phase, link.amp),
       )
     })
 
@@ -441,7 +443,7 @@ function ConnectivityMap() {
               <circle
                 cx={hub.x}
                 cy={hub.y}
-                r="52"
+                r="28"
                 fill="none"
                 stroke="rgba(255,255,255,0.16)"
                 strokeWidth="1"
