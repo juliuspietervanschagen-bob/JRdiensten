@@ -94,11 +94,11 @@ export function WebsiteBuild({ service }: { service: Service }) {
           </p>
         </div>
 
-        <div className="mt-10 grid items-start gap-4 lg:grid-cols-[1.15fr_0.85fr] lg:[grid-template-areas:'translate_graph'_'bento_graph'_'steps_steps']">
-          <div className="hero-in lg:[grid-area:translate]">
+        <div className="mt-10 grid items-stretch gap-4 lg:grid-cols-[1.05fr_0.95fr] lg:[grid-template-areas:'translate_graph'_'bento_bento'_'steps_steps']">
+          <div className="hero-in h-full lg:[grid-area:translate]">
             <DataTranslation />
           </div>
-          <div className="self-stretch lg:[grid-area:graph]">
+          <div className="h-full lg:[grid-area:graph]">
             <ConnectivityMap />
           </div>
           <div className="lg:[grid-area:bento]">
@@ -153,7 +153,7 @@ function DataTranslation() {
   return (
     <article
       id="website-translation"
-      className="rounded-3xl bg-white p-5 shadow-[0_24px_50px_-36px_rgba(20,20,20,0.4)] ring-1 ring-[#e8e8e3] sm:p-6"
+      className="h-full rounded-3xl bg-white p-5 shadow-[0_24px_50px_-36px_rgba(20,20,20,0.4)] ring-1 ring-[#e8e8e3] sm:p-6"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -249,8 +249,8 @@ function ConnectivityMap() {
       return
     }
 
-    const hop = 1680
-    const hold = 720
+    const hop = 2200
+    const hold = 860
     const slot = hop + hold
     const loop = tour.length * slot
     const started = performance.now()
@@ -330,26 +330,27 @@ function ConnectivityMap() {
           Pagina's die naar elkaar wijzen
         </h3>
       </div>
-      <div className="relative mx-3 mt-4 mb-2 flex min-h-[250px] flex-1 items-center sm:mx-4">
+      <div className="relative mx-3 mt-4 mb-2 aspect-[560/340] sm:mx-4">
         <div
           className="signal-veil pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 28% 42%, rgba(22,163,74,0.22), transparent 58%), radial-gradient(ellipse at 78% 72%, rgba(22,163,74,0.1), transparent 46%)",
+              "radial-gradient(ellipse at 28% 38%, rgba(22,163,74,0.2), transparent 58%), radial-gradient(ellipse at 78% 78%, rgba(22,163,74,0.1), transparent 46%)",
           }}
         />
         <div
-          className="pointer-events-none absolute inset-0 opacity-40"
+          className="pointer-events-none absolute inset-0 opacity-35"
           style={{
             backgroundImage: "radial-gradient(rgba(255,255,255,0.16) 0.6px, transparent 0.7px)",
             backgroundSize: "22px 22px",
-            maskImage: "radial-gradient(ellipse at center, black 42%, transparent 78%)",
+            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)",
           }}
         />
-        <div className="relative aspect-[560/340] w-full">
+        <div className="absolute inset-0">
           <svg
             viewBox={`0 0 ${view.w} ${view.h}`}
-            className="absolute inset-0 h-full w-full"
+            preserveAspectRatio="none"
+            className="h-full w-full"
             aria-hidden
           >
             <defs>
@@ -364,9 +365,10 @@ function ConnectivityMap() {
                   key={`${from}-${to}`}
                   d={pathD(from, to)}
                   fill="none"
-                  stroke={hot ? "rgba(22,163,74,0.85)" : "rgba(255,255,255,0.14)"}
-                  strokeWidth={hot ? 1.6 : 1.1}
+                  stroke={hot ? "rgba(22,163,74,0.85)" : "rgba(255,255,255,0.16)"}
+                  strokeWidth={hot ? 1.6 : 1.15}
                   strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
                 />
               )
             })}
@@ -376,6 +378,7 @@ function ConnectivityMap() {
               stroke="#16a34a"
               strokeWidth="8"
               strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
               filter="url(#site-signal-glow)"
               opacity="0"
             />
@@ -383,8 +386,9 @@ function ConnectivityMap() {
               ref={drawRef}
               fill="none"
               stroke="#e9fff2"
-              strokeWidth="1.5"
+              strokeWidth="1.6"
               strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
               opacity="0"
             />
             {Array.from({ length: 7 }, (_, i) => (
