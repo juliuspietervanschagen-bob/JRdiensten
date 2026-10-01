@@ -320,6 +320,16 @@
   animation: prompt-scan 3.6s linear infinite;
 }
 
+.site-reveal {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-reveal.is-shown {
+  transform: scaleX(1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -336,6 +346,11 @@
   .shop-hero,
   .prompt-scan {
     animation: none;
+  }
+
+  .site-reveal {
+    transform: scaleX(1);
+    transition: none;
   }
 
   .shop-hero:first-child {

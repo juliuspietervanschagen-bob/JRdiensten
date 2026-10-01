@@ -2,6 +2,7 @@ import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
 import { ShopBuildComputer } from "@/components/shop-build-computer"
+import { WebsiteBuild } from "@/components/website-build"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { formatFromPrice, services, type Service } from "@/lib/services"
 import {
@@ -98,6 +99,7 @@ export function ServiceDetail({ service }: { service: Service }) {
         </Container>
       </section>
 
+      {service.slug === "website" ? null : (
       <section className="section-wash py-10 sm:py-12">
         <Container>
           <div className="max-w-2xl">
@@ -125,8 +127,11 @@ export function ServiceDetail({ service }: { service: Service }) {
           </ul>
         </Container>
       </section>
+      )}
 
-      {service.slug === "webshop" ? (
+      {service.slug === "website" ? (
+        <WebsiteBuild service={service} />
+      ) : service.slug === "webshop" ? (
         <WebshopJourney />
       ) : (
         <section id="aanpak" className="scroll-mt-24 pt-16 pb-8 sm:pt-20 sm:pb-10">
