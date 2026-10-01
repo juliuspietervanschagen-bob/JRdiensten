@@ -90,6 +90,22 @@ function labelShift(place: (typeof marks)[number]["labelPlace"]) {
   return "translate(26px, 24px)"
 }
 
+const sparkles = [
+  [36, 28, 1.1], [92, 54, 0.7], [150, 22, 1.4], [214, 48, 0.8], [268, 18, 1],
+  [330, 40, 0.7], [392, 24, 1.3], [458, 46, 0.8], [516, 30, 1], [48, 96, 0.8],
+  [124, 118, 1.2], [196, 88, 0.7], [360, 102, 1], [430, 86, 0.7], [508, 112, 1.3],
+  [28, 168, 1], [70, 214, 0.7], [492, 176, 1.1], [534, 230, 0.8], [40, 286, 1.2],
+  [108, 332, 0.7], [168, 390, 1], [236, 368, 0.8], [312, 396, 1.3], [388, 372, 0.7],
+  [452, 340, 1], [520, 386, 0.8], [64, 378, 1.1], [186, 46, 0.7], [474, 292, 1.2],
+  [300, 124, 0.7], [248, 348, 0.8],
+].map(([x, y, r], index) => ({
+  x,
+  y,
+  r,
+  delay: -((index * 0.41) % 4.6),
+  dur: 2.6 + (index % 6) * 0.38,
+}))
+
 function flowPath(
   a: { x: number; y: number },
   b: { x: number; y: number },
@@ -254,7 +270,6 @@ function ConnectivityMap() {
   const glowRef = useRef<SVGPathElement>(null)
   const dotRef = useRef<SVGCircleElement>(null)
   const haloRef = useRef<SVGCircleElement>(null)
-  const pulseRef = useRef<SVGCircleElement>(null)
   const underRefs = useRef<(SVGPathElement | null)[]>([])
   const nodeRefs = useRef<(HTMLButtonElement | null)[]>([])
   const labelRefs = useRef<(HTMLSpanElement | null)[]>([])
@@ -275,9 +290,6 @@ function ConnectivityMap() {
       if (!label) return
       label.style.transform = labelShift(marks[index].labelPlace)
     })
-
-    const pulse = 32 + Math.sin(sec * 0.5) * 4
-    pulseRef.current?.setAttribute("r", pulse.toFixed(1))
 
     links.forEach((link, index) => {
       underRefs.current[index]?.setAttribute(
@@ -446,28 +458,21 @@ function ConnectivityMap() {
                 <feGaussianBlur stdDeviation="5" />
               </filter>
             </defs>
-            <g className="signal-spin">
-              <circle
-                cx={hub.x}
-                cy={hub.y}
-                r="28"
-                fill="none"
-                stroke="rgba(255,255,255,0.16)"
-                strokeWidth="1"
-                strokeDasharray="2 8"
-                vectorEffect="non-scaling-stroke"
-              />
-            </g>
-            <circle
-              ref={pulseRef}
-              cx={hub.x}
-              cy={hub.y}
-              r="36"
-              fill="none"
-              stroke="rgba(22,163,74,0.45)"
-              strokeWidth="1"
-              vectorEffect="non-scaling-stroke"
-            />
+            {sparkles.map((spark) => (
+              <g
+                key={`${spark.x}-${spark.y}`}
+                className="map-sparkle"
+                style={{ animationDelay: `${spark.delay}s`, animationDuration: `${spark.dur}s` }}
+                transform={`translate(${spark.x} ${spark.y})`}
+              >
+                <circle r={spark.r * 6} fill="#16a34a" opacity="0.28" />
+                <path
+                  d="M0 -3.2 L0.7 -0.7 L3.2 0 L0.7 0.7 L0 3.2 L-0.7 0.7 L-3.2 0 L-0.7 -0.7 Z"
+                  fill="#e7fff1"
+                  transform={`scale(${spark.r * 2.1})`}
+                />
+              </g>
+            ))}
             {links.map((link, index) => (
               <path
                 key={`line-${link.from}-${link.to}`}

@@ -351,16 +351,21 @@
     box-shadow 280ms ease;
 }
 
-@keyframes signal-spin {
-  to {
-    transform: rotate(360deg);
+@keyframes map-sparkle {
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+  46% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 0.15;
   }
 }
 
-.signal-spin {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: signal-spin 42s linear infinite;
+.map-sparkle {
+  animation: map-sparkle 3.4s ease-in-out infinite;
 }
 
 @keyframes node-breathe {
@@ -393,13 +398,17 @@
   .shop-hero,
   .prompt-scan,
   .signal-veil,
-  .signal-spin,
+  .map-sparkle,
   .node-breathe {
     animation: none;
   }
 
   .signal-veil {
     opacity: 0.65;
+  }
+
+  .map-sparkle {
+    opacity: 0.55;
   }
 
   .signal-node {
