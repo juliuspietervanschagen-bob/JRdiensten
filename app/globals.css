@@ -264,6 +264,62 @@
   animation: caret-blink 1s steps(1) infinite;
 }
 
+@keyframes shop-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.shop-marquee {
+  animation: shop-marquee 16s linear infinite;
+}
+
+@keyframes shop-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-7px) scale(1.04);
+  }
+}
+
+.shop-float {
+  animation: shop-float 5.5s ease-in-out infinite;
+}
+
+@keyframes shop-hero {
+  0%,
+  34% {
+    opacity: 1;
+  }
+  40%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.shop-hero {
+  opacity: 0;
+  animation: shop-hero 9s linear infinite;
+}
+
+@keyframes prompt-scan {
+  from {
+    transform: translateY(-130%);
+  }
+  to {
+    transform: translateY(560%);
+  }
+}
+
+.prompt-scan {
+  animation: prompt-scan 3.6s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -274,8 +330,16 @@
   .drift-glow,
   .drift-glow-late,
   .slide-progress,
-  .caret-blink {
+  .caret-blink,
+  .shop-marquee,
+  .shop-float,
+  .shop-hero,
+  .prompt-scan {
     animation: none;
+  }
+
+  .shop-hero:first-child {
+    opacity: 1;
   }
 
   .slide-progress {

@@ -122,7 +122,7 @@ export function ShopBuildComputer() {
             </h2>
             <p className="mt-4 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
               Je zegt wat de shop moet kunnen. Op het scherm verschijnen die prompts, daarna de
-              code, en dan de winkel zelf.
+              code, en dan de homepage van de winkel.
             </p>
           </div>
           <Builder />
@@ -189,7 +189,7 @@ function Builder() {
       setCharIndex(0)
       setCodeIndex(0)
       setPhase("prompt")
-    }, 4600)
+    }, 8600)
     return () => window.clearTimeout(timer)
   }, [phase, promptStep, charIndex, codeIndex, paused, reduce])
 
@@ -299,23 +299,63 @@ function Caret() {
 }
 
 function PromptScreen({ step, charIndex }: { step: number; charIndex: number }) {
+  const doneChars = prompts.slice(0, step).reduce((total, prompt) => total + prompt.length, 0) + charIndex
+  const percent = Math.round((doneChars / promptLength) * 100)
+
   return (
-    <div className="flex h-full flex-col px-4 pt-6 pb-4 sm:px-6 sm:pt-7">
-      <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">PROMPTS</p>
-      <div className="mt-3 space-y-2">
+    <div className="relative flex h-full flex-col overflow-hidden bg-[#0c100e] pt-3 text-white">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-70"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(22,163,74,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(22,163,74,0.16) 1px, transparent 1px)",
+          backgroundSize: "18px 18px",
+        }}
+        aria-hidden
+      />
+      <div
+        className="prompt-scan pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-transparent via-brand/20 to-transparent"
+        aria-hidden
+      />
+      <div className="relative flex items-center justify-between px-3 font-mono text-[9px] tracking-[0.16em] text-brand">
+        <span>JR / BUILD</span>
+        <span className="flex items-center gap-1.5">
+          <span className="size-1.5 rounded-full bg-brand shadow-[0_0_8px_#16a34a]" />
+          LIVE
+        </span>
+      </div>
+      <div className="relative mt-1 flex gap-3 px-3 font-mono text-[8px] tracking-wide text-white/45">
+        <span>model jr-shop</span>
+        <span>ctx 4.096</span>
+        <span>{doneChars} tok</span>
+      </div>
+      <div className="relative mt-2 min-h-0 flex-1 space-y-1.5 overflow-hidden px-3">
         {prompts.map((prompt, index) => {
           if (index > step) return null
           const shown = index < step ? prompt : prompt.slice(0, charIndex)
+          const streaming = index === step
           return (
-            <div key={prompt} className="rounded-xl bg-white px-3 py-2 ring-1 ring-[#ecece8]">
-              <p className="text-[9px] font-semibold tracking-[0.14em] text-mist">PROMPT</p>
-              <p className="mt-1 text-[12px] leading-5 text-ink sm:text-[13px]">
+            <div key={prompt} className="rounded-md border border-brand/25 bg-black/35 px-2 py-1.5">
+              <div className="flex items-center justify-between font-mono text-[8px] tracking-[0.14em] text-brand">
+                <span>0{index + 1} USER</span>
+                <span className="text-white/40">{streaming ? "STREAM" : "OK"}</span>
+              </div>
+              <p className="mt-0.5 font-mono text-[11px] leading-4 text-white sm:text-[12px]">
+                <span className="text-brand">› </span>
                 {shown}
-                {index === step ? <Caret /> : null}
+                {streaming ? <Caret /> : null}
               </p>
             </div>
           )
         })}
+      </div>
+      <div className="relative mx-3 mt-1 mb-2.5">
+        <div className="h-1 overflow-hidden rounded-full bg-white/10">
+          <div className="h-full bg-brand" style={{ width: `${percent}%` }} />
+        </div>
+        <p className="mt-1 font-mono text-[8px] tracking-[0.14em] text-white/50">
+          INTENT COMPILEREN · {percent}%
+        </p>
       </div>
     </div>
   )
@@ -381,40 +421,88 @@ function CodeScreen({
   )
 }
 
+const heroes = [
+  "/webshop/tech-headphones.jpg",
+  "/webshop/tech-watch.jpg",
+  "/webshop/tech-earbuds.jpg",
+]
+
 function ShopScreen() {
+  const ticker = "NIEUWE COLLECTIE  ·  GRATIS VERZENDING  ·  ZES PRODUCTEN  ·  ATELIER  ·  "
+
   return (
-    <div className="flex h-full flex-col bg-paper pt-3">
+    <div className="flex h-full flex-col bg-white pt-3">
       <div className="flex items-center gap-1.5 border-b border-[#ecece8] px-3 py-1.5">
         <span className="size-1.5 rounded-full bg-[#ecece8]" />
         <span className="size-1.5 rounded-full bg-[#ecece8]" />
         <span className="size-1.5 rounded-full bg-brand" />
-        <span className="ml-1 h-4 flex-1 rounded-full bg-white px-2 text-[9px] leading-4 text-mist ring-1 ring-[#ecece8]">
+        <span className="ml-1 h-4 flex-1 truncate rounded-full bg-[#f6f6f4] px-2 text-[9px] leading-4 text-mist ring-1 ring-[#ecece8]">
           atelier.nl
         </span>
       </div>
-      <div className="flex items-center gap-2 px-3 py-2">
-        <p className="text-[13px] font-semibold text-ink">Atelier</p>
-        <p className="text-[10px] text-mist">Shop</p>
-        <span className="ml-auto rounded-full bg-[#eef8f1] px-1.5 py-0.5 text-[9px] font-semibold text-brand">
-          Live
-        </span>
-      </div>
-      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-3 content-start gap-1.5 px-3">
-        {products.map((product) => (
-          <div key={product.name} className="min-w-0 rounded-md bg-white p-1 ring-1 ring-[#ecece8]">
-            <img
-              src={product.src}
-              alt=""
-              className="h-8 w-full rounded-[3px] object-cover sm:h-12"
-            />
-            <p className="mt-1 truncate text-[9px] leading-3 font-medium text-ink">{product.name}</p>
-            <p className="text-[9px] leading-3 font-semibold text-ink">{product.price}</p>
+      <div className="min-h-0 flex-1 overflow-hidden">
+        <div className="overflow-hidden bg-ink text-white">
+          <div className="shop-marquee flex w-max">
+            {[0, 1].map((copy) => (
+              <p key={copy} className="px-3 py-1 text-[8px] font-semibold tracking-[0.16em]">
+                {ticker}
+              </p>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="mx-3 mt-1 mb-2 flex items-center justify-between gap-2 rounded-lg bg-ink px-2.5 py-1.5 text-white">
-        <p className="truncate text-[10px] font-semibold">3 artikelen · € 457</p>
-        <span className="rounded-full bg-brand px-2 py-1 text-[9px] font-semibold">Afrekenen</span>
+        </div>
+        <div className="flex items-center gap-2 border-b border-[#f0f0ee] px-3 py-1.5">
+          <p className="text-[12px] font-semibold tracking-tight text-ink">Atelier</p>
+          <p className="text-[9px] text-mist">Nieuw</p>
+          <p className="text-[9px] text-mist">Shop</p>
+          <p className="text-[9px] text-mist">Over</p>
+          <span className="ml-auto rounded-full bg-ink px-1.5 py-0.5 text-[8px] font-semibold text-white">
+            Tas 3
+          </span>
+        </div>
+        <div className="grid grid-cols-[1.15fr_0.85fr] items-center gap-2 bg-[#f3f6f3] px-3 py-2.5">
+          <div>
+            <p className="text-[8px] font-semibold tracking-[0.16em] text-brand">HOMEPAGE</p>
+            <p className="mt-1 text-[15px] leading-none font-semibold tracking-tight text-ink sm:text-lg">
+              Geluid, dichtbij.
+            </p>
+            <p className="mt-1.5 text-[9px] leading-4 text-mist">
+              Nieuwe apparaten. Vandaag besteld, morgen in huis.
+            </p>
+            <span className="mt-2 inline-flex rounded-full bg-brand px-2 py-1 text-[8px] font-semibold text-white">
+              Shop de collectie
+            </span>
+          </div>
+          <div className="shop-float relative h-16 overflow-hidden rounded-lg shadow-[0_12px_24px_-16px_rgba(0,0,0,0.45)] sm:h-20">
+            {heroes.map((src, index) => (
+              <img
+                key={src}
+                src={src}
+                alt=""
+                className="shop-hero absolute inset-0 h-full w-full object-cover"
+                style={{ animationDelay: `${index * -3}s` }}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="px-3 pt-2">
+          <p className="text-[10px] font-semibold text-ink">De collectie</p>
+          <div className="mt-1.5 grid grid-cols-3 gap-1.5">
+            {products.map((product) => (
+              <div key={product.name} className="min-w-0 rounded-md bg-white p-1 ring-1 ring-[#ecece8]">
+                <img src={product.src} alt="" className="h-9 w-full rounded-[3px] object-cover sm:h-11" />
+                <p className="mt-1 truncate text-[8px] leading-3 font-medium text-ink">{product.name}</p>
+                <p className="text-[8px] leading-3 font-semibold text-ink">{product.price}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mx-3 mt-2 mb-2 flex items-center justify-between rounded-lg bg-ink px-2.5 py-1.5 text-white">
+          <div>
+            <p className="text-[8px] text-white/55">Winkelwagen</p>
+            <p className="text-[10px] font-semibold">3 artikelen · € 457</p>
+          </div>
+          <span className="rounded-full bg-brand px-2 py-1 text-[8px] font-semibold">Afrekenen</span>
+        </div>
       </div>
     </div>
   )
