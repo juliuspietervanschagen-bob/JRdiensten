@@ -320,6 +320,43 @@
   animation: prompt-scan 3.6s linear infinite;
 }
 
+@keyframes app-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.app-rise {
+  animation: app-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes app-toast {
+  0%,
+  18% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  28%,
+  78% {
+    opacity: 1;
+    transform: none;
+  }
+  90%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.app-toast {
+  animation: app-toast 4.8s ease-in-out infinite;
+}
+
 @keyframes trace-grow {
   from {
     transform: scaleY(0);
@@ -411,6 +448,8 @@
   .shop-float,
   .shop-hero,
   .prompt-scan,
+  .app-rise,
+  .app-toast,
   .trace-grow,
   .signal-veil,
   .map-sparkle,
@@ -435,8 +474,11 @@
     transition: none;
   }
 
-  .shop-hero:first-child {
+  .shop-hero:first-child,
+  .app-rise,
+  .app-toast {
     opacity: 1;
+    transform: none;
   }
 
   .trace-grow {

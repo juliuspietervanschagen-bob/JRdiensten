@@ -1,6 +1,7 @@
 import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
+import { AppForge } from "@/components/app-forge"
 import { WebsiteBuild } from "@/components/website-build"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { WebshopStudio } from "@/components/webshop-studio"
@@ -99,7 +100,7 @@ export function ServiceDetail({ service }: { service: Service }) {
         </Container>
       </section>
 
-      {service.slug === "website" ? null : (
+      {service.slug === "website" || service.slug === "app" ? null : (
       <section className="section-wash py-10 sm:py-12">
         <Container>
           <div className="max-w-2xl">
@@ -133,6 +134,8 @@ export function ServiceDetail({ service }: { service: Service }) {
         <WebsiteBuild service={service} />
       ) : service.slug === "webshop" ? (
         <WebshopJourney />
+      ) : service.slug === "app" ? (
+        <AppForge service={service} />
       ) : (
         <section id="aanpak" className="scroll-mt-24 pt-16 pb-8 sm:pt-20 sm:pb-10">
           <Container>
