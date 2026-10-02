@@ -3,7 +3,8 @@
 import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import { cn } from "cn"
-import { useEffect, useState } from "react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useState } from "react"
 
 const cards = [
   {
@@ -32,17 +33,12 @@ const cards = [
 export function WebshopGrowth() {
   const [active, setActive] = useState(0)
   const [open, setOpen] = useState(false)
-  const [paused, setPaused] = useState(false)
   const current = cards[active]
 
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduce || open || paused) return
-    const timer = window.setInterval(() => {
-      setActive((index) => (index + 1) % cards.length)
-    }, 3400)
-    return () => window.clearInterval(timer)
-  }, [open, paused])
+  function show(index: number) {
+    setOpen(false)
+    setActive((index + cards.length) % cards.length)
+  }
 
   return (
     <section className="pt-4 pb-6 sm:pt-6" aria-label="Groei van de webshop">
@@ -62,10 +58,7 @@ export function WebshopGrowth() {
             </p>
           </div>
 
-          <div
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-          >
+          <div>
             <div className="relative mx-auto h-[250px] max-w-[520px] overflow-hidden sm:h-[270px]">
               {cards.map((card, index) => {
                 const slot = (index - active + cards.length) % cards.length
@@ -92,24 +85,47 @@ export function WebshopGrowth() {
                         <CardFace card={card} hint open={open} />
                       </button>
                     ) : (
-                      <div className="rounded-3xl bg-white p-5 ring-1 ring-[#e8e8e3]" aria-hidden>
+                      <button
+                        type="button"
+                        onClick={() => show(index)}
+                        className="w-full rounded-3xl bg-white p-5 text-left ring-1 ring-[#e8e8e3]"
+                        aria-label={`Toon ${card.title}`}
+                      >
                         <CardFace card={card} />
-                      </div>
+                      </button>
                     )}
                   </article>
                 )
               })}
             </div>
-            <div className="mt-2 flex justify-center gap-1.5" aria-hidden>
-              {cards.map((card, index) => (
-                <span
-                  key={card.mark}
-                  className={cn(
-                    "h-1 rounded-full transition-all duration-500",
-                    index === active ? "w-6 bg-brand" : "w-1.5 bg-[#d5ddd8]",
-                  )}
-                />
-              ))}
+            <div className="mt-2 flex items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => show(active - 1)}
+                aria-label="Vorige"
+                className="grid size-9 place-items-center rounded-full bg-white text-ink ring-1 ring-[#e8e8e3] transition hover:ring-brand/40"
+              >
+                <ChevronLeft className="size-4" aria-hidden />
+              </button>
+              <div className="flex gap-1.5" aria-hidden>
+                {cards.map((card, index) => (
+                  <span
+                    key={card.mark}
+                    className={cn(
+                      "h-1 rounded-full transition-all duration-500",
+                      index === active ? "w-6 bg-brand" : "w-1.5 bg-[#d5ddd8]",
+                    )}
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => show(active + 1)}
+                aria-label="Volgende"
+                className="grid size-9 place-items-center rounded-full bg-white text-ink ring-1 ring-[#e8e8e3] transition hover:ring-brand/40"
+              >
+                <ChevronRight className="size-4" aria-hidden />
+              </button>
             </div>
             {open ? (
               <div className="mx-auto mt-4 max-w-[520px] rounded-3xl bg-white px-5 py-5 ring-1 ring-[#e8e8e3] sm:px-6">
