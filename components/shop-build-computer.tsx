@@ -153,20 +153,24 @@ export function ShopBuildComputer() {
   const [phase, setPhase] = useState<Phase>("prompt")
 
   return (
-    <div aria-labelledby="bouw-title">
-      <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
-        <span className="h-px w-8 bg-brand" />
-        DE BOUW
-      </p>
-      <h2 id="bouw-title" className="mt-3 text-3xl font-semibold tracking-tight">
-        Eerst de prompt, dan de code
-      </h2>
-      <p className="mt-3 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
-        Je zegt wat de shop moet kunnen. Op het scherm verschijnen die prompts, daarna de code, en
-        dan de homepage van de winkel.
-      </p>
-      <div className="mt-6 min-w-0">
-        <Builder onPhase={setPhase} />
+    <div className="flex h-full flex-col" aria-labelledby="bouw-title">
+      <div className="lg:min-h-[14.5rem]">
+        <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
+          <span className="h-px w-8 bg-brand" />
+          DE BOUW
+        </p>
+        <h2 id="bouw-title" className="mt-3 text-3xl font-semibold tracking-tight">
+          Eerst de prompt, dan de code
+        </h2>
+        <p className="mt-3 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
+          Je zegt wat de shop moet kunnen. Op het scherm verschijnen die prompts, daarna de code, en
+          dan de homepage van de winkel.
+        </p>
+      </div>
+      <div className="mt-6 flex min-h-[280px] min-w-0 flex-1 items-center">
+        <div className="w-full min-w-0">
+          <Builder onPhase={setPhase} />
+        </div>
       </div>
       <BuildTrace phase={phase} />
     </div>
