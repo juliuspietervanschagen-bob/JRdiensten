@@ -55,7 +55,7 @@ export function WebshopGrowth() {
         </p>
       </div>
 
-      <div className="relative mx-auto mt-6 min-h-[22.5rem] w-full max-w-[520px] flex-1 overflow-hidden">
+      <div className="relative mx-auto mt-6 min-h-[calc(22.5rem+0.75rem)] w-full max-w-[520px] flex-1 overflow-hidden">
         {cards.map((card, index) => {
           const slot = (index - active + cards.length) % cards.length
           const center = slot === 0
@@ -63,7 +63,7 @@ export function WebshopGrowth() {
             <article
               key={card.mark}
               className={cn(
-                "absolute top-0 left-1/2 flex w-[min(86%,270px)] min-h-[22.5rem] flex-col transition duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                "absolute top-1.5 left-1/2 flex w-[min(86%,270px)] min-h-[22.5rem] flex-col transition duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
                 center && "z-10 -translate-x-1/2",
                 slot === 1 &&
                   "z-0 translate-x-[calc(-50%+4.25rem)] scale-[0.86] opacity-50 sm:translate-x-[calc(-50%+7rem)]",
