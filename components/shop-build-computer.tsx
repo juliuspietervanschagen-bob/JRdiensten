@@ -1,6 +1,5 @@
 "use client"
 
-import { Container } from "@/components/container"
 import { cn } from "cn"
 import { Check } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
@@ -154,27 +153,23 @@ export function ShopBuildComputer() {
   const [phase, setPhase] = useState<Phase>("prompt")
 
   return (
-    <section className="pt-4 pb-10 sm:pt-6 sm:pb-12" aria-label="De bouw van de webshop">
-      <Container>
-        <div className="grid items-stretch gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:gap-12">
-          <div className="flex min-w-0 flex-col">
-            <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
-              <span className="h-px w-8 bg-brand" />
-              DE BOUW
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Eerst de prompt, dan de code
-            </h2>
-            <p className="mt-4 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
-              Je zegt wat de shop moet kunnen. Op het scherm verschijnen die prompts, daarna de
-              code, en dan de homepage van de winkel.
-            </p>
-            <BuildTrace phase={phase} />
-          </div>
-          <Builder onPhase={setPhase} />
-        </div>
-      </Container>
-    </section>
+    <div aria-labelledby="bouw-title">
+      <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
+        <span className="h-px w-8 bg-brand" />
+        DE BOUW
+      </p>
+      <h2 id="bouw-title" className="mt-3 text-3xl font-semibold tracking-tight">
+        Eerst de prompt, dan de code
+      </h2>
+      <p className="mt-3 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
+        Je zegt wat de shop moet kunnen. Op het scherm verschijnen die prompts, daarna de code, en
+        dan de homepage van de winkel.
+      </p>
+      <div className="mt-6 min-w-0">
+        <Builder onPhase={setPhase} />
+      </div>
+      <BuildTrace phase={phase} />
+    </div>
   )
 }
 
@@ -182,77 +177,51 @@ function BuildTrace({ phase }: { phase: Phase }) {
   const current = stages.findIndex((stage) => stage.id === phase)
 
   return (
-    <div className="mt-8 flex min-h-0 flex-1 flex-col lg:mt-10">
-      <div className="flex flex-1 flex-col rounded-3xl bg-white px-5 py-4 ring-1 ring-[#e8e8e3] sm:px-6">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-semibold tracking-[0.18em] text-brand">OPBOUW</p>
-          <p className="font-mono text-[11px] text-mist">atelier.nl</p>
-        </div>
-        <ol className="mt-5 flex min-h-0 flex-1 flex-col">
-          {stages.map((stage, index) => {
-            const state = index < current ? "done" : index === current ? "now" : "wait"
-            return (
-              <li key={stage.id} className="relative flex flex-1 gap-3">
-                {index < stages.length - 1 ? (
-                  <span
-                    className="absolute top-6 bottom-0 left-[11px] w-px bg-[#e7e7e2]"
-                    aria-hidden
-                  />
-                ) : null}
-                {index < current ? (
-                  <span
-                    className="absolute top-6 bottom-0 left-[11px] w-px bg-brand"
-                    aria-hidden
-                  />
-                ) : null}
-                {index === current && index < stages.length - 1 ? (
-                  <span
-                    className="trace-grow absolute top-6 bottom-0 left-[11px] w-px bg-brand"
-                    aria-hidden
-                  />
-                ) : null}
-                <span
-                  className={cn(
-                    "relative z-10 grid size-[22px] shrink-0 place-items-center rounded-full ring-1",
-                    state === "wait" && "bg-white text-mist ring-[#e4e4df]",
-                    state === "now" &&
-                      "bg-brand text-white ring-brand shadow-[0_0_0_4px_rgba(22,163,74,0.16)]",
-                    state === "done" && "bg-[#f3faf5] text-brand ring-brand/30",
-                  )}
-                >
-                  {state === "done" ? (
-                    <Check className="size-3" aria-hidden />
-                  ) : (
-                    <span className="text-[10px] font-semibold">{stage.mark}</span>
-                  )}
-                </span>
-                <div className={cn("min-w-0", index < stages.length - 1 && "pb-3")}>
-                  <div className="flex items-center justify-between gap-3">
-                    <p
-                      className={cn(
-                        "text-sm font-semibold",
-                        state === "wait" ? "text-mist" : "text-ink",
-                      )}
-                    >
-                      {stage.title}
-                    </p>
-                    <p
-                      className={cn(
-                        "font-mono text-[10px] tracking-[0.14em] uppercase",
-                        state === "now" ? "text-brand" : "text-[#b5b5ae]",
-                      )}
-                    >
-                      {state === "done" ? "Klaar" : state === "now" ? stage.live : "Wacht"}
-                    </p>
-                  </div>
-                  <p className="mt-1 text-sm leading-5 text-mist">{stage.detail}</p>
-                </div>
-              </li>
-            )
-          })}
-        </ol>
-      </div>
-    </div>
+    <ol className="mt-4 grid grid-cols-3 gap-2">
+      {stages.map((stage, index) => {
+        const state = index < current ? "done" : index === current ? "now" : "wait"
+        return (
+          <li
+            key={stage.id}
+            className={cn(
+              "rounded-2xl bg-white px-2.5 py-3 ring-1 sm:px-3",
+              state === "now" ? "ring-brand/50" : "ring-[#e8e8e3]",
+            )}
+          >
+            <span
+              className={cn(
+                "grid size-[22px] place-items-center rounded-full ring-1",
+                state === "wait" && "bg-white text-mist ring-[#e4e4df]",
+                state === "now" && "bg-brand text-white ring-brand",
+                state === "done" && "bg-[#f3faf5] text-brand ring-brand/30",
+              )}
+            >
+              {state === "done" ? (
+                <Check className="size-3" aria-hidden />
+              ) : (
+                <span className="text-[10px] font-semibold">{stage.mark}</span>
+              )}
+            </span>
+            <p
+              className={cn(
+                "mt-2 text-[13px] leading-4 font-semibold",
+                state === "wait" ? "text-mist" : "text-ink",
+              )}
+            >
+              {stage.title}
+            </p>
+            <p
+              className={cn(
+                "mt-1 font-mono text-[10px] tracking-[0.12em] uppercase",
+                state === "now" ? "text-brand" : "text-[#b5b5ae]",
+              )}
+            >
+              {state === "done" ? "Klaar" : state === "now" ? stage.live : "Wacht"}
+            </p>
+          </li>
+        )
+      })}
+    </ol>
   )
 }
 

@@ -1,10 +1,9 @@
 import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
-import { ShopBuildComputer } from "@/components/shop-build-computer"
 import { WebsiteBuild } from "@/components/website-build"
-import { WebshopGrowth } from "@/components/webshop-growth"
 import { WebshopJourney } from "@/components/webshop-journey"
+import { WebshopStudio } from "@/components/webshop-studio"
 import { formatFromPrice, services, type Service } from "@/lib/services"
 import {
   ArrowRight,
@@ -156,9 +155,9 @@ export function ServiceDetail({ service }: { service: Service }) {
         </section>
       )}
 
-      {service.slug === "webshop" ? <WebshopGrowth /> : null}
+      {service.slug === "webshop" ? <WebshopStudio /> : null}
 
-      <section className={service.slug === "webshop" ? "pb-6 sm:pb-8" : "pb-16 sm:pb-20"}>
+      <section className="pb-16 sm:pb-20">
         <Container>
           <div className="rounded-3xl bg-white px-6 py-8 ring-1 ring-[#e8e8e3] sm:px-10 sm:py-10">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -211,8 +210,6 @@ export function ServiceDetail({ service }: { service: Service }) {
           </div>
         </Container>
       </section>
-
-      {service.slug === "webshop" ? <ShopBuildComputer /> : null}
 
       <section className="py-16">
         <Container>

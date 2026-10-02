@@ -1,7 +1,6 @@
 "use client"
 
 import { BrandButton } from "@/components/brand-button"
-import { Container } from "@/components/container"
 import { cn } from "cn"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useState } from "react"
@@ -41,25 +40,21 @@ export function WebshopGrowth() {
   }
 
   return (
-    <section className="pt-4 pb-6 sm:pt-6" aria-label="Groei van de webshop">
-      <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12">
-          <div>
-            <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
-              <span className="h-px w-8 bg-brand" />
-              GROEI
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-              Maak van je webshop een compleet groeikanaal
-            </h2>
-            <p className="mt-3 max-w-md text-mist">
-              Verbind techniek, vindbaarheid en acquisitie zodat bezoekers je niet alleen vinden,
-              maar ook makkelijker bestellen.
-            </p>
-          </div>
+    <div aria-labelledby="groei-title">
+      <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
+        <span className="h-px w-8 bg-brand" />
+        GROEI
+      </p>
+      <h2 id="groei-title" className="mt-3 text-3xl font-semibold tracking-tight">
+        Maak van je webshop een compleet groeikanaal
+      </h2>
+      <p className="mt-3 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
+        Verbind techniek, vindbaarheid en acquisitie zodat bezoekers je niet alleen vinden, maar
+        ook makkelijker bestellen.
+      </p>
 
-          <div>
-            <div className="relative mx-auto h-[250px] max-w-[520px] overflow-hidden sm:h-[270px]">
+      <div className="mt-6">
+            <div className="relative mx-auto h-[236px] max-w-[520px] overflow-hidden sm:h-[250px]">
               {cards.map((card, index) => {
                 const slot = (index - active + cards.length) % cards.length
                 const center = slot === 0
@@ -67,12 +62,12 @@ export function WebshopGrowth() {
                   <article
                     key={card.mark}
                     className={cn(
-                      "absolute top-6 left-1/2 w-[min(78%,250px)] transition duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                      "absolute top-4 left-1/2 w-[min(78%,230px)] transition duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
                       center && "z-10 -translate-x-1/2 opacity-100",
                       slot === 1 &&
-                        "z-0 translate-x-[calc(-50%+4.75rem)] scale-[0.86] opacity-50 sm:translate-x-[calc(-50%+9rem)]",
+                        "z-0 translate-x-[calc(-50%+4.25rem)] scale-[0.86] opacity-50 sm:translate-x-[calc(-50%+6.75rem)]",
                       slot === 2 &&
-                        "z-0 -translate-x-[calc(50%+4.75rem)] scale-[0.86] opacity-50 sm:-translate-x-[calc(50%+9rem)]",
+                        "z-0 -translate-x-[calc(50%+4.25rem)] scale-[0.86] opacity-50 sm:-translate-x-[calc(50%+6.75rem)]",
                     )}
                   >
                     {center ? (
@@ -137,10 +132,8 @@ export function WebshopGrowth() {
                 </div>
               </div>
             ) : null}
-          </div>
-        </div>
-      </Container>
-    </section>
+      </div>
+    </div>
   )
 }
 
