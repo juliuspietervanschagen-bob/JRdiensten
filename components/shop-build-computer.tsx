@@ -121,9 +121,9 @@ const phases: { id: Phase; label: string }[] = [
 
 export function ShopBuildComputer() {
   return (
-    <section className="py-16 sm:py-20" aria-label="De bouw van de webshop">
+    <section className="pt-4 pb-10 sm:pt-6 sm:pb-12" aria-label="De bouw van de webshop">
       <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+        <div className="grid items-start gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:gap-12">
           <div>
             <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
               <span className="h-px w-8 bg-brand" />

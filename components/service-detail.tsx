@@ -158,7 +158,7 @@ export function ServiceDetail({ service }: { service: Service }) {
 
       {service.slug === "webshop" ? <WebshopGrowth /> : null}
 
-      <section className="pb-16 sm:pb-20">
+      <section className={service.slug === "webshop" ? "pb-6 sm:pb-8" : "pb-16 sm:pb-20"}>
         <Container>
           <div className="rounded-3xl bg-white px-6 py-8 ring-1 ring-[#e8e8e3] sm:px-10 sm:py-10">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
