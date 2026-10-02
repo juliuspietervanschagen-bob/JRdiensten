@@ -3,6 +3,7 @@ import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
 import { ShopBuildComputer } from "@/components/shop-build-computer"
 import { WebsiteBuild } from "@/components/website-build"
+import { WebshopGrowth } from "@/components/webshop-growth"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { formatFromPrice, services, type Service } from "@/lib/services"
 import {
@@ -154,6 +155,8 @@ export function ServiceDetail({ service }: { service: Service }) {
           </Container>
         </section>
       )}
+
+      {service.slug === "webshop" ? <WebshopGrowth /> : null}
 
       <section className="pb-16 sm:pb-20">
         <Container>
