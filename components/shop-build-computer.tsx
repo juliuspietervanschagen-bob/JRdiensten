@@ -2,6 +2,7 @@
 
 import { Container } from "@/components/container"
 import { cn } from "cn"
+import { Check } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
 const prompts = [
@@ -119,12 +120,44 @@ const phases: { id: Phase; label: string }[] = [
   { id: "shop", label: "De shop is live" },
 ]
 
+const stages: {
+  id: Phase
+  mark: string
+  title: string
+  detail: string
+  live: string
+}[] = [
+  {
+    id: "prompt",
+    mark: "01",
+    title: "De opdracht",
+    detail: "Catalogus, checkout en publicatie als één zin.",
+    live: "Loopt",
+  },
+  {
+    id: "code",
+    mark: "02",
+    title: "De code",
+    detail: "shop.tsx zet die zin om in de winkel.",
+    live: "Schrijft",
+  },
+  {
+    id: "shop",
+    mark: "03",
+    title: "De homepage",
+    detail: "atelier.nl leest de feed en toont de collectie.",
+    live: "Live",
+  },
+]
+
 export function ShopBuildComputer() {
+  const [phase, setPhase] = useState<Phase>("prompt")
+
   return (
     <section className="pt-4 pb-10 sm:pt-6 sm:pb-12" aria-label="De bouw van de webshop">
       <Container>
-        <div className="grid items-start gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:gap-12">
-          <div>
+        <div className="grid items-stretch gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:gap-12">
+          <div className="flex min-w-0 flex-col">
             <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
               <span className="h-px w-8 bg-brand" />
               DE BOUW
@@ -136,15 +169,94 @@ export function ShopBuildComputer() {
               Je zegt wat de shop moet kunnen. Op het scherm verschijnen die prompts, daarna de
               code, en dan de homepage van de winkel.
             </p>
+            <BuildTrace phase={phase} />
           </div>
-          <Builder />
+          <Builder onPhase={setPhase} />
         </div>
       </Container>
     </section>
   )
 }
 
-function Builder() {
+function BuildTrace({ phase }: { phase: Phase }) {
+  const current = stages.findIndex((stage) => stage.id === phase)
+
+  return (
+    <div className="mt-8 flex min-h-0 flex-1 flex-col lg:mt-10">
+      <div className="flex flex-1 flex-col rounded-3xl bg-white px-5 py-4 ring-1 ring-[#e8e8e3] sm:px-6">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-semibold tracking-[0.18em] text-brand">OPBOUW</p>
+          <p className="font-mono text-[11px] text-mist">atelier.nl</p>
+        </div>
+        <ol className="mt-5 flex min-h-0 flex-1 flex-col">
+          {stages.map((stage, index) => {
+            const state = index < current ? "done" : index === current ? "now" : "wait"
+            return (
+              <li key={stage.id} className="relative flex flex-1 gap-3">
+                {index < stages.length - 1 ? (
+                  <span
+                    className="absolute top-6 bottom-0 left-[11px] w-px bg-[#e7e7e2]"
+                    aria-hidden
+                  />
+                ) : null}
+                {index < current ? (
+                  <span
+                    className="absolute top-6 bottom-0 left-[11px] w-px bg-brand"
+                    aria-hidden
+                  />
+                ) : null}
+                {index === current && index < stages.length - 1 ? (
+                  <span
+                    className="trace-grow absolute top-6 bottom-0 left-[11px] w-px bg-brand"
+                    aria-hidden
+                  />
+                ) : null}
+                <span
+                  className={cn(
+                    "relative z-10 grid size-[22px] shrink-0 place-items-center rounded-full ring-1",
+                    state === "wait" && "bg-white text-mist ring-[#e4e4df]",
+                    state === "now" &&
+                      "bg-brand text-white ring-brand shadow-[0_0_0_4px_rgba(22,163,74,0.16)]",
+                    state === "done" && "bg-[#f3faf5] text-brand ring-brand/30",
+                  )}
+                >
+                  {state === "done" ? (
+                    <Check className="size-3" aria-hidden />
+                  ) : (
+                    <span className="text-[10px] font-semibold">{stage.mark}</span>
+                  )}
+                </span>
+                <div className={cn("min-w-0", index < stages.length - 1 && "pb-3")}>
+                  <div className="flex items-center justify-between gap-3">
+                    <p
+                      className={cn(
+                        "text-sm font-semibold",
+                        state === "wait" ? "text-mist" : "text-ink",
+                      )}
+                    >
+                      {stage.title}
+                    </p>
+                    <p
+                      className={cn(
+                        "font-mono text-[10px] tracking-[0.14em] uppercase",
+                        state === "now" ? "text-brand" : "text-[#b5b5ae]",
+                      )}
+                    >
+                      {state === "done" ? "Klaar" : state === "now" ? stage.live : "Wacht"}
+                    </p>
+                  </div>
+                  <p className="mt-1 text-sm leading-5 text-mist">{stage.detail}</p>
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+      </div>
+    </div>
+  )
+}
+
+function Builder({ onPhase }: { onPhase: (phase: Phase) => void }) {
   const [phase, setPhase] = useState<Phase>("prompt")
   const [promptStep, setPromptStep] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
@@ -212,6 +324,10 @@ function Builder() {
   }, [codeIndex, phase])
 
   const view = reduce ? "shop" : phase
+
+  useEffect(() => {
+    onPhase(view)
+  }, [view, onPhase])
   const written =
     prompts.slice(0, promptStep).reduce((total, item) => total + item.text.length, 0) +
     (phase === "prompt" ? charIndex : 0)
@@ -238,6 +354,7 @@ function Builder() {
 
   return (
     <div
+      className="min-w-0"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
@@ -250,7 +367,7 @@ function Builder() {
       >
         <div className="rounded-[1.15rem] bg-gradient-to-b from-[#e6e7eb] to-[#b7b9be] p-[8px] pb-5 shadow-[0_28px_50px_-28px_rgba(0,0,0,0.55)]">
           <div className="overflow-hidden rounded-[0.8rem] bg-[#1a1a1a] p-[6px]">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[0.5rem] bg-paper sm:aspect-[16/10]">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[0.5rem] bg-paper sm:aspect-[16/10]">
               <div className="absolute top-1.5 left-1/2 z-10 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#2a2a2a]" />
               {view === "prompt" ? (
                 <PromptScreen step={promptStep} charIndex={charIndex} />
@@ -329,7 +446,7 @@ function PromptScreen({ step, charIndex }: { step: number; charIndex: number }) 
   }, [step, charIndex])
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-[#0c100e] pt-3 text-white">
+    <div className="absolute inset-0 flex flex-col overflow-hidden bg-[#0c100e] pt-3 text-white">
       <div
         className="pointer-events-none absolute inset-0 opacity-70"
         style={{
@@ -423,7 +540,7 @@ function CodeScreen({
   const lineCount = Math.max(1, text.split("\n").length)
 
   return (
-    <div className="flex h-full flex-col bg-[#fbfbfa] pt-3">
+    <div className="absolute inset-0 flex flex-col overflow-hidden bg-[#fbfbfa] pt-3">
       <div className="flex items-center gap-1.5 border-b border-[#ecece8] px-3 py-1.5">
         <span className="size-1.5 rounded-full bg-[#ecece8]" />
         <span className="size-1.5 rounded-full bg-[#ecece8]" />
@@ -467,7 +584,7 @@ function ShopScreen() {
   const ticker = "NIEUWE COLLECTIE  ·  GRATIS VERZENDING  ·  ZES PRODUCTEN  ·  ATELIER  ·  "
 
   return (
-    <div className="flex h-full flex-col bg-white pt-3">
+    <div className="absolute inset-0 flex flex-col overflow-hidden bg-white pt-3">
       <div className="flex items-center gap-1.5 border-b border-[#ecece8] px-3 py-1.5">
         <span className="size-1.5 rounded-full bg-[#ecece8]" />
         <span className="size-1.5 rounded-full bg-[#ecece8]" />
@@ -477,7 +594,7 @@ function ShopScreen() {
         </span>
       </div>
       <div className="min-h-0 flex-1 overflow-hidden">
-        <div className="overflow-hidden bg-ink text-white">
+        <div className="max-w-full overflow-hidden bg-ink text-white">
           <div className="shop-marquee flex w-max">
             {[0, 1].map((copy) => (
               <p key={copy} className="px-3 py-1 text-[8px] font-semibold tracking-[0.16em]">

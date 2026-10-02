@@ -320,6 +320,20 @@
   animation: prompt-scan 3.6s linear infinite;
 }
 
+@keyframes trace-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(0.62);
+  }
+}
+
+.trace-grow {
+  transform-origin: top center;
+  animation: trace-grow 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .site-reveal {
   transform: scaleX(0);
   transform-origin: left center;
@@ -397,6 +411,7 @@
   .shop-float,
   .shop-hero,
   .prompt-scan,
+  .trace-grow,
   .signal-veil,
   .map-sparkle,
   .node-breathe {
@@ -422,6 +437,10 @@
 
   .shop-hero:first-child {
     opacity: 1;
+  }
+
+  .trace-grow {
+    transform: scaleY(0.62);
   }
 
   .slide-progress {
