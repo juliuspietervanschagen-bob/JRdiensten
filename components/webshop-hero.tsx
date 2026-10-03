@@ -113,8 +113,8 @@ function ShopScreen() {
       </div>
 
       <div className="relative min-h-0 flex-1 overflow-hidden">
-        <div className="shop-browse absolute inset-x-0 top-0 h-[200%]">
-          <div className="flex h-1/2 flex-col px-[2.2cqw] pt-[1.5cqw] pb-[1.2cqw]">
+        <div className="shop-page absolute inset-0">
+          <div className="flex h-full flex-col px-[2.2cqw] pt-[1.5cqw] pb-[1.2cqw]">
             <div className="relative min-h-0 flex-[1.15] overflow-hidden rounded-[1cqw] bg-[#f3f3f1]">
               {scenes.map((scene, index) => (
                 <img
@@ -137,8 +137,10 @@ function ShopScreen() {
               ))}
             </div>
           </div>
+        </div>
 
-          <div className="flex h-1/2 flex-col px-[2.2cqw] pt-[1.5cqw] pb-[1.2cqw]">
+        <div className="shop-page shop-page-late absolute inset-0">
+          <div className="flex h-full flex-col px-[2.2cqw] pt-[1.5cqw] pb-[1.2cqw]">
             <div className="flex shrink-0 items-center justify-between gap-[1.4cqw] rounded-[0.8cqw] bg-[#f6f6f4] px-[1.6cqw] py-[1cqw] ring-1 ring-[#ecece8]">
               <div className="min-w-0">
                 <p className="text-[clamp(7px,1.15cqw,10px)] font-semibold tracking-[0.16em] text-brand">
