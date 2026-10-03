@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react"
 
 const VIEW_W = 960
 const VIEW_H = 560
-const BRAIN = { x: 480, y: 286 }
 
 const sources = [
   { label: "Website", x: 118, y: 148 },
@@ -18,11 +17,25 @@ const sources = [
   { label: "Voorraad", x: 842, y: 412 },
 ]
 
+const nodes = [
+  { x: 328, y: 214 },
+  { x: 328, y: 358 },
+  { x: 632, y: 214 },
+  { x: 632, y: 358 },
+]
+
 const paths = [
-  "M168 148 C 270 132, 340 168, 392 228",
-  "M168 412 C 270 428, 340 392, 394 332",
-  "M792 148 C 690 132, 620 168, 568 228",
-  "M792 412 C 690 428, 620 392, 566 332",
+  "M168 148 C 230 156, 286 186, 328 214 C 386 254, 424 272, 458 286",
+  "M168 412 C 230 404, 286 380, 328 358 C 386 322, 424 304, 458 294",
+  "M792 148 C 730 156, 674 186, 632 214 C 574 254, 536 272, 502 286",
+  "M792 412 C 730 404, 674 380, 632 358 C 574 322, 536 304, 502 294",
+]
+
+const folds = [
+  "M400 248 C 428 258, 442 282, 422 306",
+  "M392 302 C 422 310, 438 334, 414 354",
+  "M560 248 C 532 258, 518 282, 538 306",
+  "M568 302 C 538 310, 522 334, 546 354",
 ]
 
 const signals = [
@@ -32,7 +45,6 @@ const signals = [
   "De status is bijgewerkt. Niemand typte het over.",
 ]
 
-type FieldDot = { x: number; y: number; seed: number }
 type PathDot = { path: number; t: number; speed: number }
 
 export function AutomationMind({ service }: { service: Service }) {
@@ -62,12 +74,13 @@ export function AutomationMind({ service }: { service: Service }) {
     stage.appendChild(holder)
     const lengths = pathNodes.map((node) => node.getTotalLength())
 
-    const field: FieldDot[] = Array.from({ length: 46 }, (_, index) => spawnField(index))
-    const riders: PathDot[] = Array.from({ length: 16 }, (_, index) => ({
-      path: index % paths.length,
-      t: reduce ? (index % 4) * 0.22 + 0.12 : Math.random(),
-      speed: 0.0016 + (index % 5) * 0.00035,
-    }))
+    const riders: PathDot[] = paths.flatMap((_, path) =>
+      Array.from({ length: 7 }, (_, index) => ({
+        path,
+        t: reduce ? (index + 0.35) / 7 : (index + Math.random()) / 7,
+        speed: 0.0015 + ((path + index) % 4) * 0.00032,
+      })),
+    )
 
     let frame = 0
     let lastSignal = 0
@@ -101,29 +114,6 @@ export function AutomationMind({ service }: { service: Service }) {
       const toX = (x: number) => ox + x * scale
       const toY = (y: number) => oy + y * scale
 
-      const glow = context.createRadialGradient(
-        toX(BRAIN.x),
-        toY(BRAIN.y),
-        8 * scale,
-        toX(BRAIN.x),
-        toY(BRAIN.y),
-        150 * scale,
-      )
-      glow.addColorStop(0, "rgba(22,163,74,0.20)")
-      glow.addColorStop(1, "rgba(22,163,74,0)")
-      context.fillStyle = glow
-      context.beginPath()
-      context.arc(toX(BRAIN.x), toY(BRAIN.y), 150 * scale, 0, Math.PI * 2)
-      context.fill()
-
-      for (const dot of field) {
-        const alpha = 0.28 + (dot.seed % 5) * 0.08
-        context.fillStyle = `rgba(22,163,74,${alpha})`
-        context.beginPath()
-        context.arc(toX(dot.x), toY(dot.y), (1.1 + (dot.seed % 3) * 0.45) * scale, 0, Math.PI * 2)
-        context.fill()
-      }
-
       for (const rider of riders) {
         const node = pathNodes[rider.path]
         const length = lengths[rider.path]
@@ -138,20 +128,6 @@ export function AutomationMind({ service }: { service: Service }) {
     }
 
     function step(now: number) {
-      for (const dot of field) {
-        const dx = BRAIN.x - dot.x
-        const dy = BRAIN.y - dot.y
-        const dist = Math.hypot(dx, dy) || 1
-        const swirl = 0.16 + (dot.seed % 3) * 0.05
-        dot.x += (dx / dist) * 0.62 + (-dy / dist) * swirl
-        dot.y += (dy / dist) * 0.62 + (dx / dist) * swirl
-        if (dist < 34) {
-          const next = spawnField(dot.seed + 1)
-          dot.x = next.x
-          dot.y = next.y
-        }
-      }
-
       let arrived = false
       for (const rider of riders) {
         rider.t += rider.speed
@@ -230,30 +206,33 @@ export function AutomationMind({ service }: { service: Service }) {
                 preserveAspectRatio="xMidYMid meet"
                 aria-hidden
               >
-                <path d={paths[0]} fill="none" stroke="#d5e6db" strokeWidth="1.4" />
-                <path d={paths[1]} fill="none" stroke="#d5e6db" strokeWidth="1.4" />
-                <path d={paths[2]} fill="none" stroke="#d5e6db" strokeWidth="1.4" />
-                <path d={paths[3]} fill="none" stroke="#d5e6db" strokeWidth="1.4" />
-                <path
-                  fill="#f3faf5"
-                  stroke="#141414"
-                  strokeWidth="1.6"
-                  d="M470 156 C 398 142, 332 174, 312 240 C 292 306, 316 376, 380 410 C 424 434, 466 416, 478 376 C 488 328, 486 230, 470 156 Z"
-                />
-                <path
-                  fill="#f7fbf8"
-                  stroke="#141414"
-                  strokeWidth="1.6"
-                  d="M490 156 C 562 142, 628 174, 648 240 C 668 306, 644 376, 580 410 C 536 434, 494 416, 482 376 C 472 328, 474 230, 490 156 Z"
-                />
-                <path d="M360 236 C 404 248, 424 286, 392 328" fill="none" stroke="#141414" strokeOpacity="0.35" />
-                <path d="M372 300 C 412 312, 424 348, 386 378" fill="none" stroke="#141414" strokeOpacity="0.28" />
-                <path d="M600 236 C 556 248, 536 286, 568 328" fill="none" stroke="#141414" strokeOpacity="0.35" />
-                <path d="M588 300 C 548 312, 536 348, 574 378" fill="none" stroke="#141414" strokeOpacity="0.28" />
-                <path d="M480 168 C 474 230, 486 310, 480 368" fill="none" stroke="#16a34a" strokeWidth="1.2" />
-                <path d="M456 392 C 448 434, 468 462, 480 472" fill="none" stroke="#141414" strokeWidth="1.4" />
-                <path d="M504 392 C 512 434, 492 462, 480 472" fill="none" stroke="#141414" strokeWidth="1.4" />
-                <circle cx={BRAIN.x} cy={BRAIN.y} r="5" fill="#16a34a" />
+                <g fill="none" strokeLinecap="round">
+                  <circle cx="480" cy="286" r="176" stroke="#16a34a" strokeWidth="1.4" />
+                  <path
+                    stroke="#141414"
+                    strokeWidth="1.6"
+                    d="M473 224 C 458 206, 422 201, 397 221 C 372 240, 363 275, 371 309 C 378 343, 404 368, 440 374 C 462 377, 474 357, 471 332 C 469 303, 473 260, 473 224 Z"
+                  />
+                  <path
+                    stroke="#141414"
+                    strokeWidth="1.6"
+                    d="M487 224 C 502 206, 538 201, 563 221 C 588 240, 597 275, 589 309 C 582 343, 556 368, 520 374 C 498 377, 486 357, 489 332 C 491 303, 487 260, 487 224 Z"
+                  />
+                  <path stroke="#16a34a" strokeWidth="1.25" d="M480 228 C 476 270, 484 322, 480 362" />
+                  {folds.map((d) => (
+                    <path key={d} d={d} stroke="#141414" strokeWidth="1.15" strokeOpacity="0.7" />
+                  ))}
+                  <path
+                    stroke="#141414"
+                    strokeWidth="1.45"
+                    d="M452 378 C 455 414, 505 414, 508 378 C 505 366, 455 366, 452 378 Z"
+                  />
+                  <path stroke="#141414" strokeWidth="1.1" strokeOpacity="0.55" d="M462 390 C 480 396, 498 390" />
+                  <path stroke="#141414" strokeWidth="1.1" strokeOpacity="0.55" d="M458 402 C 480 409, 502 402" />
+                </g>
+                {nodes.map((node) => (
+                  <circle key={`${node.x}-${node.y}`} cx={node.x} cy={node.y} r="5.5" fill="#ffffff" stroke="#16a34a" strokeWidth="1.6" />
+                ))}
               </svg>
               <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" />
               {sources.map((source, index) => (
@@ -331,13 +310,3 @@ export function AutomationMind({ service }: { service: Service }) {
   )
 }
 
-function spawnField(seed: number): FieldDot {
-  const source = sources[seed % sources.length]
-  const angle = ((seed * 47) % 360) * (Math.PI / 180)
-  const radius = 18 + (seed % 7) * 6
-  return {
-    x: source.x + Math.cos(angle) * radius,
-    y: source.y + Math.sin(angle) * radius,
-    seed,
-  }
-}
