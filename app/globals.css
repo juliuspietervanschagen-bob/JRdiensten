@@ -484,6 +484,22 @@
   animation: node-breathe 8.5s ease-in-out infinite;
 }
 
+@keyframes mind-live {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
+}
+
+.mind-live {
+  animation: mind-live 2.4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -506,7 +522,8 @@
   .trace-grow,
   .signal-veil,
   .map-sparkle,
-  .node-breathe {
+  .node-breathe,
+  .mind-live {
     animation: none;
   }
 

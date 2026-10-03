@@ -2,6 +2,7 @@ import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
 import { AppForge } from "@/components/app-forge"
+import { AutomationMind } from "@/components/automation-mind"
 import { WebsiteBuild } from "@/components/website-build"
 import { WebshopHero } from "@/components/webshop-hero"
 import { WebshopJourney } from "@/components/webshop-journey"
@@ -65,6 +66,8 @@ export function ServiceDetail({ service }: { service: Service }) {
     <main>
       {service.slug === "webshop" ? (
         <WebshopHero service={service} />
+      ) : service.slug === "automatisering" ? (
+        <AutomationMind service={service} />
       ) : (
       <section className="overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-20">
         <Container className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
@@ -105,7 +108,7 @@ export function ServiceDetail({ service }: { service: Service }) {
       </section>
       )}
 
-      {service.slug === "website" || service.slug === "app" ? null : (
+      {service.slug === "website" || service.slug === "app" || service.slug === "automatisering" ? null : (
       <section className="section-wash py-10 sm:py-12">
         <Container>
           <div className="max-w-2xl">
@@ -141,7 +144,7 @@ export function ServiceDetail({ service }: { service: Service }) {
         <WebshopJourney />
       ) : service.slug === "app" ? (
         <AppForge service={service} />
-      ) : (
+      ) : service.slug === "automatisering" ? null : (
         <section id="aanpak" className="scroll-mt-24 pt-16 pb-8 sm:pt-20 sm:pb-10">
           <Container>
             <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>
