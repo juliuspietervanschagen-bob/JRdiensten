@@ -277,6 +277,29 @@
   animation: shop-marquee 16s linear infinite;
 }
 
+@keyframes shop-browse {
+  0%,
+  18% {
+    transform: translateY(0);
+  }
+  46%,
+  68% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.shop-browse {
+  animation: shop-browse 18s ease-in-out infinite;
+}
+
+.shop-stage:hover .shop-browse,
+.shop-stage:hover .shop-scene {
+  animation-play-state: paused;
+}
+
 @keyframes shop-float {
   0%,
   100% {
@@ -309,10 +332,10 @@
 
 @keyframes shop-scene {
   0%,
-  14% {
+  12% {
     opacity: 1;
   }
-  20%,
+  18%,
   100% {
     opacity: 0;
   }
@@ -473,6 +496,7 @@
   .slide-progress,
   .caret-blink,
   .shop-marquee,
+  .shop-browse,
   .shop-float,
   .shop-hero,
   .shop-scene,
