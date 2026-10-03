@@ -52,21 +52,6 @@ const ring = [
   { from: 210, to: 270, color: "#facc15" },
 ].map((part) => ({ ...part, d: arc(CX, CY, 168, part.from, part.to) }))
 
-const wires = [
-  ["M236 214 C 268 224, 286 250, 256 276", "#22d3ee"],
-  ["M226 248 C 260 240, 282 270, 250 300", "#4ade80"],
-  ["M248 228 C 280 246, 266 284, 302 302", "#facc15"],
-  ["M230 288 C 262 296, 278 320, 248 336", "#fb7185"],
-  ["M262 206 C 294 226, 278 258, 306 276", "#c084fc"],
-  ["M242 262 C 272 274, 254 312, 288 324", "#60a5fa"],
-  ["M404 214 C 372 224, 354 250, 384 276", "#22d3ee"],
-  ["M414 248 C 380 240, 358 270, 390 300", "#4ade80"],
-  ["M392 228 C 360 246, 374 284, 338 302", "#facc15"],
-  ["M410 288 C 378 296, 362 320, 392 336", "#fb7185"],
-  ["M378 206 C 346 226, 362 258, 334 276", "#c084fc"],
-  ["M398 262 C 368 274, 386 312, 352 324", "#60a5fa"],
-] as const
-
 const stars = Array.from({ length: 56 }, (_, index) => {
   const x = 18 + ((index * 137) % 604)
   const y = 16 + ((index * 89) % 508)
@@ -343,31 +328,18 @@ function MatrixBrain({ onPulse }: { onPulse: () => void }) {
           />
         ))}
         <ellipse cx={CX} cy={CY} rx="168" ry="148" fill="url(#mindGlow)" />
+        <image
+          href="/automation/brain.webp"
+          x={CX - 158}
+          y={CY - 122}
+          width="316"
+          height="244"
+          preserveAspectRatio="xMidYMid meet"
+        />
         <g fill="none" strokeLinecap="round">
           {ring.map((part) => (
             <path key={part.color} d={part.d} stroke={part.color} strokeWidth="2.4" />
           ))}
-          <path
-            stroke="#e8eef8"
-            strokeWidth="1.45"
-            d="M312 196 C 298 180, 262 176, 238 196 C 214 216, 206 250, 214 284 C 222 316, 248 340, 284 346 C 306 348, 318 330, 314 306 C 312 278, 312 230, 312 196 Z"
-          />
-          <path
-            stroke="#e8eef8"
-            strokeWidth="1.45"
-            d="M328 196 C 342 180, 378 176, 402 196 C 426 216, 434 250, 426 284 C 418 316, 392 340, 356 346 C 334 348, 322 330, 326 306 C 328 278, 328 230, 328 196 Z"
-          />
-          <path stroke="#22d3ee" strokeWidth="1.2" d="M320 204 C 316 246, 324 304, 320 338" />
-          {wires.map(([d, color]) => (
-            <path key={d} d={d} stroke={color} strokeWidth="1.15" strokeOpacity="0.9" />
-          ))}
-          <path
-            stroke="#e8eef8"
-            strokeWidth="1.35"
-            d="M292 342 C 296 378, 344 378, 348 342 C 344 330, 296 330, 292 342 Z"
-          />
-          <path stroke="#4ade80" strokeWidth="1.05" d="M302 350 C 320 356, 338 350" />
-          <path stroke="#facc15" strokeWidth="1.05" d="M300 362 C 320 369, 340 362" />
         </g>
         {flows.map((flow) => (
           <g key={flow.label}>
