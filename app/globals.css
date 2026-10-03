@@ -629,6 +629,20 @@
   animation-delay: -1.6s;
 }
 
+.pakket-lift {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.pakket-lift:hover {
+  z-index: 1;
+  background-color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -18px rgba(20, 20, 20, 0.45);
+}
+
 @keyframes matrix-draw {
   from {
     stroke-dashoffset: 180;
@@ -706,6 +720,7 @@
   .pakket-pin,
   .pakket-dot,
   .pakket-check,
+  .pakket-lift,
   .matrix-draw,
   .matrix-bar,
   .matrix-star {
@@ -768,6 +783,12 @@
 
   .pakket-check {
     opacity: 1;
+  }
+
+  .pakket-lift,
+  .pakket-lift:hover {
+    transition: none;
+    transform: none;
   }
 
   .matrix-draw {

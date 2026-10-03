@@ -15,8 +15,8 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
   return (
     <section className="section-wash py-10 sm:py-12">
       <Container>
-        <div className="overflow-hidden rounded-[1.75rem] bg-white ring-1 ring-[#e8e8e3]">
-          <div className="h-1 bg-brand" />
+        <div className="rounded-[1.75rem] bg-white ring-1 ring-[#e8e8e3]">
+          <div className="h-1 rounded-t-[1.75rem] bg-brand" />
           <div className="px-5 py-7 sm:px-8 sm:py-9">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="max-w-2xl">
@@ -39,7 +39,7 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
                 const Mark = marks[item.title] ?? AssortmentMark
                 const number = String(index + 1).padStart(2, "0")
                 return (
-                  <li key={item.title} className="relative border-t border-[#ecece8]">
+                  <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
                     <span
                       className={
                         index === 0
