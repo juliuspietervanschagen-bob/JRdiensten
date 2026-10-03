@@ -9,22 +9,22 @@ const cards = [
   {
     mark: "SEO",
     title: "SEO voor structurele groei",
-    text: "De shop wordt gevonden op de woorden waarmee mensen echt zoeken.",
-    more: "Producten, categorieën en teksten zijn zo opgebouwd dat Google ze kan lezen. Vindbaarheid zit in de bouw, niet als een laag die je er later op plakt.",
+    text: "De shop wordt gevonden op de woorden die kopers al gebruiken, omdat die woorden in de productpagina zelf staan.",
+    more: "Elke productpagina heeft een titel, een tekst en een categorie die een zoekmachine kan lezen. Varianten blijven bij hetzelfde product. Vindbaarheid zit in die opbouw, niet in een lijst die je er later op plakt.",
     bars: [38, 58, 78, 96],
   },
   {
     mark: "VIND",
     title: "Jouw kopers met Google Ads",
-    text: "Mensen die al zoeken, komen op een pagina waar je kunt bestellen.",
-    more: "Een advertentie hoort op een productpagina die klaar is om af te rekenen. Geen losse pagina die niet bij de shop past, en geen klik die doodloopt.",
+    text: "Wie al zoekt, landt op een productpagina waar prijs, voorraad en de knop om af te rekenen staan.",
+    more: "Een advertentie wijst naar die productpagina, niet naar een losse pagina die de shop niet kent. De bestelling komt in hetzelfde overzicht als een order die zonder advertentie binnenkomt.",
     bars: [72, 44, 86, 60],
   },
   {
     mark: "ALT",
     title: "Eerst een sterk bedrijfsverhaal",
-    text: "Voor het betalen is duidelijk waarom iemand bij jullie bestelt.",
-    more: "De shop legt uit wie jullie zijn en waarom dit aanbod klopt. Dat verhaal staat tussen de producten, zodat een bezoeker niet alleen kijkt, maar ook durft te kopen.",
+    text: "Voor het afrekenen ziet iemand waarom dit aanbod van jullie is, en niet van een andere shop.",
+    more: "Korte teksten bij het merk en bij de producten leggen herkomst, gebruik en verschil uit. Die tekst staat tussen de artikelen, zodat iemand kan vergelijken en daarna bestelt.",
     bars: [50, 66, 48, 84],
   },
 ]
@@ -50,8 +50,9 @@ export function WebshopGrowth() {
           Maak van je webshop een compleet groeikanaal
         </h2>
         <p className="mt-3 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
-          Verbind techniek, vindbaarheid en acquisitie zodat bezoekers je niet alleen vinden, maar
-          ook makkelijker bestellen.
+          De shop is niet alleen een kassa. Productpagina's worden gevonden op de woorden die kopers
+          al gebruiken, een advertentie landt op een pagina waar je kunt bestellen, en het verhaal
+          van het bedrijf staat tussen de artikelen.
         </p>
       </div>
 

@@ -42,8 +42,7 @@ export function WebshopHero({ service }: { service: Service }) {
           {service.title}
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-8 text-mist">
-          We bouwen een shop waarin klanten het product zien, vertrouwen en afrekenen. Assortiment,
-          verzending en betalen komen in één geheel.
+          We bouwen een shop waarin klanten het product zien, vertrouwen en afrekenen.
         </p>
 
         <div

@@ -73,8 +73,9 @@ export function WebshopJourney() {
       <Container>
         <div className="max-w-2xl">
           <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>
-          <p className="mt-3 text-mist">
-            Zeven stappen, van het eerste bericht tot hulp nadat de shop live staat.
+          <p className="mt-3 max-w-xl text-mist">
+            Assortiment, verzending en betalen komen in één geheel. Van het eerste bericht tot de
+            hulp nadat de shop live staat: elke stap hieronder zegt iets preciezer wat we doen.
           </p>
         </div>
 

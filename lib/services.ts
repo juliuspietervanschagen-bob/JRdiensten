@@ -20,32 +20,32 @@ export const webshopJourney: JourneyStep[] = [
   {
     word: "Gesprek",
     title: "Details van jullie webshop",
-    text: "We bespreken producten, verzending en wat klanten moeten kunnen.",
+    text: "We bespreken wat je verkoopt, hoe het verzonden wordt en wat een klant zelf moet kunnen, zonder dat iemand het hoeft uit te leggen.",
   },
   {
     word: "Prijs",
     title: "Een vaste prijs",
-    text: "We spreken de prijs af, voordat er gebouwd wordt.",
+    text: "Je krijgt één prijs voor die shop: assortiment, checkout en de mails die na een bestelling de deur uit gaan. We beginnen pas als dat bedrag vaststaat.",
   },
   {
     word: "Bouwen",
     title: "Bouwen en testen",
-    text: "We bouwen de webshop en testen hem, inclusief een echte bestelling.",
+    text: "We zetten de shop neer en laden een eerste set producten, met varianten en verzendkosten. Daarna plaatsen we zelf een bestelling, van de winkelwagen tot de betaalbevestiging, zodat een dubbele klik geen tweede order wordt.",
   },
   {
     word: "Oplevering",
     title: "De shop wordt opgeleverd",
-    text: "We leveren de webshop op, klaar voor jullie klanten.",
+    text: "De shop komt bij jullie met de producten die erin horen en een checkout die een echte betaling aankan. Je ziet waar een order binnenkomt, hoe je de status zet en welke mail de klant dan krijgt.",
   },
   {
     word: "Review",
     title: "Samen nalopen",
-    text: "We lopen de shop samen door, zodat jullie zien hoe alles werkt.",
+    text: "We lopen de productpagina, de winkelwagen en de bevestigingsmail samen na, op een telefoon en op een groot scherm. Wat in de afspraak zat en nog niet klopt, passen we aan voordat de shop voor klanten opengaat.",
   },
   {
     word: "Nazorg",
     title: "Altijd bereikbaar",
-    text: "Daarna kunnen jullie ons altijd bereiken voor fixes of problemen.",
+    text: "Daarna blijven we bereikbaar als een betaling vastloopt, een product niet klopt of de mail niet aankomt. Je hoeft dat niet zelf uit te zoeken. Een bericht is genoeg, en we laten weten wat we hebben rechtgezet.",
   },
 ]
 
@@ -121,10 +121,10 @@ export const services: Service[] = [
       },
     ],
     outcomes: [
-      "Klanten kunnen een product kiezen en betalen",
-      "Jij ziet nieuwe bestellingen zonder spreadsheet",
-      "Verzendkosten en bevestigingsmail staan klaar",
-      "De shop werkt op telefoon en desktop",
+      "Een klant kiest een product, ziet de verzendkosten en betaalt in dezelfde checkout",
+      "Nieuwe orders komen binnen met status en klantgegevens, zonder een spreadsheet",
+      "Na een geslaagde betaling gaat de bevestigingsmail vanzelf naar de klant",
+      "Productpagina, winkelwagen en afrekenen werken op telefoon en op desktop",
     ],
   },
   {
@@ -181,10 +181,10 @@ export const services: Service[] = [
       },
     ],
     outcomes: [
-      "Een site die uitlegt wat je doet",
-      "Een duidelijke knop naar contact of aanvraag",
-      "Pagina's die goed werken op een telefoon",
-      "Een basis waar je later pagina's aan toevoegt",
+      "Een site die in een paar pagina's uitlegt wie je bent, wat je doet en wat de bezoeker daarna kan doen",
+      "Een knop naar contact of aanvraag op de pagina's waar iemand moet beslissen",
+      "Tekst en knoppen die leesbaar blijven op een telefoon, en die je met een duim haalt",
+      "Een basis waar je later zelf een zin wijzigt, of een pagina aan toevoegt",
     ],
   },
   {

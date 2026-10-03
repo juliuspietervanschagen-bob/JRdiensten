@@ -29,10 +29,36 @@ const includeIcons: Record<string, LucideIcon> = {
 const wideIncludes = new Set(["Ontwerp in jullie merk", "Contact dat aankomt"])
 
 const rows = [
-  { label: "Home", text: "Wie we zijn" },
-  { label: "Diensten", text: "Wat we doen" },
-  { label: "Contact", text: "Hoe je ons bereikt" },
+  { label: "Home", text: "Wie jullie zijn, in één oogopslag" },
+  { label: "Diensten", text: "Wat iemand kan laten doen" },
+  { label: "Contact", text: "Een bericht dat in de inbox landt" },
 ]
+
+const includeCopy: Record<string, string> = {
+  "Ontwerp in jullie merk":
+    "Geen standaard template. Lettertype, kleur en indeling komen uit jullie merk, en die lijn blijft staan op elke pagina, van de kop tot de knop.",
+  "Pagina's met een taak":
+    "Home zegt wie jullie zijn. Diensten laat zien wat iemand kan aanvragen. Over en contact maken de volgende stap zichtbaar, zonder dat de bezoeker hoeft te zoeken.",
+  "Telefoon en desktop":
+    "De site wordt eerst op een telefoon gezet. Tekst blijft leesbaar, knoppen blijven groot genoeg voor een duim, en foto's snijden niet weg wat iemand moet zien.",
+  "Contact dat aankomt":
+    "Het formulier vraagt alleen wat jullie nodig hebben om terug te bellen of te mailen. Het bericht komt in de inbox, met naam, onderwerp en telefoonnummer.",
+  "Vindbaar van start":
+    "Elke pagina krijgt een eigen titel en een tekst die zegt waar die pagina over gaat. De structuur is helder en de pagina laadt snel, zodat een zoekmachine hem kan lezen.",
+  "Zelf teksten aanpassen":
+    "Na oplevering kun je een zin of een foto zelf vervangen. We laten kort zien waar dat zit, zodat een kleine wijziging niet hoeft te wachten.",
+}
+
+const stepCopy: Record<string, string> = {
+  Kennismaking:
+    "We schrijven op wat het bedrijf doet, wie er langskomt en wat die bezoeker daarna moet doen. Daaruit volgt welke pagina's er komen, en welke niet.",
+  Ontwerp:
+    "Je ziet de sfeer, de volgorde van de blokken en waar de knop staat, voordat er gebouwd wordt. Opmerkingen verwerken we in die opzet, zodat de bouw niet halverwege van richting wisselt.",
+  Bouw:
+    "We maken de pagina's, zetten jullie teksten en foto's erin en koppelen het formulier aan de inbox. Daarna klikken we elk scherm na, op een telefoon en op een groot scherm.",
+  Live:
+    "We zetten de site online en controleren of elke pagina opent en of een testbericht aankomt. Je krijgt de toegang, plus een korte uitleg om zelf een tekst te wijzigen.",
+}
 
 const view = { w: 560, h: 420 }
 const hub = { x: 280, y: 210 }
@@ -142,8 +168,9 @@ export function WebsiteBuild({ service }: { service: Service }) {
           <h2 className="mt-3 text-3xl font-semibold tracking-tight">
             Van losse informatie naar een site
           </h2>
-          <p className="mt-3 text-mist">
-            We ordenen wat jullie vertellen tot pagina's die naar elkaar verwijzen, en naar contact.
+          <p className="mt-3 max-w-xl text-mist">
+            Jullie vertellen wie je bent en wat je doet. Daar maken we pagina's van die naar elkaar
+            wijzen, en die eindigen bij contact.
           </p>
         </div>
 
@@ -159,6 +186,10 @@ export function WebsiteBuild({ service }: { service: Service }) {
           </div>
           <div id="aanpak" className="scroll-mt-24 pt-6 lg:[grid-area:steps]">
             <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>
+            <p className="mt-3 max-w-2xl text-mist">
+              Eerst het gesprek, dan de opzet, dan de pagina's, en pas daarna live. In deze vier
+              stappen staat wat we daarbij concreet doen.
+            </p>
             <ol className="mt-8 grid gap-6 md:grid-cols-4">
               {service.steps.map((step, index) => (
                 <li key={step.title} className="relative">
@@ -169,7 +200,7 @@ export function WebsiteBuild({ service }: { service: Service }) {
                     {index + 1}
                   </span>
                   <h3 className="mt-4 text-base font-semibold">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-mist">{step.text}</p>
+                  <p className="mt-2 text-sm leading-6 text-mist">{stepCopy[step.title] ?? step.text}</p>
                 </li>
               ))}
             </ol>
@@ -231,7 +262,8 @@ function DataTranslation() {
         <div className="rounded-2xl bg-paper p-4">
           <p className="text-[10px] font-semibold tracking-[0.14em] text-mist">RUW</p>
           <p className="mt-2 text-sm leading-6 text-mist">
-            Wie we zijn, wat we doen, hoe je ons bereikt.
+            We plaatsen en onderhouden. Mensen bellen of mailen als er iets kapot is. We zitten in
+            Reeuwijk en komen langs.
           </p>
         </div>
         <div className="rounded-2xl bg-white p-4 ring-1 ring-[#eee]">
@@ -434,6 +466,10 @@ function ConnectivityMap() {
         <h3 className="mt-2 text-xl font-semibold tracking-tight text-white">
           Pagina's die naar elkaar wijzen
         </h3>
+        <p className="mt-2 text-sm leading-6 text-white/60">
+          Home leidt naar diensten, diensten naar contact, en de inbox vangt wat de bezoeker stuurt.
+          Geen pagina staat los.
+        </p>
       </div>
       <div className="relative mx-2 mt-4 mb-2 aspect-[560/420] sm:mx-3">
         <div
@@ -599,7 +635,7 @@ function WebsiteBento({ includes }: { includes: Service["includes"] }) {
               <Icon className="size-4" aria-hidden />
             </span>
             <h3 className="mt-3 text-base font-semibold">{item.title}</h3>
-            <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
+            <p className="mt-1.5 text-sm leading-6 text-mist">{includeCopy[item.title] ?? item.text}</p>
           </li>
         )
       })}

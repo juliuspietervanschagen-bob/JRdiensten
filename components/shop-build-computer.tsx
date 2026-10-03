@@ -163,8 +163,9 @@ export function ShopBuildComputer() {
           Eerst de prompt, dan de code
         </h2>
         <p className="mt-3 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
-          Je zegt wat de shop moet kunnen. Op het scherm verschijnen die prompts, daarna de code, en
-          dan de homepage van de winkel.
+          Je zegt wat de shop moet kunnen: welke producten erin zitten, hoe de checkout telt en
+          wanneer een order echt geplaatst is. Daaruit komen de prompts, daarna de code die de
+          winkel opbouwt, en als laatste de homepage die de live collectie toont.
         </p>
       </div>
       <div className="mt-6 flex min-h-[280px] min-w-0 flex-1 items-center">
