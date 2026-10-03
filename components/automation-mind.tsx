@@ -5,38 +5,12 @@ import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 
-const VIEW_W = 960
-const VIEW_H = 560
-
-const sources = [
-  { label: "Website", x: 118, y: 148 },
-  { label: "Inbox", x: 118, y: 412 },
-  { label: "Webshop", x: 842, y: 148 },
-  { label: "Voorraad", x: 842, y: 412 },
-]
-
-const nodes = [
-  { x: 328, y: 214 },
-  { x: 328, y: 358 },
-  { x: 632, y: 214 },
-  { x: 632, y: 358 },
-]
-
-const paths = [
-  "M168 148 C 230 156, 286 186, 328 214 C 386 254, 424 272, 458 286",
-  "M168 412 C 230 404, 286 380, 328 358 C 386 322, 424 304, 458 294",
-  "M792 148 C 730 156, 674 186, 632 214 C 574 254, 536 272, 502 286",
-  "M792 412 C 730 404, 674 380, 632 358 C 574 322, 536 304, 502 294",
-]
-
-const folds = [
-  "M400 248 C 428 258, 442 282, 422 306",
-  "M392 302 C 422 310, 438 334, 414 354",
-  "M560 248 C 532 258, 518 282, 538 306",
-  "M568 302 C 538 310, 522 334, 546 354",
-]
+const VIEW_W = 640
+const VIEW_H = 540
+const CX = 320
+const CY = 268
 
 const signals = [
   "Een bericht van de website is doorgezet.",
@@ -45,121 +19,73 @@ const signals = [
   "De status is bijgewerkt. Niemand typte het over.",
 ]
 
-type PathDot = { path: number; t: number; speed: number }
+const palette = ["#22d3ee", "#4ade80", "#facc15", "#fb7185", "#c084fc", "#60a5fa", "#f9a8d4"]
+
+const flows = [
+  { label: "Website", deg: 206, color: "#facc15" },
+  { label: "Inbox", deg: 150, color: "#22d3ee" },
+  { label: "Webshop", deg: -34, color: "#4ade80" },
+  { label: "Voorraad", deg: 30, color: "#e879f9" },
+].map((source) => {
+  const node = polar(source.deg, 168)
+  const start = polar(source.deg, 232)
+  const end = polar(source.deg, 92)
+  const midX = (node.x + end.x) / 2
+  const midY = (node.y + end.y) / 2
+  const rad = (source.deg * Math.PI) / 180
+  const bendX = midX - Math.sin(rad) * 14
+  const bendY = midY + Math.cos(rad) * 14
+  return {
+    ...source,
+    node,
+    at: polar(source.deg, 226),
+    d: `M ${r1(start.x)} ${r1(start.y)} L ${r1(node.x)} ${r1(node.y)} Q ${r1(bendX)} ${r1(bendY)} ${r1(end.x)} ${r1(end.y)}`,
+  }
+})
+
+const ring = [
+  { from: -90, to: -30, color: "#4ade80" },
+  { from: -30, to: 30, color: "#22d3ee" },
+  { from: 30, to: 90, color: "#60a5fa" },
+  { from: 90, to: 150, color: "#c084fc" },
+  { from: 150, to: 210, color: "#fb7185" },
+  { from: 210, to: 270, color: "#facc15" },
+].map((part) => ({ ...part, d: arc(CX, CY, 168, part.from, part.to) }))
+
+const wires = [
+  ["M236 214 C 268 224, 286 250, 256 276", "#22d3ee"],
+  ["M226 248 C 260 240, 282 270, 250 300", "#4ade80"],
+  ["M248 228 C 280 246, 266 284, 302 302", "#facc15"],
+  ["M230 288 C 262 296, 278 320, 248 336", "#fb7185"],
+  ["M262 206 C 294 226, 278 258, 306 276", "#c084fc"],
+  ["M242 262 C 272 274, 254 312, 288 324", "#60a5fa"],
+  ["M404 214 C 372 224, 354 250, 384 276", "#22d3ee"],
+  ["M414 248 C 380 240, 358 270, 390 300", "#4ade80"],
+  ["M392 228 C 360 246, 374 284, 338 302", "#facc15"],
+  ["M410 288 C 378 296, 362 320, 392 336", "#fb7185"],
+  ["M378 206 C 346 226, 362 258, 334 276", "#c084fc"],
+  ["M398 262 C 368 274, 386 312, 352 324", "#60a5fa"],
+] as const
+
+const stars = Array.from({ length: 56 }, (_, index) => {
+  const x = 18 + ((index * 137) % 604)
+  const y = 16 + ((index * 89) % 508)
+  const dx = x - CX
+  const dy = y - CY
+  if (dx * dx + dy * dy < 176 * 176) return null
+  return {
+    x,
+    y,
+    r: index % 6 === 0 ? 1.7 : 1,
+    color: palette[index % palette.length],
+    delay: `${(index % 9) * -0.42}s`,
+  }
+}).filter((star) => star !== null)
+
+type Rider = { path: number; t: number; speed: number }
 
 export function AutomationMind({ service }: { service: Service }) {
-  const stageRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const labelRefs = useRef<(HTMLDivElement | null)[]>([])
   const [signal, setSignal] = useState(0)
-  const signalRef = useRef(0)
-
-  useEffect(() => {
-    const stage = stageRef.current
-    const canvas = canvasRef.current
-    if (!stage || !canvas) return
-
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const holder = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-    holder.setAttribute("viewBox", `0 0 ${VIEW_W} ${VIEW_H}`)
-    holder.style.position = "absolute"
-    holder.style.width = "0"
-    holder.style.height = "0"
-    const pathNodes = paths.map((d) => {
-      const node = document.createElementNS("http://www.w3.org/2000/svg", "path")
-      node.setAttribute("d", d)
-      holder.appendChild(node)
-      return node
-    })
-    stage.appendChild(holder)
-    const lengths = pathNodes.map((node) => node.getTotalLength())
-
-    const riders: PathDot[] = paths.flatMap((_, path) =>
-      Array.from({ length: 7 }, (_, index) => ({
-        path,
-        t: reduce ? (index + 0.35) / 7 : (index + Math.random()) / 7,
-        speed: 0.0015 + ((path + index) % 4) * 0.00032,
-      })),
-    )
-
-    let frame = 0
-    let lastSignal = 0
-    const context = canvas.getContext("2d")
-    if (!context) return
-
-    function fit() {
-      const width = stage.clientWidth
-      const height = stage.clientHeight
-      const scale = Math.min(width / VIEW_W, height / VIEW_H)
-      const ox = (width - VIEW_W * scale) / 2
-      const oy = (height - VIEW_H * scale) / 2
-      sources.forEach((source, index) => {
-        const label = labelRefs.current[index]
-        if (!label) return
-        label.style.left = `${ox + source.x * scale}px`
-        label.style.top = `${oy + source.y * scale}px`
-      })
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      canvas.width = Math.max(1, Math.floor(width * dpr))
-      canvas.height = Math.max(1, Math.floor(height * dpr))
-      context.setTransform(dpr, 0, 0, dpr, 0, 0)
-      return { scale, ox, oy, width, height }
-    }
-
-    let box = fit()
-
-    function draw() {
-      context.clearRect(0, 0, box.width, box.height)
-      const { scale, ox, oy } = box
-      const toX = (x: number) => ox + x * scale
-      const toY = (y: number) => oy + y * scale
-
-      for (const rider of riders) {
-        const node = pathNodes[rider.path]
-        const length = lengths[rider.path]
-        for (let step = 5; step >= 0; step -= 1) {
-          const point = node.getPointAtLength(Math.max(0, rider.t - step * 0.035) * length)
-          context.fillStyle = `rgba(22,163,74,${0.18 + (5 - step) * 0.14})`
-          context.beginPath()
-          context.arc(toX(point.x), toY(point.y), (1.3 + (5 - step) * 0.28) * scale, 0, Math.PI * 2)
-          context.fill()
-        }
-      }
-    }
-
-    function step(now: number) {
-      let arrived = false
-      for (const rider of riders) {
-        rider.t += rider.speed
-        if (rider.t >= 1) {
-          rider.t = 0
-          arrived = true
-        }
-      }
-      if (arrived && now - lastSignal > 1100) {
-        lastSignal = now
-        signalRef.current = (signalRef.current + 1) % signals.length
-        setSignal(signalRef.current)
-      }
-      draw()
-      frame = window.requestAnimationFrame(step)
-    }
-
-    draw()
-    if (!reduce) frame = window.requestAnimationFrame(step)
-
-    const observer = new ResizeObserver(() => {
-      box = fit()
-      draw()
-    })
-    observer.observe(stage)
-
-    return () => {
-      window.cancelAnimationFrame(frame)
-      observer.disconnect()
-      holder.remove()
-    }
-  }, [])
 
   return (
     <>
@@ -189,70 +115,41 @@ export function AutomationMind({ service }: { service: Service }) {
           </div>
 
           <div
-            className="relative mt-10 overflow-hidden rounded-[1.75rem] bg-[#f4f7f4] ring-1 ring-[#e3eee6]"
-            aria-label="Deeltjes stromen vanuit website, webshop, inbox en voorraad naar één systeem"
+            className="relative mt-10 overflow-hidden rounded-[1.75rem] bg-[#070b16] ring-1 ring-white/10"
+            aria-label="Gekleurde deeltjes stromen vanuit website, webshop, inbox en voorraad naar één systeem"
           >
+            <div className="h-px bg-[linear-gradient(90deg,#22d3ee,#4ade80,#facc15,#fb7185,#c084fc,#60a5fa)]" />
             <div className="flex items-center justify-between px-5 pt-4 sm:px-7 sm:pt-5">
-              <p className="text-xs font-semibold tracking-[0.18em] text-brand">HET SYSTEEM</p>
-              <p className="flex items-center gap-2 text-xs text-mist">
-                <span className="mind-live size-1.5 rounded-full bg-brand" />
+              <p className="text-xs font-semibold tracking-[0.18em] text-white/80">HET SYSTEEM</p>
+              <p className="flex items-center gap-2 text-xs text-white/60">
+                <span className="mind-live size-1.5 rounded-full bg-[#22d3ee]" />
                 Loopt
               </p>
             </div>
-            <div ref={stageRef} className="relative h-[320px] sm:h-[540px]">
-              <svg
-                className="absolute inset-0 h-full w-full"
-                viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-                preserveAspectRatio="xMidYMid meet"
-                aria-hidden
-              >
-                <g fill="none" strokeLinecap="round">
-                  <circle cx="480" cy="286" r="176" stroke="#16a34a" strokeWidth="1.4" />
-                  <path
-                    stroke="#141414"
-                    strokeWidth="1.6"
-                    d="M473 224 C 458 206, 422 201, 397 221 C 372 240, 363 275, 371 309 C 378 343, 404 368, 440 374 C 462 377, 474 357, 471 332 C 469 303, 473 260, 473 224 Z"
-                  />
-                  <path
-                    stroke="#141414"
-                    strokeWidth="1.6"
-                    d="M487 224 C 502 206, 538 201, 563 221 C 588 240, 597 275, 589 309 C 582 343, 556 368, 520 374 C 498 377, 486 357, 489 332 C 491 303, 487 260, 487 224 Z"
-                  />
-                  <path stroke="#16a34a" strokeWidth="1.25" d="M480 228 C 476 270, 484 322, 480 362" />
-                  {folds.map((d) => (
-                    <path key={d} d={d} stroke="#141414" strokeWidth="1.15" strokeOpacity="0.7" />
-                  ))}
-                  <path
-                    stroke="#141414"
-                    strokeWidth="1.45"
-                    d="M452 378 C 455 414, 505 414, 508 378 C 505 366, 455 366, 452 378 Z"
-                  />
-                  <path stroke="#141414" strokeWidth="1.1" strokeOpacity="0.55" d="M462 390 C 480 396, 498 390" />
-                  <path stroke="#141414" strokeWidth="1.1" strokeOpacity="0.55" d="M458 402 C 480 409, 502 402" />
-                </g>
-                {nodes.map((node) => (
-                  <circle key={`${node.x}-${node.y}`} cx={node.x} cy={node.y} r="5.5" fill="#ffffff" stroke="#16a34a" strokeWidth="1.6" />
-                ))}
-              </svg>
-              <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" />
-              {sources.map((source, index) => (
-                <div
-                  key={source.label}
-                  ref={(node) => {
-                    labelRefs.current[index] = node
-                  }}
-                  className="absolute z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-ink shadow-[0_10px_24px_-16px_rgba(0,0,0,0.45)] ring-1 ring-[#e4eee6]"
-                  style={{ left: `${(source.x / VIEW_W) * 100}%`, top: `${(source.y / VIEW_H) * 100}%` }}
-                >
-                  {source.label}
-                </div>
-              ))}
+
+            <div className="mt-3 grid grid-cols-2 gap-2.5 px-3 pb-4 sm:grid-cols-[minmax(0,11.5rem)_minmax(0,1fr)_minmax(0,11.5rem)] sm:gap-3 sm:px-5 sm:pb-5">
+              <div className="relative col-span-2 h-[420px] sm:col-span-1 sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:h-auto sm:min-h-[540px]">
+                <MatrixBrain onPulse={() => setSignal((current) => (current + 1) % signals.length)} />
+              </div>
+              <Panel className="sm:col-start-1 sm:row-start-1" title="Signalen" accent="#22d3ee">
+                <SignalGraphic />
+              </Panel>
+              <Panel className="sm:col-start-3 sm:row-start-1" title="Routes" accent="#4ade80">
+                <RouteGraphic />
+              </Panel>
+              <Panel className="sm:col-start-1 sm:row-start-2" title="Volume" accent="#60a5fa">
+                <VolumeGraphic />
+              </Panel>
+              <Panel className="sm:col-start-3 sm:row-start-2" title="Terugkoppeling" accent="#e879f9">
+                <FeedbackGraphic />
+              </Panel>
             </div>
-            <div className="flex items-center justify-between gap-4 border-t border-[#e3eee6] px-5 py-3.5 sm:px-7">
-              <p className="min-w-0 text-sm text-ink" aria-live="polite">
+
+            <div className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-3.5 sm:px-7">
+              <p className="min-w-0 text-sm text-white/85" aria-live="polite">
                 {signals[signal]}
               </p>
-              <p className="hidden shrink-0 text-xs tracking-wide text-mist sm:block">Vier bronnen, één systeem</p>
+              <p className="hidden shrink-0 text-xs tracking-wide text-white/45 sm:block">Vier bronnen, één systeem</p>
             </div>
           </div>
 
@@ -310,3 +207,318 @@ export function AutomationMind({ service }: { service: Service }) {
   )
 }
 
+function MatrixBrain({ onPulse }: { onPulse: () => void }) {
+  const stageRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const labelRefs = useRef<(HTMLDivElement | null)[]>([])
+  const onPulseRef = useRef(onPulse)
+  onPulseRef.current = onPulse
+
+  useEffect(() => {
+    const stage = stageRef.current
+    const canvas = canvasRef.current
+    if (!stage || !canvas) return
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const holder = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+    holder.setAttribute("viewBox", `0 0 ${VIEW_W} ${VIEW_H}`)
+    holder.style.position = "absolute"
+    holder.style.width = "0"
+    holder.style.height = "0"
+    const pathNodes = flows.map((flow) => {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", "path")
+      node.setAttribute("d", flow.d)
+      holder.appendChild(node)
+      return node
+    })
+    stage.appendChild(holder)
+    const lengths = pathNodes.map((node) => node.getTotalLength())
+    const rgb = flows.map((flow) => hexRgb(flow.color))
+
+    const riders: Rider[] = flows.flatMap((_, path) =>
+      Array.from({ length: 9 }, (_, index) => ({
+        path,
+        t: reduce ? (index + 0.4) / 9 : (index + Math.random()) / 9,
+        speed: 0.0021 + ((path + index) % 5) * 0.00038,
+      })),
+    )
+
+    let frame = 0
+    let lastSignal = 0
+    const context = canvas.getContext("2d")
+    if (!context) return
+
+    function fit() {
+      const width = stage.clientWidth
+      const height = stage.clientHeight
+      const scale = Math.min(width / VIEW_W, height / VIEW_H)
+      const ox = (width - VIEW_W * scale) / 2
+      const oy = (height - VIEW_H * scale) / 2
+      flows.forEach((flow, index) => {
+        const label = labelRefs.current[index]
+        if (!label) return
+        label.style.left = `${ox + flow.at.x * scale}px`
+        label.style.top = `${oy + flow.at.y * scale}px`
+      })
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = Math.max(1, Math.floor(width * dpr))
+      canvas.height = Math.max(1, Math.floor(height * dpr))
+      context.setTransform(dpr, 0, 0, dpr, 0, 0)
+      return { scale, ox, oy, width, height }
+    }
+
+    let box = fit()
+
+    function draw() {
+      context.clearRect(0, 0, box.width, box.height)
+      const { scale, ox, oy } = box
+      const toX = (x: number) => ox + x * scale
+      const toY = (y: number) => oy + y * scale
+
+      for (const rider of riders) {
+        const node = pathNodes[rider.path]
+        const length = lengths[rider.path]
+        const { r, g, b } = rgb[rider.path]
+        for (let step = 6; step >= 0; step -= 1) {
+          const point = node.getPointAtLength(Math.max(0, rider.t - step * 0.028) * length)
+          const alpha = 0.12 + (6 - step) * 0.13
+          context.fillStyle = `rgba(${r},${g},${b},${alpha})`
+          context.beginPath()
+          context.arc(toX(point.x), toY(point.y), (1.15 + (6 - step) * 0.34) * scale, 0, Math.PI * 2)
+          context.fill()
+        }
+      }
+    }
+
+    function step(now: number) {
+      let arrived = false
+      for (const rider of riders) {
+        rider.t += rider.speed
+        if (rider.t >= 1) {
+          rider.t = 0
+          arrived = true
+        }
+      }
+      if (arrived && now - lastSignal > 1100) {
+        lastSignal = now
+        onPulseRef.current()
+      }
+      draw()
+      frame = window.requestAnimationFrame(step)
+    }
+
+    draw()
+    if (!reduce) frame = window.requestAnimationFrame(step)
+
+    const observer = new ResizeObserver(() => {
+      box = fit()
+      draw()
+    })
+    observer.observe(stage)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      observer.disconnect()
+      holder.remove()
+    }
+  }, [])
+
+  return (
+    <div ref={stageRef} className="absolute inset-0">
+      <svg
+        className="absolute inset-0 h-full w-full"
+        viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden
+      >
+        {stars.map((star) => (
+          <circle
+            key={`${star.x}-${star.y}`}
+            className="matrix-star"
+            cx={star.x}
+            cy={star.y}
+            r={star.r}
+            fill={star.color}
+            style={{ animationDelay: star.delay }}
+          />
+        ))}
+        <ellipse cx={CX} cy={CY} rx="168" ry="148" fill="url(#mindGlow)" />
+        <g fill="none" strokeLinecap="round">
+          {ring.map((part) => (
+            <path key={part.color} d={part.d} stroke={part.color} strokeWidth="2.4" />
+          ))}
+          <path
+            stroke="#e8eef8"
+            strokeWidth="1.45"
+            d="M312 196 C 298 180, 262 176, 238 196 C 214 216, 206 250, 214 284 C 222 316, 248 340, 284 346 C 306 348, 318 330, 314 306 C 312 278, 312 230, 312 196 Z"
+          />
+          <path
+            stroke="#e8eef8"
+            strokeWidth="1.45"
+            d="M328 196 C 342 180, 378 176, 402 196 C 426 216, 434 250, 426 284 C 418 316, 392 340, 356 346 C 334 348, 322 330, 326 306 C 328 278, 328 230, 328 196 Z"
+          />
+          <path stroke="#22d3ee" strokeWidth="1.2" d="M320 204 C 316 246, 324 304, 320 338" />
+          {wires.map(([d, color]) => (
+            <path key={d} d={d} stroke={color} strokeWidth="1.15" strokeOpacity="0.9" />
+          ))}
+          <path
+            stroke="#e8eef8"
+            strokeWidth="1.35"
+            d="M292 342 C 296 378, 344 378, 348 342 C 344 330, 296 330, 292 342 Z"
+          />
+          <path stroke="#4ade80" strokeWidth="1.05" d="M302 350 C 320 356, 338 350" />
+          <path stroke="#facc15" strokeWidth="1.05" d="M300 362 C 320 369, 340 362" />
+        </g>
+        {flows.map((flow) => (
+          <g key={flow.label}>
+            <circle cx={flow.node.x} cy={flow.node.y} r="11" fill={flow.color} opacity="0.22" />
+            <circle cx={flow.node.x} cy={flow.node.y} r="5.5" fill={flow.color} />
+          </g>
+        ))}
+        <defs>
+          <radialGradient id="mindGlow" cx="50%" cy="46%" r="50%">
+            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.28" />
+            <stop offset="42%" stopColor="#e879f9" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="#070b16" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" />
+      {flows.map((flow, index) => (
+        <div
+          key={flow.label}
+          ref={(node) => {
+            labelRefs.current[index] = node
+          }}
+          className="absolute z-10 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-full bg-[#0c1424]/90 px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap text-white"
+          style={{
+            left: `${(flow.at.x / VIEW_W) * 100}%`,
+            top: `${(flow.at.y / VIEW_H) * 100}%`,
+            boxShadow: `0 0 0 1px ${flow.color}88`,
+          }}
+        >
+          <span className="size-1.5 rounded-full" style={{ background: flow.color }} />
+          {flow.label}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function Panel({
+  title,
+  accent,
+  className,
+  children,
+}: {
+  title: string
+  accent: string
+  className?: string
+  children: ReactNode
+}) {
+  return (
+    <article className={`flex min-h-[148px] flex-col rounded-2xl bg-[#0d1526] p-3 ring-1 ring-white/10 ${className ?? ""}`}>
+      <p className="text-[10px] font-semibold tracking-[0.16em] uppercase" style={{ color: accent }}>
+        {title}
+      </p>
+      <div className="mt-2 flex min-h-0 flex-1 items-center">{children}</div>
+    </article>
+  )
+}
+
+function SignalGraphic() {
+  return (
+    <svg viewBox="0 0 160 96" className="h-full w-full" aria-hidden>
+      <path d="M8 78 H152 M8 78 V14" stroke="#1e293b" strokeWidth="1" />
+      <path className="matrix-draw" d="M12 62 L30 56 L46 66 L64 44 L82 50 L102 32 L122 28 L148 16" fill="none" stroke="#22d3ee" strokeWidth="1.6" strokeLinecap="round" />
+      <path className="matrix-draw" d="M12 70 L32 64 L50 58 L70 60 L90 42 L112 46 L130 30 L148 26" fill="none" stroke="#facc15" strokeWidth="1.6" strokeLinecap="round" style={{ animationDelay: "0.25s" }} />
+      <path className="matrix-draw" d="M12 74 L34 68 L52 72 L74 54 L96 58 L116 40 L134 44 L148 34" fill="none" stroke="#fb7185" strokeWidth="1.6" strokeLinecap="round" style={{ animationDelay: "0.45s" }} />
+      <g className="fill-current text-[8px]" fill="#94a3b8">
+        <circle cx="14" cy="90" r="2" fill="#22d3ee" />
+        <text x="20" y="93">Instroom</text>
+        <circle cx="68" cy="90" r="2" fill="#facc15" />
+        <text x="74" y="93">Kosten</text>
+        <circle cx="112" cy="90" r="2" fill="#fb7185" />
+        <text x="118" y="93">Tijd</text>
+      </g>
+    </svg>
+  )
+}
+
+function RouteGraphic() {
+  return (
+    <svg viewBox="0 0 160 120" className="h-full w-full" aria-hidden>
+      <ellipse cx="34" cy="36" rx="9" ry="16" fill="#12324e" />
+      <ellipse cx="62" cy="40" rx="7" ry="15" fill="#12324e" />
+      <ellipse cx="96" cy="34" rx="16" ry="11" fill="#12324e" />
+      <path className="matrix-draw" d="M40 32 C 58 18, 78 20, 96 30" fill="none" stroke="#22d3ee" strokeWidth="1.4" />
+      <path className="matrix-draw" d="M36 46 C 58 58, 80 50, 108 38" fill="none" stroke="#fb923c" strokeWidth="1.4" style={{ animationDelay: "0.3s" }} />
+      <circle cx="40" cy="32" r="2" fill="#22d3ee" />
+      <circle cx="96" cy="30" r="2" fill="#facc15" />
+      <circle cx="108" cy="38" r="2" fill="#fb923c" />
+      <path d="M18 102 A 22 22 0 1 1 62 102" fill="none" stroke="#1e293b" strokeWidth="5" strokeLinecap="round" />
+      <path d="M18 102 A 22 22 0 0 1 52 84" fill="none" stroke="#4ade80" strokeWidth="5" strokeLinecap="round" />
+      <path d="M40 102 L40 88" stroke="#e8eef8" strokeWidth="1.4" strokeLinecap="round" />
+      {[0, 1, 2, 3].map((bar) => (
+        <rect key={bar} className="matrix-bar" x={78 + bar * 16} y={96 - bar * 8} width="8" height={14 + bar * 8} rx="1.5" fill={palette[bar + 2]} style={{ animationDelay: `${bar * 0.08}s` }} />
+      ))}
+    </svg>
+  )
+}
+
+function VolumeGraphic() {
+  const heights = [28, 36, 32, 48, 44, 62, 70, 84]
+  return (
+    <svg viewBox="0 0 160 96" className="h-full w-full" aria-hidden>
+      {heights.map((height, index) => (
+        <rect
+          key={height}
+          className="matrix-bar"
+          x={10 + index * 18}
+          y={88 - height}
+          width="12"
+          height={height}
+          rx="1.5"
+          fill={index > 5 ? "#7dd3fc" : "#3b82f6"}
+          style={{ animationDelay: `${index * 0.06}s` }}
+        />
+      ))}
+    </svg>
+  )
+}
+
+function FeedbackGraphic() {
+  return (
+    <svg viewBox="0 0 160 96" className="h-full w-full" aria-hidden>
+      <path d="M8 80 H150" stroke="#1e293b" strokeWidth="1" />
+      <path className="matrix-draw" d="M10 68 L28 64 L44 70 L62 52 L80 58 L98 36 L116 42 L134 22 L148 14" fill="none" stroke="#22d3ee" strokeWidth="1.6" strokeLinecap="round" />
+      <path className="matrix-draw" d="M10 76 L30 72 L48 66 L66 68 L84 50 L104 54 L122 34 L148 26" fill="none" stroke="#f9a8d4" strokeWidth="1.6" strokeLinecap="round" style={{ animationDelay: "0.2s" }} />
+      <path d="M140 14 L150 12 L146 22" fill="none" stroke="#4ade80" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function polar(deg: number, radius: number) {
+  const rad = (deg * Math.PI) / 180
+  return { x: CX + radius * Math.cos(rad), y: CY + radius * Math.sin(rad) }
+}
+
+function r1(value: number) {
+  return Math.round(value * 10) / 10
+}
+
+function arc(cx: number, cy: number, radius: number, start: number, end: number) {
+  const a0 = (start * Math.PI) / 180
+  const a1 = (end * Math.PI) / 180
+  const x0 = cx + radius * Math.cos(a0)
+  const y0 = cy + radius * Math.sin(a0)
+  const x1 = cx + radius * Math.cos(a1)
+  const y1 = cy + radius * Math.sin(a1)
+  const large = end - start > 180 ? 1 : 0
+  return `M ${r1(x0)} ${r1(y0)} A ${radius} ${radius} 0 ${large} 1 ${r1(x1)} ${r1(y1)}`
+}
+
+function hexRgb(hex: string) {
+  const value = parseInt(hex.slice(1), 16)
+  return { r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255 }
+}

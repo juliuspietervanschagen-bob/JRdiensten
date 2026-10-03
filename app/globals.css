@@ -629,6 +629,50 @@
   animation-delay: -1.6s;
 }
 
+@keyframes matrix-draw {
+  from {
+    stroke-dashoffset: 180;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.matrix-draw {
+  stroke-dasharray: 180;
+  stroke-dashoffset: 180;
+  animation: matrix-draw 2.6s ease-out forwards;
+}
+
+@keyframes matrix-bar {
+  from {
+    transform: scaleY(0.15);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.matrix-bar {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: matrix-bar 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes matrix-star {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+.matrix-star {
+  animation: matrix-star 3.8s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -661,7 +705,10 @@
   .pakket-row,
   .pakket-pin,
   .pakket-dot,
-  .pakket-check {
+  .pakket-check,
+  .matrix-draw,
+  .matrix-bar,
+  .matrix-star {
     animation: none;
   }
 
@@ -721,5 +768,17 @@
 
   .pakket-check {
     opacity: 1;
+  }
+
+  .matrix-draw {
+    stroke-dashoffset: 0;
+  }
+
+  .matrix-bar {
+    transform: scaleY(1);
+  }
+
+  .matrix-star {
+    opacity: 0.8;
   }
 }
