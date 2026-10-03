@@ -3,6 +3,7 @@ import { Container } from "@/components/container"
 import { ServiceArt } from "@/components/service-art"
 import { AppForge } from "@/components/app-forge"
 import { WebsiteBuild } from "@/components/website-build"
+import { WebshopHero } from "@/components/webshop-hero"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { WebshopStudio } from "@/components/webshop-studio"
 import { formatFromPrice, services, type Service } from "@/lib/services"
@@ -62,6 +63,9 @@ export function ServiceDetail({ service }: { service: Service }) {
 
   return (
     <main>
+      {service.slug === "webshop" ? (
+        <WebshopHero service={service} />
+      ) : (
       <section className="overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-20">
         <Container className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="hero-in">
@@ -99,6 +103,7 @@ export function ServiceDetail({ service }: { service: Service }) {
           </div>
         </Container>
       </section>
+      )}
 
       {service.slug === "website" || service.slug === "app" ? null : (
       <section className="section-wash py-10 sm:py-12">

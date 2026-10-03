@@ -307,6 +307,34 @@
   animation: shop-hero 9s linear infinite;
 }
 
+@keyframes shop-scene {
+  0%,
+  14% {
+    opacity: 1;
+  }
+  20%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.shop-scene {
+  opacity: 0;
+  animation:
+    shop-scene 28s linear infinite,
+    shop-drift 22s ease-in-out infinite;
+}
+
+@keyframes shop-drift {
+  0%,
+  100% {
+    transform: scale(1.08) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.16) translate3d(-1.6%, -1.2%, 0);
+  }
+}
+
 @keyframes prompt-scan {
   from {
     transform: translateY(-130%);
@@ -447,6 +475,7 @@
   .shop-marquee,
   .shop-float,
   .shop-hero,
+  .shop-scene,
   .prompt-scan,
   .app-rise,
   .app-toast,
@@ -475,6 +504,7 @@
   }
 
   .shop-hero:first-child,
+  .shop-scene:first-child,
   .app-rise,
   .app-toast {
     opacity: 1;
