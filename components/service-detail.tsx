@@ -68,7 +68,7 @@ export function ServiceDetail({ service }: { service: Service }) {
         <WebshopHero service={service} />
       ) : service.slug === "automatisering" ? (
         <AutomationMind service={service} />
-      ) : (
+      ) : service.slug === "website" ? null : (
       <section className="overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-20">
         <Container className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="hero-in">

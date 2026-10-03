@@ -2,6 +2,7 @@
 
 import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
+import Link from "next/link"
 import { cn } from "cn"
 import {
   House,
@@ -158,21 +159,23 @@ function flowPath(
 
 export function WebsiteBuild({ service }: { service: Service }) {
   return (
-    <section className="pt-16 pb-8 sm:pt-20 sm:pb-10">
+    <section className="overflow-hidden pt-8 pb-8 sm:pt-12 sm:pb-10">
       <Container>
-        <div className="max-w-2xl">
-          <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
-            <span className="h-px w-8 bg-brand" />
-            DE OPBOUW
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-            Van losse informatie naar een site
-          </h2>
-          <p className="mt-3 max-w-xl text-mist">
-            Jullie vertellen wie je bent en wat je doet. Daar maken we pagina's van die naar elkaar
-            wijzen, en die eindigen bij contact.
-          </p>
-        </div>
+        <p className="text-sm text-mist">
+          <Link href="/" className="hover:text-ink">
+            Home
+          </Link>
+          <span className="px-2">/</span>
+          <span className="text-ink">{service.title}</span>
+        </p>
+        <p className="mt-6 flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
+          <span className="h-px w-8 bg-brand" />
+          WEBSITE
+        </p>
+        <h1 className="mt-4 max-w-2xl text-4xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.05]">
+          {service.title}
+        </h1>
+        <p className="mt-5 max-w-xl text-lg leading-8 text-mist">{service.summary}</p>
 
         <div className="mt-10 grid items-stretch gap-4 lg:grid-cols-[1.05fr_0.95fr] lg:[grid-template-areas:'translate_graph'_'bento_bento'_'steps_steps']">
           <div className="hero-in h-full lg:[grid-area:translate]">
