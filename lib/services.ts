@@ -15,37 +15,37 @@ export const webshopJourney: JourneyStep[] = [
   {
     word: "Contact",
     title: "Jullie nemen contact op",
-    text: "Een korte mail is genoeg om te starten.",
+    text: "Een korte mail is genoeg. We plannen het gesprek waarin we de shop doornemen.",
   },
   {
     word: "Gesprek",
-    title: "Details van jullie webshop",
-    text: "We bespreken wat je verkoopt, hoe het verzonden wordt en wat een klant zelf moet kunnen, zonder dat iemand het hoeft uit te leggen.",
+    title: "We bespreken jullie webshop",
+    text: "Jullie kennen de producten. Wij kennen de shop. Die vaardigheden leggen we bij elkaar. We kijken naar de betaalmethodes, de vormgeving, waar de bijzondere producten staan, en welke tabbladen alleen bij deze shop horen.",
   },
   {
     word: "Prijs",
     title: "Een vaste prijs",
-    text: "Je krijgt één prijs voor die shop: assortiment, checkout en de mails die na een bestelling de deur uit gaan. We beginnen pas als dat bedrag vaststaat.",
+    text: "Je krijgt één prijs voor wat we hebben afgesproken: vormgeving, producten, de knop bij een artikel, de winkelwagen, het betalen en de mail na een bestelling. We beginnen pas als dat bedrag vaststaat.",
   },
   {
     word: "Bouwen",
     title: "Bouwen en testen",
-    text: "We zetten de shop neer en laden een eerste set producten, met varianten en verzendkosten. Daarna plaatsen we zelf een bestelling, van de winkelwagen tot de betaalbevestiging, zodat een dubbele klik geen tweede order wordt.",
+    text: "We zetten de vormgeving neer, de knoppen bij elk product en de plek voor de bijzondere artikelen. De tabbladen die alleen bij jullie horen komen in de shop. Bij een product staan de gegevens die een klant nodig heeft: informatie, een locatie of een kenmerk. Daarna doen we zelf een bestelling, van de winkelwagen tot de betaling, zodat een dubbele klik geen tweede order wordt.",
   },
   {
     word: "Oplevering",
     title: "De shop wordt opgeleverd",
-    text: "De shop komt bij jullie met de producten die erin horen en een checkout die een echte betaling aankan. Je ziet waar een order binnenkomt, hoe je de status zet en welke mail de klant dan krijgt.",
+    text: "De shop komt bij jullie met die tabbladen, de winkelwagen en een checkout die de afgesproken betaalmethodes aankan. Na het bestellen gaan de bon en de mail de deur uit. Je ziet waar de order binnenkomt en hoe je de status zet.",
   },
   {
     word: "Review",
     title: "Samen nalopen",
-    text: "We lopen de productpagina, de winkelwagen en de bevestigingsmail samen na, op een telefoon en op een groot scherm. Wat in de afspraak zat en nog niet klopt, passen we aan voordat de shop voor klanten opengaat.",
+    text: "We lopen de productknop, de plek van de bijzondere producten, de winkelwagen en jullie eigen tabbladen samen na. Ook de bon en de mail na het bestellen, op een telefoon en op een groot scherm. Wat in de afspraak zat en nog niet klopt, passen we aan voordat de shop opengaat.",
   },
   {
     word: "Nazorg",
     title: "Altijd bereikbaar",
-    text: "Daarna blijven we bereikbaar als een betaling vastloopt, een product niet klopt of de mail niet aankomt. Je hoeft dat niet zelf uit te zoeken. Een bericht is genoeg, en we laten weten wat we hebben rechtgezet.",
+    text: "Daarna blijven we bereikbaar als een betaalmethode vastloopt, een tabblad niet klopt, of de bon of de mail niet aankomt. Je hoeft dat niet zelf uit te zoeken. Een bericht is genoeg, en we laten weten wat we hebben rechtgezet.",
   },
 ]
 
@@ -79,15 +79,15 @@ export const services: Service[] = [
     includes: [
       {
         title: "Assortiment dat klopt",
-        text: "Producten, varianten en categorieën, op een manier die een klant meteen snapt.",
+        text: "Producten met de informatie die erbij hoort: een locatie, een kenmerk of een andere eigenschap. Bijzondere producten krijgen een vaste plek.",
       },
       {
         title: "Korte checkout",
-        text: "Winkelwagen, verzendkosten en betalen in weinig stappen, zonder verrassing aan het eind.",
+        text: "De knop bij het product, de winkelwagen en het betalen in weinig stappen, zonder verrassing aan het eind.",
       },
       {
         title: "Betaalprovider",
-        text: "Afrekenen via een betaalprovider, inclusief methodes die Nederlandse klanten verwachten.",
+        text: "De betaalmethodes die we samen hebben gekozen, via een provider die Nederlandse klanten kennen.",
       },
       {
         title: "Bestellingen op één plek",
@@ -95,11 +95,11 @@ export const services: Service[] = [
       },
       {
         title: "Gebouwd voor de telefoon",
-        text: "De shop is eerst prettig op een klein scherm, en daarna ook op een groot scherm.",
+        text: "Vormgeving, knoppen en jullie eigen tabbladen blijven prettig op een klein scherm, en daarna ook op een groot scherm.",
       },
       {
         title: "Automatische bevestiging",
-        text: "De klant krijgt na de bestelling een mail. Jij krijgt de order binnen zonder overtikken.",
+        text: "Na het bestellen krijgt de klant een bon en een mail. Jij krijgt de order binnen zonder overtikken.",
       },
     ],
     steps: [
@@ -121,10 +121,10 @@ export const services: Service[] = [
       },
     ],
     outcomes: [
-      "Een klant kiest een product, ziet de verzendkosten en betaalt in dezelfde checkout",
-      "Nieuwe orders komen binnen met status en klantgegevens, zonder een spreadsheet",
-      "Na een geslaagde betaling gaat de bevestigingsmail vanzelf naar de klant",
-      "Productpagina, winkelwagen en afrekenen werken op telefoon en op desktop",
+      "Bijzondere producten hebben een vaste plek, met een knop die in de winkelwagen legt",
+      "De betaalmethodes die we samen hebben gekozen, in één checkout",
+      "Na het bestellen gaan de bon en de mail vanzelf naar de klant",
+      "Tabbladen die alleen bij deze shop horen, op telefoon en op desktop",
     ],
   },
   {
