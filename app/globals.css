@@ -563,6 +563,72 @@
   animation: mind-live 2.4s ease-in-out infinite;
 }
 
+@keyframes pakket-row {
+  0%,
+  10% {
+    opacity: 1;
+  }
+  16%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.pakket-row {
+  opacity: 0;
+  animation: pakket-row 18s linear infinite;
+}
+
+@keyframes pakket-pin {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.45);
+    opacity: 0.45;
+  }
+}
+
+.pakket-pin {
+  animation: pakket-pin 2.8s ease-in-out infinite;
+}
+
+@keyframes pakket-dot {
+  0%,
+  100% {
+    left: 0;
+  }
+  50% {
+    left: calc(100% - 8px);
+  }
+}
+
+.pakket-dot {
+  left: 0;
+  animation: pakket-dot 3.8s ease-in-out infinite;
+}
+
+@keyframes pakket-check {
+  0%,
+  35% {
+    opacity: 0.2;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.pakket-check {
+  animation: pakket-check 3.2s ease-in-out infinite;
+}
+
+.pakket-check-late {
+  animation-delay: -1.6s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -591,7 +657,11 @@
   .signal-veil,
   .map-sparkle,
   .node-breathe,
-  .mind-live {
+  .mind-live,
+  .pakket-row,
+  .pakket-pin,
+  .pakket-dot,
+  .pakket-check {
     animation: none;
   }
 
@@ -639,5 +709,17 @@
 
   .slide-progress {
     width: 100%;
+  }
+
+  .pakket-row-first {
+    opacity: 1;
+  }
+
+  .pakket-dot {
+    left: calc(100% - 8px);
+  }
+
+  .pakket-check {
+    opacity: 1;
   }
 }

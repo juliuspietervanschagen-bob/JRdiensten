@@ -5,59 +5,12 @@ import { AppForge } from "@/components/app-forge"
 import { AutomationMind } from "@/components/automation-mind"
 import { WebsiteBuild } from "@/components/website-build"
 import { WebshopHero } from "@/components/webshop-hero"
+import { WebshopIncludes } from "@/components/webshop-includes"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { WebshopStudio } from "@/components/webshop-studio"
 import { formatFromPrice, services, type Service } from "@/lib/services"
-import {
-  ArrowRight,
-  BookOpen,
-  Cable,
-  Check,
-  ClipboardList,
-  CreditCard,
-  Eye,
-  Inbox,
-  LayoutGrid,
-  Mail,
-  MonitorSmartphone,
-  Palette,
-  PanelsTopLeft,
-  PenLine,
-  Search,
-  ShoppingCart,
-  Smartphone,
-  TestTube2,
-  Workflow,
-  type LucideIcon,
-} from "lucide-react"
+import { ArrowRight, Check } from "lucide-react"
 import Link from "next/link"
-
-const includeIcons: Record<string, LucideIcon> = {
-  "Assortiment dat klopt": LayoutGrid,
-  "Korte checkout": ShoppingCart,
-  "Betaalprovider": CreditCard,
-  "Bestellingen op één plek": ClipboardList,
-  "Gebouwd voor de telefoon": Smartphone,
-  "Automatische bevestiging": Mail,
-  "Ontwerp in jullie merk": Palette,
-  "Pagina's met een taak": PanelsTopLeft,
-  "Telefoon en desktop": MonitorSmartphone,
-  "Contact dat aankomt": Inbox,
-  "Vindbaar van start": Search,
-  "Zelf teksten aanpassen": PenLine,
-  "Het handwerk in beeld": Eye,
-  "Koppeling met wat je hebt": Cable,
-  "De volgende stap vanzelf": Workflow,
-  "Zicht op wat er liep": ClipboardList,
-  "Getest met jouw voorbeelden": TestTube2,
-  "Uitleg voor het team": BookOpen,
-  "App Store en Play Store": Smartphone,
-  "Schermen in jullie merk": Palette,
-  "iPhone en Android": MonitorSmartphone,
-  "Account voor de klant": Inbox,
-  "Getest op echte toestellen": TestTube2,
-  "Eerste update inbegrepen": PenLine,
-}
 
 export function ServiceDetail({ service }: { service: Service }) {
   const others = services.filter((item) => item.slug !== service.slug)
@@ -108,35 +61,7 @@ export function ServiceDetail({ service }: { service: Service }) {
       </section>
       )}
 
-      {service.slug === "website" || service.slug === "app" || service.slug === "automatisering" ? null : (
-      <section className="section-wash py-10 sm:py-12">
-        <Container>
-          <div className="max-w-2xl">
-            <h2 className="text-3xl font-semibold tracking-tight">Wat je krijgt</h2>
-            <p className="mt-2 text-mist">
-              Een afgebakend pakket. De vaste prijs volgt uit dit startpunt, voordat we beginnen.
-            </p>
-          </div>
-          <ul className="mt-6 grid grid-cols-1 gap-x-2 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-            {service.includes.map((item) => {
-              const Icon = includeIcons[item.title] ?? LayoutGrid
-              return (
-                <li
-                  key={item.title}
-                  className="relative rounded-2xl border border-brand bg-ink px-4 pt-6 pb-4 text-white transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(22,163,74,0.55)]"
-                >
-                  <span className="absolute top-0 left-3 grid size-8 -translate-y-2 place-items-center rounded-md bg-ink text-brand">
-                    <Icon className="size-5" aria-hidden />
-                  </span>
-                  <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                  <p className="mt-1.5 text-sm leading-5 text-white/70">{item.text}</p>
-                </li>
-              )
-            })}
-          </ul>
-        </Container>
-      </section>
-      )}
+      {service.slug === "webshop" ? <WebshopIncludes includes={service.includes} /> : null}
 
       {service.slug === "website" ? (
         <WebsiteBuild service={service} />
