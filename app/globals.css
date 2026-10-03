@@ -348,6 +348,69 @@
     shop-drift 22s ease-in-out infinite;
 }
 
+@keyframes aura-scene {
+  0%,
+  40% {
+    opacity: 1;
+  }
+  50%,
+  90% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.aura-scene {
+  opacity: 0;
+  animation:
+    aura-scene 18s ease-in-out infinite,
+    shop-drift 22s ease-in-out infinite;
+}
+
+.aura-scene:first-child {
+  opacity: 1;
+}
+
+.aura-drift {
+  animation: shop-drift 22s ease-in-out infinite;
+}
+
+@keyframes aura-photo {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+.aura-photo {
+  animation: aura-photo 7.5s ease-in-out infinite;
+}
+
+@keyframes aura-nav {
+  0%,
+  10% {
+    color: #141414;
+  }
+  16%,
+  100% {
+    color: #5e5e5e;
+  }
+}
+
+.aura-nav-item {
+  animation: aura-nav 18s linear infinite;
+}
+
+.aura-toast {
+  opacity: 0;
+  animation: app-toast 9s ease-in-out infinite;
+}
+
 @keyframes shop-drift {
   0%,
   100% {
@@ -516,6 +579,11 @@
   .shop-float,
   .shop-hero,
   .shop-scene,
+  .aura-scene,
+  .aura-drift,
+  .aura-photo,
+  .aura-nav-item,
+  .aura-toast,
   .prompt-scan,
   .app-rise,
   .app-toast,
@@ -546,10 +614,23 @@
 
   .shop-hero:first-child,
   .shop-scene:first-child,
+  .aura-scene:first-child,
   .app-rise,
   .app-toast {
     opacity: 1;
     transform: none;
+  }
+
+  .aura-toast {
+    opacity: 0;
+  }
+
+  .aura-nav-item {
+    color: #5e5e5e;
+  }
+
+  .aura-nav-item:first-child {
+    color: #141414;
   }
 
   .trace-grow {
