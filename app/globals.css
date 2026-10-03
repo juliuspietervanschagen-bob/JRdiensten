@@ -643,6 +643,21 @@
   box-shadow: 0 12px 24px -18px rgba(20, 20, 20, 0.45);
 }
 
+@keyframes pref-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pref-in {
+  animation: pref-in 0.35s ease;
+}
+
 @keyframes matrix-draw {
   from {
     stroke-dashoffset: 180;
@@ -721,6 +736,7 @@
   .pakket-dot,
   .pakket-check,
   .pakket-lift,
+  .pref-in,
   .matrix-draw,
   .matrix-bar,
   .matrix-star {
@@ -788,6 +804,11 @@
   .pakket-lift,
   .pakket-lift:hover {
     transition: none;
+    transform: none;
+  }
+
+  .pref-in {
+    opacity: 1;
     transform: none;
   }
 

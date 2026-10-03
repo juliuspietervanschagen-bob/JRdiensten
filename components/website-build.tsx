@@ -11,8 +11,10 @@ import {
   MonitorSmartphone,
   Palette,
   PanelsTopLeft,
+  Moon,
   PenLine,
   Search,
+  Sun,
   UserRound,
   type LucideIcon,
 } from "lucide-react"
@@ -28,12 +30,6 @@ const includeIcons: Record<string, LucideIcon> = {
 }
 
 const wideIncludes = new Set(["Ontwerp in jullie merk", "Contact dat aankomt"])
-
-const rows = [
-  { label: "Home", text: "Wie jullie zijn, in één oogopslag" },
-  { label: "Diensten", text: "Wat iemand kan laten doen" },
-  { label: "Contact", text: "Een bericht dat in de inbox landt" },
-]
 
 const includeCopy: Record<string, string> = {
   "Ontwerp in jullie merk":
@@ -177,9 +173,9 @@ export function WebsiteBuild({ service }: { service: Service }) {
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-8 text-mist">{service.summary}</p>
 
-        <div className="mt-10 grid items-stretch gap-4 lg:grid-cols-[1.05fr_0.95fr] lg:[grid-template-areas:'translate_graph'_'bento_bento'_'steps_steps']">
-          <div className="hero-in h-full lg:[grid-area:translate]">
-            <DataTranslation />
+        <div className="mt-10 grid items-stretch gap-4 lg:grid-cols-[1.05fr_0.95fr] lg:[grid-template-areas:'prefs_graph'_'bento_bento'_'steps_steps']">
+          <div className="hero-in h-full lg:[grid-area:prefs]">
+            <DetailPreferences />
           </div>
           <div className="h-full lg:[grid-area:graph]">
             <ConnectivityMap />
@@ -214,82 +210,100 @@ export function WebsiteBuild({ service }: { service: Service }) {
   )
 }
 
-function DataTranslation() {
-  const [shown, setShown] = useState(false)
+const preferenceCopy = {
+  nl: {
+    nav: ["Home", "Diensten", "Contact"],
+    kicker: "Installatie",
+    title: "We komen langs in Reeuwijk",
+    body: "Storing, onderhoud of een nieuwe plek. Eén bericht is genoeg.",
+    action: "Plan een bezoek",
+  },
+  en: {
+    nav: ["Home", "Services", "Contact"],
+    kicker: "Installation",
+    title: "We come by in Reeuwijk",
+    body: "A fault, maintenance, or a new site. One message is enough.",
+    action: "Book a visit",
+  },
+} as const
 
-  useEffect(() => {
-    const node = document.getElementById("website-translation")
-    if (!node) return
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduce) {
-      setShown(true)
-      return
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return
-        setShown(true)
-        observer.disconnect()
-      },
-      { threshold: 0.35 },
-    )
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
+function DetailPreferences() {
+  const [lang, setLang] = useState<"nl" | "en">("nl")
+  const [dark, setDark] = useState(false)
+  const copy = preferenceCopy[lang]
 
   return (
-    <article
-      id="website-translation"
-      className="h-full rounded-3xl bg-white p-5 shadow-[0_24px_50px_-36px_rgba(20,20,20,0.4)] ring-1 ring-[#e8e8e3] sm:p-6"
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold tracking-[0.16em] text-brand">VERTALING</p>
-          <h3 className="mt-2 text-xl font-semibold tracking-tight">Ruwe tekst wordt een pagina</h3>
+    <article className="flex h-full flex-col rounded-3xl bg-white p-5 shadow-[0_24px_50px_-36px_rgba(20,20,20,0.4)] ring-1 ring-[#e8e8e3] sm:p-6">
+      <p className="text-xs font-semibold tracking-[0.16em] text-brand">VOORKEUREN</p>
+      <h3 className="mt-2 text-xl font-semibold tracking-tight">Talen, licht en donker</h3>
+      <p className="mt-3 text-sm leading-6 text-mist">
+        We spreken af welke talen de site voert, en of er een lichte en een donkere stand komt.
+        Pagina's, knoppen en het formulier volgen die keuze. De bezoeker wisselt zelf. Het verhaal
+        blijft hetzelfde.
+      </p>
+
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        <div className="flex rounded-full bg-[#f3f3f1] p-1 ring-1 ring-[#e7e7e2]" role="group" aria-label="Taal">
+          {(["nl", "en"] as const).map((code) => (
+            <button
+              key={code}
+              type="button"
+              aria-pressed={lang === code}
+              onClick={() => setLang(code)}
+              className={cn(
+                "rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase transition-colors",
+                lang === code ? "bg-white text-ink shadow-[0_4px_12px_-8px_rgba(20,20,20,0.45)]" : "text-mist",
+              )}
+            >
+              {code}
+            </button>
+          ))}
         </div>
-        <div className="shrink-0 text-right">
-          <svg viewBox="0 0 84 28" className="ml-auto h-7 w-20 text-brand" aria-hidden>
-            <polyline
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              points="2,22 14,18 26,20 38,11 50,14 62,6 74,8 82,3"
-            />
-          </svg>
-          <p className="mt-1 text-sm font-semibold">4 pagina's</p>
-        </div>
+        <button
+          type="button"
+          aria-pressed={dark}
+          onClick={() => setDark((value) => !value)}
+          className="ml-auto flex items-center gap-2 rounded-full bg-[#f3f3f1] py-1 pr-1 pl-3 text-xs font-semibold text-ink ring-1 ring-[#e7e7e2]"
+        >
+          {dark ? "Donker" : "Licht"}
+          <span
+            className={cn(
+              "grid size-7 place-items-center rounded-full bg-white text-ink shadow-[0_4px_12px_-8px_rgba(20,20,20,0.5)] transition-colors",
+              dark && "bg-ink text-white",
+            )}
+          >
+            {dark ? <Moon className="size-3.5" aria-hidden /> : <Sun className="size-3.5" aria-hidden />}
+          </span>
+        </button>
       </div>
-      <div className="mt-5 grid gap-3 sm:grid-cols-[0.9fr_1.1fr]">
-        <div className="rounded-2xl bg-paper p-4">
-          <p className="text-[10px] font-semibold tracking-[0.14em] text-mist">RUW</p>
-          <p className="mt-2 text-sm leading-6 text-mist">
-            We plaatsen en onderhouden. Mensen bellen of mailen als er iets kapot is. We zitten in
-            Reeuwijk en komen langs.
+
+      <div
+        className={cn(
+          "pref-stage mt-4 flex min-h-[220px] flex-1 flex-col overflow-hidden rounded-2xl p-4 ring-1 transition-colors duration-300 motion-reduce:transition-none sm:p-5",
+          dark ? "bg-[#141414] text-[#f6f6f4] ring-white/10" : "bg-[#f6f6f4] text-ink ring-[#e7e7e2]",
+        )}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <p className={cn("text-xs font-semibold tracking-[0.16em]", dark ? "text-[#f6f6f4]" : "text-ink")}>JR</p>
+          <p className={cn("flex gap-3 text-[11px]", dark ? "text-white/55" : "text-mist")}>
+            {copy.nav.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
           </p>
         </div>
-        <div className="rounded-2xl bg-white p-4 ring-1 ring-[#eee]">
-          <p className="text-[10px] font-semibold tracking-[0.14em] text-brand">STRUCTUUR</p>
-          <ul className="mt-3 space-y-3">
-            {rows.map((row) => (
-              <li key={row.label}>
-                <div className="flex items-baseline justify-between gap-3 text-sm">
-                  <span className="font-semibold">{row.label}</span>
-                  <span className="text-mist">{row.text}</span>
-                </div>
-                <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-[#eef3ef]">
-                  <span
-                    className={cn(
-                      "site-reveal block h-full rounded-full bg-brand",
-                      shown && "is-shown",
-                    )}
-                  />
-                </span>
-              </li>
-            ))}
-          </ul>
+        <div key={`${lang}-${dark}`} className="pref-in mt-6">
+          <p className="text-[10px] font-semibold tracking-[0.16em] text-brand uppercase">{copy.kicker}</p>
+          <p className="mt-2 max-w-[16rem] text-lg leading-6 font-semibold tracking-tight">{copy.title}</p>
+          <p className={cn("mt-2 max-w-[18rem] text-sm leading-6", dark ? "text-white/60" : "text-mist")}>
+            {copy.body}
+          </p>
+          <span className="mt-4 inline-flex rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white">
+            {copy.action}
+          </span>
         </div>
+        <p className={cn("mt-auto pt-4 text-[10px] font-semibold tracking-[0.14em] uppercase", dark ? "text-white/40" : "text-mist")}>
+          {lang === "nl" ? "Nederlands" : "English"} · {dark ? "Donker" : "Licht"}
+        </p>
       </div>
     </article>
   )
