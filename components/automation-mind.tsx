@@ -67,7 +67,10 @@ const stars = Array.from({ length: 56 }, (_, index) => {
   }
 }).filter((star) => star !== null)
 
-type Rider = { path: number; t: number; speed: number }
+type StreamMote = { path: number; t: number; speed: number; offset: number; size: number }
+type FieldMote = { angle: number; radius: number; speed: number; drift: number; size: number; color: number }
+
+const fieldColors = ["#22d3ee", "#4ade80", "#facc15", "#fb7185", "#c084fc", "#60a5fa", "#f9a8d4", "#e879f9"].map(hexRgb)
 
 export function AutomationMind({ service }: { service: Service }) {
   const [signal, setSignal] = useState(0)
@@ -220,13 +223,27 @@ function MatrixBrain({ onPulse }: { onPulse: () => void }) {
     const lengths = pathNodes.map((node) => node.getTotalLength())
     const rgb = flows.map((flow) => hexRgb(flow.color))
 
-    const riders: Rider[] = flows.flatMap((_, path) =>
-      Array.from({ length: 9 }, (_, index) => ({
-        path,
-        t: reduce ? (index + 0.4) / 9 : (index + Math.random()) / 9,
-        speed: 0.0021 + ((path + index) % 5) * 0.00038,
-      })),
+    const streamCount = 16
+    const streams: StreamMote[] = flows.flatMap((_, path) =>
+      Array.from({ length: streamCount }, (_, index) => {
+        const lane = index - (streamCount - 1) / 2
+        return {
+          path,
+          t: reduce ? (index + 0.45) / streamCount : Math.random(),
+          speed: 0.00145 + ((path * 3 + index) % 7) * 0.0002,
+          offset: lane * 6.4,
+          size: 1.05 + (index % 4) * 0.42,
+        }
+      }),
     )
+    const field: FieldMote[] = Array.from({ length: 48 }, (_, index) => ({
+      angle: reduce ? (index / 48) * Math.PI * 2 : Math.random() * Math.PI * 2,
+      radius: 176 + (index % 8) * 14 + (reduce ? 0 : Math.random() * 22),
+      speed: 0.22 + (index % 5) * 0.07,
+      drift: ((index % 2 === 0 ? 1 : -1) * (0.0016 + (index % 4) * 0.0005)),
+      size: 0.7 + (index % 3) * 0.38,
+      color: index % fieldColors.length,
+    }))
 
     let frame = 0
     let lastSignal = 0
@@ -254,34 +271,76 @@ function MatrixBrain({ onPulse }: { onPulse: () => void }) {
 
     let box = fit()
 
+    function glow(x: number, y: number, radius: number, r: number, g: number, b: number, alpha: number) {
+      const paint = context.createRadialGradient(x, y, 0, x, y, radius)
+      paint.addColorStop(0, `rgba(255,255,255,${alpha})`)
+      paint.addColorStop(0.18, `rgba(${r},${g},${b},${alpha * 0.85})`)
+      paint.addColorStop(0.5, `rgba(${r},${g},${b},${alpha * 0.22})`)
+      paint.addColorStop(1, `rgba(${r},${g},${b},0)`)
+      context.fillStyle = paint
+      context.beginPath()
+      context.arc(x, y, radius, 0, Math.PI * 2)
+      context.fill()
+    }
+
+    function streamPoint(path: number, t: number, offset: number) {
+      const node = pathNodes[path]
+      const length = lengths[path]
+      const clamped = Math.min(0.992, Math.max(0, t))
+      const point = node.getPointAtLength(clamped * length)
+      const ahead = node.getPointAtLength(Math.min(0.992, clamped + 0.025) * length)
+      const dx = ahead.x - point.x
+      const dy = ahead.y - point.y
+      const mag = Math.hypot(dx, dy) || 1
+      const gather = t > 0.84 ? (1 - t) / 0.16 : 1
+      return {
+        x: point.x + (-dy / mag) * offset * gather,
+        y: point.y + (dx / mag) * offset * gather,
+      }
+    }
+
     function draw() {
       context.clearRect(0, 0, box.width, box.height)
       const { scale, ox, oy } = box
       const toX = (x: number) => ox + x * scale
       const toY = (y: number) => oy + y * scale
+      context.globalCompositeOperation = "lighter"
 
-      for (const rider of riders) {
-        const node = pathNodes[rider.path]
-        const length = lengths[rider.path]
-        const { r, g, b } = rgb[rider.path]
-        for (let step = 6; step >= 0; step -= 1) {
-          const point = node.getPointAtLength(Math.max(0, rider.t - step * 0.028) * length)
-          const alpha = 0.12 + (6 - step) * 0.13
-          context.fillStyle = `rgba(${r},${g},${b},${alpha})`
-          context.beginPath()
-          context.arc(toX(point.x), toY(point.y), (1.15 + (6 - step) * 0.34) * scale, 0, Math.PI * 2)
-          context.fill()
+      for (const mote of field) {
+        const { r, g, b } = fieldColors[mote.color]
+        const x = toX(CX + Math.cos(mote.angle) * mote.radius)
+        const y = toY(CY + Math.sin(mote.angle) * mote.radius)
+        glow(x, y, mote.size * 7.5 * scale, r, g, b, 0.72)
+      }
+
+      for (const mote of streams) {
+        const { r, g, b } = rgb[mote.path]
+        const point = streamPoint(mote.path, mote.t, mote.offset)
+        glow(toX(point.x), toY(point.y), mote.size * 8.5 * scale, r, g, b, 0.9)
+        if (mote.t > 0.05) {
+          const tail = streamPoint(mote.path, mote.t - 0.045, mote.offset * 0.92)
+          glow(toX(tail.x), toY(tail.y), mote.size * 5.2 * scale, r, g, b, 0.35)
         }
       }
+
+      context.globalCompositeOperation = "source-over"
     }
 
     function step(now: number) {
       let arrived = false
-      for (const rider of riders) {
-        rider.t += rider.speed
-        if (rider.t >= 1) {
-          rider.t = 0
+      for (const mote of streams) {
+        mote.t += mote.speed
+        if (mote.t >= 1) {
+          mote.t = 0
           arrived = true
+        }
+      }
+      for (const mote of field) {
+        mote.radius -= mote.speed
+        mote.angle += mote.drift
+        if (mote.radius < 158) {
+          mote.radius = 240 + Math.random() * 40
+          mote.angle += 0.35
         }
       }
       if (arrived && now - lastSignal > 1100) {
@@ -330,10 +389,10 @@ function MatrixBrain({ onPulse }: { onPulse: () => void }) {
         <ellipse cx={CX} cy={CY} rx="168" ry="148" fill="url(#mindGlow)" />
         <image
           href="/automation/brain.webp"
-          x={CX - 158}
-          y={CY - 122}
-          width="316"
-          height="244"
+          x={CX - 168}
+          y={CY - 126}
+          width="336"
+          height="252"
           preserveAspectRatio="xMidYMid meet"
         />
         <g fill="none" strokeLinecap="round">
