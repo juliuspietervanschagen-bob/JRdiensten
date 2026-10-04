@@ -13,6 +13,14 @@
   --color-ink: #141414;
   --color-paper: #f6f6f4;
   --color-mist: #5e5e5e;
+  --color-os-black: #000000;
+  --color-os-slate: #09090b;
+  --color-os-white: #ffffff;
+  --color-os-mist: #a1a1aa;
+  --color-os-line: #27272a;
+  --color-os-green: #10b981;
+  --color-os-signal: #00ff66;
+  --font-os: var(--font-os-mono), ui-monospace, monospace;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
