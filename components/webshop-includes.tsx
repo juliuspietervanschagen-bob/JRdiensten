@@ -70,16 +70,64 @@ function pictureFor(title: string) {
 }
 
 function AssortmentMark() {
+  const steps = [
+    { id: "1", title: "Product", text: "Naam, prijs en beeld horen bij elkaar." },
+    { id: "2", title: "Kenmerk", text: "Een locatie, een eigenschap of een ander detail." },
+    { id: "3", title: "Vaste plek", text: "Bijzondere producten blijven op hun plaats." },
+  ]
   return (
-    <div
-      className="assort-stage relative flex items-center justify-center overflow-hidden rounded-2xl bg-[#e8e7e3] px-3 py-6 ring-1 ring-[#e4e0d8] sm:px-8 sm:py-8"
-      aria-hidden
-    >
-      <span className="assort-glow pointer-events-none absolute top-1/2 left-1/2 h-[78%] w-[46%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
-      <div className="assort-logo relative w-full max-w-[36rem]">
-        <img src="/webshop/aura-assortiment.png" alt="" className="block h-auto w-full" />
-        <span className="assort-sheen pointer-events-none absolute inset-y-[6%] left-0 w-1/4 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.75),transparent)]" />
-      </div>
+    <div className="w-full max-w-[22rem]" aria-hidden>
+      <article className="overflow-hidden rounded-2xl bg-white ring-1 ring-[#e4e4df]">
+        <div className="h-1 bg-brand" />
+        <div className="relative h-[5.25rem] border-b border-[#ecece8] bg-[#f6f6f4]">
+          <AssortPreview mode="product" className="assort-card assort-card-1" />
+          <AssortPreview mode="trait" className="assort-card assort-card-2" />
+          <AssortPreview mode="place" className="assort-card assort-card-3" />
+        </div>
+        <ol className="space-y-0.5 px-2 py-2">
+          {steps.map((step) => (
+            <li key={step.id} className={`assort-step assort-step-${step.id} flex items-start gap-2.5 rounded-xl px-2 py-2`}>
+              <span className="assort-num grid size-6 shrink-0 place-items-center rounded-full bg-[#f6f6f4] text-[10px] font-semibold text-mist">
+                {step.id}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[13px] font-semibold text-ink">{step.title}</span>
+                <span className="block text-[12px] leading-4 text-mist">{step.text}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </article>
+    </div>
+  )
+}
+
+function AssortPreview({ mode, className }: { mode: "product" | "trait" | "place"; className: string }) {
+  return (
+    <div className={`absolute inset-0 flex items-center gap-3 px-3 ${className}`}>
+      <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-white text-brand ring-1 ring-[#e4e4df]">
+        <svg viewBox="0 0 24 24" className="size-5" aria-hidden>
+          <path d="M4 14h16v3H4v-3Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M6 14V9h8l2 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M7 17v2M17 17v2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[13px] font-semibold text-ink">Linnen bank</span>
+        <span className="block text-[11px] text-mist">€ 890</span>
+        {mode !== "product" ? (
+          <span className="mt-1 flex flex-wrap gap-1">
+            <span className="inline-flex h-5 items-center rounded-full bg-[#e7f5ec] px-2 text-[10px] font-semibold text-brand">
+              Woonkamer
+            </span>
+            {mode === "place" ? (
+              <span className="inline-flex h-5 items-center rounded-full bg-ink px-2 text-[10px] font-semibold text-white">
+                Voorpagina
+              </span>
+            ) : null}
+          </span>
+        ) : null}
+      </span>
     </div>
   )
 }

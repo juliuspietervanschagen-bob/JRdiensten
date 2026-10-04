@@ -571,55 +571,77 @@
   animation: mind-live 2.4s ease-in-out infinite;
 }
 
-@keyframes assort-logo {
+@keyframes assort-show {
   0%,
-  100% {
-    transform: translate3d(-18px, 4px, 0) scale(1) rotate(-1.4deg);
-  }
-  50% {
-    transform: translate3d(22px, -14px, 0) scale(1.08) rotate(1.4deg);
-  }
-}
-
-.assort-logo {
-  animation: assort-logo 7s ease-in-out infinite;
-}
-
-@keyframes assort-glow {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(0.86);
-    opacity: 0.35;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.12);
-    opacity: 0.85;
-  }
-}
-
-.assort-glow {
-  background: radial-gradient(circle, rgba(184, 154, 90, 0.34), transparent 68%);
-  animation: assort-glow 7s ease-in-out infinite;
-}
-
-@keyframes assort-sheen {
-  0%,
-  46% {
-    transform: translateX(-140%);
-    opacity: 0;
-  }
-  54% {
+  34% {
     opacity: 1;
+    transform: none;
   }
-  78%,
+  42%,
   100% {
-    transform: translateX(340%);
     opacity: 0;
+    transform: translateY(6px);
   }
 }
 
-.assort-sheen {
-  animation: assort-sheen 6.4s ease-in-out infinite;
+.assort-card {
+  animation: assort-show 9s ease infinite;
+}
+
+.assort-card-2 {
+  animation-delay: -6s;
+}
+
+.assort-card-3 {
+  animation-delay: -3s;
+}
+
+@keyframes assort-on {
+  0%,
+  34% {
+    background: #f3faf6;
+  }
+  42%,
+  100% {
+    background: transparent;
+  }
+}
+
+.assort-step {
+  animation: assort-on 9s ease infinite;
+}
+
+.assort-step-2 {
+  animation-delay: -6s;
+}
+
+.assort-step-3 {
+  animation-delay: -3s;
+}
+
+@keyframes assort-num {
+  0%,
+  34% {
+    color: #fff;
+    background: #16a34a;
+  }
+  42%,
+  100% {
+    color: #5e5e5e;
+    background: #f6f6f4;
+  }
+}
+
+.assort-num {
+  animation: assort-num 9s ease infinite;
+}
+
+.assort-step-2 .assort-num {
+  animation-delay: -6s;
+}
+
+.assort-step-3 .assort-num {
+  animation-delay: -3s;
 }
 
 .checkout-stage {
@@ -1022,9 +1044,9 @@
   .map-sparkle,
   .node-breathe,
   .mind-live,
-  .assort-logo,
-  .assort-glow,
-  .assort-sheen,
+  .assort-card,
+  .assort-step,
+  .assort-num,
   .checkout-reel,
   .checkout-walker,
   .phone-shot,
@@ -1093,17 +1115,28 @@
     width: 100%;
   }
 
-  .assort-logo,
-  .assort-glow {
+  .assort-card,
+  .assort-step,
+  .assort-num {
+    animation: none;
     transform: none;
   }
 
-  .assort-glow {
-    opacity: 0.45;
+  .assort-card {
+    opacity: 0;
   }
 
-  .assort-sheen {
-    opacity: 0;
+  .assort-card-1 {
+    opacity: 1;
+  }
+
+  .assort-step-1 {
+    background: #f3faf6;
+  }
+
+  .assort-step-1 .assort-num {
+    color: #fff;
+    background: #16a34a;
   }
 
   .checkout-reel {
