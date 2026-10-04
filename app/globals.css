@@ -597,19 +597,80 @@
   animation: assort-sheen 6.4s ease-in-out infinite;
 }
 
-@keyframes pakket-dot {
+.checkout-stage {
+  container-type: inline-size;
+}
+
+.checkout-reel {
+  width: 100%;
+}
+
+.checkout-walker {
+  position: absolute;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 5px rgba(22, 163, 74, 0.45),
+    0 0 0 11px rgba(22, 163, 74, 0.16);
+  animation: checkout-walk 11s ease-in-out infinite;
+}
+
+@keyframes checkout-walk {
   0%,
-  100% {
-    left: 0;
+  9% {
+    left: 8%;
+    top: 71%;
   }
-  50% {
-    left: calc(100% - 8px);
+  18%,
+  26% {
+    left: 23.5%;
+    top: 63%;
+  }
+  35%,
+  43% {
+    left: 40%;
+    top: 74%;
+  }
+  52%,
+  60% {
+    left: 56%;
+    top: 63%;
+  }
+  69%,
+  77% {
+    left: 72.5%;
+    top: 74%;
+  }
+  86%,
+  100% {
+    left: 90.5%;
+    top: 66%;
   }
 }
 
-.pakket-dot {
-  left: 0;
-  animation: pakket-dot 3.8s ease-in-out infinite;
+@media (max-width: 639px) {
+  .checkout-reel {
+    width: 740px;
+    animation: checkout-pan 16s ease-in-out infinite;
+  }
+}
+
+@keyframes checkout-pan {
+  0%,
+  16% {
+    transform: translateX(0);
+  }
+  52%,
+  68% {
+    transform: translateX(calc(-100% + 100cqw));
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 @keyframes pakket-check {
@@ -735,7 +796,8 @@
   .mind-live,
   .assort-logo,
   .assort-sheen,
-  .pakket-dot,
+  .checkout-reel,
+  .checkout-walker,
   .pakket-check,
   .pakket-lift,
   .pref-in,
@@ -799,8 +861,13 @@
     opacity: 0;
   }
 
-  .pakket-dot {
-    left: calc(100% - 8px);
+  .checkout-reel {
+    transform: none;
+  }
+
+  .checkout-walker {
+    left: 8%;
+    top: 71%;
   }
 
   .pakket-check {

@@ -4,7 +4,6 @@ import type { ReactNode } from "react"
 
 const marks: Record<string, () => ReactNode> = {
   "Assortiment dat klopt": AssortmentMark,
-  "Korte checkout": CheckoutMark,
   "Betaalprovider": PaymentMark,
   "Bestellingen op één plek": OrdersMark,
   "Gebouwd voor de telefoon": ScreensMark,
@@ -39,6 +38,21 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
                 const Mark = marks[item.title] ?? AssortmentMark
                 const number = String(index + 1).padStart(2, "0")
                 const assortment = item.title === "Assortiment dat klopt"
+                const checkout = item.title === "Korte checkout"
+                if (checkout) {
+                  return (
+                    <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
+                      <div className="py-5 sm:py-6">
+                        <CheckoutJourney />
+                        <div className="mt-4 min-w-0">
+                          <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
+                          <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
+                          <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )
+                }
                 return (
                   <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
                     <div
@@ -83,20 +97,12 @@ function AssortmentMark() {
   )
 }
 
-function CheckoutMark() {
-  const steps = ["Knop", "Wagen", "Betalen"]
+function CheckoutJourney() {
   return (
-    <div className="w-[7.2rem]" aria-hidden>
-      <div className="relative h-2">
-        <span className="absolute top-1/2 right-1 left-1 h-px -translate-y-1/2 bg-[#d9d9d4]" />
-        <span className="pakket-dot absolute top-1/2 size-2 -translate-y-1/2 rounded-full bg-brand" />
-      </div>
-      <div className="mt-1.5 grid grid-cols-3 text-center text-[9px] font-semibold tracking-wide text-mist uppercase">
-        {steps.map((step, index) => (
-          <span key={step} className={index === 2 ? "text-brand" : undefined}>
-            {step}
-          </span>
-        ))}
+    <div className="checkout-stage overflow-hidden rounded-2xl bg-[#f4f7f4] ring-1 ring-[#e3eee6]" aria-hidden>
+      <div className="checkout-reel relative">
+        <img src="/webshop/aura-checkout.png" alt="" className="block h-auto w-full" />
+        <span className="checkout-walker" />
       </div>
     </div>
   )
