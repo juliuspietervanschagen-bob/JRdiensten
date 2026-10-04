@@ -57,11 +57,13 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
                   return (
                     <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
                       <div className="py-5 sm:py-6">
-                        <CheckoutJourney />
-                        <div className="mt-4 min-w-0">
+                        <div className="min-w-0">
                           <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
                           <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
                           <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
+                        </div>
+                        <div className="mt-4">
+                          <CheckoutJourney />
                         </div>
                       </div>
                     </li>
@@ -107,7 +109,7 @@ function AssortmentMark() {
 
 function CheckoutJourney() {
   return (
-    <div className="checkout-stage overflow-hidden rounded-2xl bg-[#f4f7f4] ring-1 ring-[#e3eee6]" aria-hidden>
+    <div className="checkout-stage mx-auto w-full max-w-[40rem] overflow-hidden rounded-2xl bg-[#f4f7f4] ring-1 ring-[#e3eee6]" aria-hidden>
       <div className="checkout-reel relative">
         <img src="/webshop/aura-checkout.png" alt="" className="block h-auto w-full" />
         <span className="checkout-walker" />

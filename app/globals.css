@@ -625,68 +625,47 @@
 .checkout-walker {
   position: absolute;
   z-index: 1;
-  width: 18px;
-  height: 18px;
-  margin: -9px 0 0 -9px;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
   border-radius: 999px;
-  background: #fff;
+  background: #16a34a;
   box-shadow:
-    0 0 0 5px rgba(22, 163, 74, 0.45),
-    0 0 0 11px rgba(22, 163, 74, 0.16);
-  animation: checkout-walk 11s ease-in-out infinite;
+    0 0 0 2px #fff,
+    0 0 0 5px rgba(22, 163, 74, 0.9);
+  animation: checkout-walk 12s ease-in-out infinite;
 }
 
 @keyframes checkout-walk {
   0%,
-  9% {
-    left: 8%;
-    top: 71%;
+  12% {
+    left: 11.91%;
+    top: 79.03%;
   }
-  18%,
-  26% {
-    left: 23.5%;
-    top: 63%;
+  20%,
+  32% {
+    left: 27.44%;
+    top: 67.97%;
   }
-  35%,
-  43% {
-    left: 40%;
-    top: 74%;
+  40%,
+  52% {
+    left: 42.77%;
+    top: 79.03%;
   }
-  52%,
-  60% {
-    left: 56%;
-    top: 63%;
+  60%,
+  72% {
+    left: 57.62%;
+    top: 70.28%;
   }
-  69%,
-  77% {
-    left: 72.5%;
-    top: 74%;
+  80%,
+  90% {
+    left: 73.83%;
+    top: 64.75%;
   }
-  86%,
+  96%,
   100% {
-    left: 90.5%;
-    top: 66%;
-  }
-}
-
-@media (max-width: 639px) {
-  .checkout-reel {
-    width: 740px;
-    animation: checkout-pan 16s ease-in-out infinite;
-  }
-}
-
-@keyframes checkout-pan {
-  0%,
-  16% {
-    transform: translateX(0);
-  }
-  52%,
-  68% {
-    transform: translateX(calc(-100% + 100cqw));
-  }
-  100% {
-    transform: translateX(0);
+    left: 89.26%;
+    top: 79.03%;
   }
 }
 
@@ -889,8 +868,8 @@
   }
 
   .checkout-walker {
-    left: 8%;
-    top: 71%;
+    left: 11.91%;
+    top: 79.03%;
   }
 
   .pakket-check {
