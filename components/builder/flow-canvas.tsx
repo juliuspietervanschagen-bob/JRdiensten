@@ -141,7 +141,6 @@ function FlowSurface({
         }}
         nodesConnectable={false}
         deleteKeyCode={null}
-        proOptions={{ hideAttribution: true }}
         minZoom={0.4}
         maxZoom={1.6}
         defaultViewport={{ x: 16, y: 16, zoom: 1 }}

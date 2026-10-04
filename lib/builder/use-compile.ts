@@ -11,7 +11,7 @@ let workerBroken = false
 let seq = 0
 const pending = new Map<number, (result: CompileResult) => void>()
 
-function rejectAll(error: string) {
+function failPending(error: string) {
   workerBroken = true
   worker?.terminate()
   worker = null
@@ -23,7 +23,22 @@ function rejectAll(error: string) {
 
 function getWorker(): Worker {
   if (worker) return worker
-  const next = new Worker(new URL("./compile.worker.ts", import.meta.url), { type: "module" })
+  const code = `self.importScripts(${JSON.stringify(`${window.location.origin}/builder/babel`)});
+self.onmessage = (event) => {
+  const data = event.data || {};
+  try {
+    const result = Babel.transform(data.source, {
+      filename: "screen.tsx",
+      presets: ["typescript", "react"],
+      sourceType: "module",
+    });
+    self.postMessage({ id: data.id, ok: true, code: result.code || "" });
+  } catch (error) {
+    const message = error && error.message ? error.message : "Compile failed";
+    self.postMessage({ id: data.id, ok: false, error: String(message).split("\\n")[0].slice(0, 96) });
+  }
+};`
+  const next = new Worker(URL.createObjectURL(new Blob([code], { type: "text/javascript" })))
   next.onmessage = (event: MessageEvent<CompileResult>) => {
     const resolve = pending.get(event.data.id)
     if (!resolve) return
@@ -31,7 +46,7 @@ function getWorker(): Worker {
     resolve(event.data)
   }
   next.onerror = () => {
-    rejectAll("Compile failed")
+    failPending("Compile failed")
   }
   worker = next
   return next
@@ -66,6 +81,10 @@ function compile(source: string): Promise<CompileResult> {
       }, 8000)
       pending.set(id, (result) => {
         window.clearTimeout(timer)
+        if (!result.ok && result.error === "Compile failed") {
+          void compileOnMain(source).then(resolve)
+          return
+        }
         resolve(result)
       })
       current.postMessage({ id, source })

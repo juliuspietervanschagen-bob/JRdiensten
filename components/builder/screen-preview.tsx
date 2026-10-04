@@ -51,17 +51,19 @@ export function ScreenPreview({ nodes, onClose }: { nodes: readonly WidgetNode[]
         setNote("This tab is showing the screen here")
         return null
       }
+      let container: WebContainer | null = null
       try {
         const { WebContainer } = await import("@webcontainer/api")
-        const container = await WebContainer.boot({ coep: "credentialless" })
-        await container.mount({
+        const booted = await WebContainer.boot({ coep: "credentialless" })
+        container = booted
+        await booted.mount({
           "index.html": { file: { contents: html } },
           "server.mjs": { file: { contents: previewServerSource } },
         })
-        await container.spawn("node", ["server.mjs"])
+        await booted.spawn("node", ["server.mjs"])
         await new Promise<void>((resolve, reject) => {
           const timer = window.setTimeout(() => reject(new Error("The screen server did not open")), 20000)
-          container.on("server-ready", (_port, readyUrl) => {
+          booted.on("server-ready", (_port, readyUrl) => {
             window.clearTimeout(timer)
             if (!cancelled) {
               setUrl(readyUrl)
@@ -72,10 +74,11 @@ export function ScreenPreview({ nodes, onClose }: { nodes: readonly WidgetNode[]
           })
         })
         return container
-      } catch (error) {
+      } catch {
+        container?.teardown()
         if (!cancelled) {
           setMode("local")
-          setNote(error instanceof Error ? error.message : "This tab is showing the screen here")
+          setNote("The screen is shown in this tab.")
         }
         return null
       }
