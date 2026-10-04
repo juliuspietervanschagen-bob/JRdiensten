@@ -1204,3 +1204,15 @@
     opacity: 0.8;
   }
 }
+
+.react-flow__node-widget,
+.react-flow__node-widget.selected,
+.react-flow__node-widget:focus,
+.react-flow__node-widget:focus-visible {
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+}

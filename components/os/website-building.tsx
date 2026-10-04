@@ -2,14 +2,20 @@
 
 import { serviceIcons } from "@/components/os/service-icons"
 import { osFadeIn } from "@/lib/os/motion"
-import { servicesData } from "@/lib/os/services-data"
+import { servicesData, type OsServiceSlug } from "@/lib/os/services-data"
 import { formatFromPrice } from "@/lib/services"
 import { motion, useReducedMotion } from "framer-motion"
 import Link from "next/link"
 
-const service = servicesData["website-building"]
+const marketingHref: Record<OsServiceSlug, string> = {
+  "website-building": "/diensten/website",
+  webshop: "/diensten/webshop",
+  app: "/diensten/app",
+  automatisering: "/diensten/automatisering",
+}
 
-export function WebsiteBuilding() {
+export function WebsiteBuilding({ slug }: { slug: OsServiceSlug }) {
+  const service = servicesData[slug]
   const reduce = useReducedMotion() === true
   const shown = { opacity: 1, y: 0 }
 
@@ -64,8 +70,11 @@ export function WebsiteBuilding() {
           })}
         </motion.ol>
 
-        <p className="mt-10 text-[12px] tracking-[0.08em] text-os-mist">
-          <Link href="/diensten/website" className="text-os-green hover:text-os-signal">
+        <p className="mt-10 flex flex-wrap gap-x-5 gap-y-2 text-[12px] tracking-[0.08em] text-os-mist">
+          <Link href="/services" className="text-os-green hover:text-os-signal">
+            Alle diensten
+          </Link>
+          <Link href={marketingHref[slug]} className="text-os-green hover:text-os-signal">
             Dezelfde dienst op de site
           </Link>
         </p>

@@ -1,7 +1,7 @@
 "use client"
 
 import * as Y from "yjs"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createNode, type WidgetKind, type WidgetNode } from "@/lib/builder/codec"
 
 const STORAGE_KEY = "tab-builder-state"
@@ -13,6 +13,7 @@ export type RemoteCursor = { id: string; x: number; y: number }
 type BuilderApi = {
   nodes: WidgetNode[]
   peers: number
+  collab: "live" | "local"
   cursors: RemoteCursor[]
   addNode: (kind: WidgetKind, x: number, y: number) => string
   moveNode: (id: string, x: number, y: number) => void
@@ -27,7 +28,11 @@ export function useBuilderDoc(): BuilderApi {
   const [clientId] = useState(() => `p_${Math.random().toString(36).slice(2, 7)}`)
   const [nodes, setNodes] = useState<WidgetNode[]>([])
   const [peers, setPeers] = useState(1)
+  const [collab, setCollab] = useState<"live" | "local">("local")
   const [cursors, setCursors] = useState<RemoteCursor[]>([])
+  const providerRef = useRef<{ setAwarenessField: (key: string, value: unknown) => void } | null>(null)
+  const awarenessCursors = useRef<RemoteCursor[]>([])
+  const awarenessPeers = useRef(1)
 
   useEffect(() => {
     const saved = window.localStorage.getItem(STORAGE_KEY)
@@ -47,7 +52,7 @@ export function useBuilderDoc(): BuilderApi {
     const channel = new BroadcastChannel(DOC_CHANNEL)
     const onUpdate = (update: Uint8Array, origin: unknown) => {
       window.localStorage.setItem(STORAGE_KEY, bytesToB64(Y.encodeStateAsUpdate(doc)))
-      if (origin === "remote" || origin === "hydrate") return
+      if (origin === "remote" || origin === "hydrate" || (origin && typeof origin === "object")) return
       channel.postMessage(update.buffer.slice(update.byteOffset, update.byteOffset + update.byteLength))
     }
     doc.on("update", onUpdate)
@@ -73,25 +78,53 @@ export function useBuilderDoc(): BuilderApi {
     }
     const prune = window.setInterval(() => {
       const now = Date.now()
-      const live: RemoteCursor[] = []
+      const live = new Map<string, RemoteCursor>()
       for (const [id, entry] of seen) {
         if (now - entry.t > 5000) {
           seen.delete(id)
           continue
         }
-        if (entry.x >= 0) live.push({ id, x: entry.x, y: entry.y })
+        if (entry.x >= 0) live.set(id, { id, x: entry.x, y: entry.y })
       }
-      setPeers(1 + seen.size)
-      setCursors(live)
+      for (const cursor of awarenessCursors.current) live.set(cursor.id, cursor)
+      setPeers(Math.max(1 + seen.size, awarenessPeers.current))
+      setCursors([...live.values()])
     }, 400)
 
+    let closed = false
+    let provider: { destroy: () => void; setAwarenessField: (key: string, value: unknown) => void } | null = null
+    void import("@hocuspocus/provider").then(({ HocuspocusProvider }) => {
+      if (closed) return
+      const next = new HocuspocusProvider({
+        url: collabUrl(),
+        name: "tab-builder",
+        document: doc,
+        onStatus: ({ status }) => setCollab(status === "connected" ? "live" : "local"),
+        onAwarenessChange: ({ states }) => {
+          awarenessPeers.current = Math.max(1, states.length)
+          awarenessCursors.current = states.flatMap((state) => {
+            const user = state.user as { id?: string; x?: number; y?: number } | undefined
+            if (!user || user.id === clientId || typeof user.x !== "number" || typeof user.y !== "number") return []
+            return [{ id: user.id ?? "peer", x: user.x, y: user.y }]
+          })
+        },
+      })
+      provider = next
+      providerRef.current = next
+      next.setAwarenessField("user", { id: clientId, x: -1, y: -1 })
+    })
+
     return () => {
+      closed = true
       array.unobserveDeep(publish)
       doc.off("update", onUpdate)
       channel.close()
       presence.close()
       window.clearInterval(beat)
       window.clearInterval(prune)
+      provider?.destroy()
+      providerRef.current = null
+      setCollab("local")
     }
   }, [doc, clientId])
 
@@ -155,9 +188,16 @@ export function useBuilderDoc(): BuilderApi {
   const publishCursor = useCallback((x: number, y: number) => {
     const channel = cursorChannel()
     channel.postMessage({ id: clientId, kind: "cursor", t: Date.now(), x, y })
+    providerRef.current?.setAwarenessField("user", { id: clientId, x, y })
   }, [clientId])
 
-  return { nodes, peers, cursors, addNode, moveNode, patchProps, removeNode, replaceNodes, publishCursor }
+  return { nodes, peers, collab, cursors, addNode, moveNode, patchProps, removeNode, replaceNodes, publishCursor }
+}
+
+function collabUrl(): string {
+  const host = window.location.hostname || "127.0.0.1"
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:"
+  return `${protocol}//${host}:43124`
 }
 
 let sharedCursorChannel: BroadcastChannel | null = null
