@@ -105,6 +105,11 @@ function positions(sec: number) {
   return points
 }
 
+function wrap(value: number, span: number) {
+  if (!Number.isFinite(value) || span <= 0) return 0
+  return ((value % span) + span) % span
+}
+
 function labelShift(place: (typeof marks)[number]["labelPlace"]) {
   if (place === "above") return "translate(-50%, calc(-100% - 20px))"
   if (place === "below") return "translate(-50%, 22px)"
@@ -434,11 +439,16 @@ function ConnectivityMap() {
     let frame = 0
 
     const tick = (now: number) => {
-      const sec = clockRef.current + (now - started) / 1000
-      const elapsed = (elapsedRef.current + now - started) % loop
-      const index = Math.floor(elapsed / slot) % tour.length
+      const sec = clockRef.current + Math.max(0, now - started) / 1000
+      const elapsed = wrap(elapsedRef.current + Math.max(0, now - started), loop)
+      const index = wrap(Math.floor(elapsed / slot), tour.length)
       const local = elapsed % slot
-      const [from, to] = tour[index]
+      const step = tour[index]
+      if (!step) {
+        frame = window.requestAnimationFrame(tick)
+        return
+      }
+      const [from, to] = step
       const raw = Math.min(1, local / hop)
       const t = raw < 0.5 ? 2 * raw * raw : 1 - (-2 * raw + 2) ** 2 / 2
       paint(sec, { from, to, t })
@@ -457,9 +467,9 @@ function ConnectivityMap() {
 
     frame = window.requestAnimationFrame(tick)
     return () => {
-      const delta = (performance.now() - started) / 1000
+      const delta = Math.max(0, performance.now() - started) / 1000
       clockRef.current += delta
-      elapsedRef.current = (elapsedRef.current + performance.now() - started) % loop
+      elapsedRef.current = wrap(elapsedRef.current + Math.max(0, performance.now() - started), loop)
       window.cancelAnimationFrame(frame)
     }
   }, [pinned])
