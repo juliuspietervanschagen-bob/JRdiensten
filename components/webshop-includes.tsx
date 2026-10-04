@@ -40,15 +40,7 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
                 const number = String(index + 1).padStart(2, "0")
                 return (
                   <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
-                    <span
-                      className={
-                        index === 0
-                          ? "pakket-row pakket-row-first absolute inset-y-0 left-0 w-[3px] bg-brand"
-                          : "pakket-row absolute inset-y-0 left-0 w-[3px] bg-brand"
-                      }
-                      style={{ animationDelay: `${index * -3}s` }}
-                    />
-                    <div className="grid items-center gap-4 py-5 pl-4 sm:grid-cols-[8.5rem_1fr] sm:gap-8 sm:py-6 sm:pl-6">
+                    <div className="grid items-center gap-4 py-5 sm:grid-cols-[8.5rem_1fr] sm:gap-8 sm:py-6">
                       <div className="flex h-20 items-center justify-center rounded-xl bg-[#f6f6f4] ring-1 ring-[#ecece8]">
                         <Mark />
                       </div>
