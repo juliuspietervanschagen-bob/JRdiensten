@@ -9,6 +9,7 @@ The interface is in Dutch. Pages:
 - Over ons
 - Contact, which opens a prepared email to `hallo@jrintelligence.nl`
 - Tab App Builder at `/builder`: a black grid where widgets and `app/screen.tsx` stay in sync, including across two open tabs
+- Agency OS showcase for website building at `/services/website-building`
 
 Starting prices live in [`lib/services.ts`](lib/services.ts). The contact address lives in [`lib/site.ts`](lib/site.ts).
 
