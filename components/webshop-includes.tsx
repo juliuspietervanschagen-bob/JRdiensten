@@ -7,7 +7,6 @@ import { useState, type ReactNode } from "react"
 const marks: Record<string, () => ReactNode> = {
   "Assortiment dat klopt": AssortmentMark,
   "Betaalprovider": PaymentMark,
-  "Bestellingen op één plek": OrdersMark,
 }
 
 export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
@@ -59,6 +58,7 @@ function pictureFor(title: string) {
   if (title === "Assortiment dat klopt") return <AssortmentMark />
   if (title === "Korte checkout") return <CheckoutJourney />
   if (title === "Gebouwd voor de telefoon") return <PhonePicture />
+  if (title === "Bestellingen op één plek") return <OrdersPicture />
   if (title === "Automatische bevestiging") return <ConfirmationPicture />
   const Mark = marks[title]
   if (!Mark) return null
@@ -115,26 +115,217 @@ function PaymentMark() {
   )
 }
 
-function OrdersMark() {
-  const rows = [
-    { label: "Nieuw", on: false },
-    { label: "Status", on: true },
-    { label: "Klant", on: false },
-  ]
+function OrdersPicture() {
   return (
-    <div className="w-[6.8rem] space-y-1" aria-hidden>
-      {rows.map((row) => (
-        <div
-          key={row.label}
-          className="flex items-center gap-1.5 rounded-md bg-white px-1.5 py-1 ring-1 ring-[#e4e4df]"
-        >
-          <span className={row.on ? "size-1.5 rounded-full bg-brand" : "size-1.5 rounded-full bg-[#d9d9d4]"} />
-          <span className={row.on ? "text-[9px] font-semibold text-ink" : "text-[9px] font-medium text-mist"}>
-            {row.label}
-          </span>
+    <div className="relative mx-auto w-full overflow-hidden rounded-2xl bg-[#f3f3f0] ring-1 ring-[#e4e4df]" aria-hidden>
+      <div className="flex items-center gap-3 border-b border-[#e4e4df] bg-white px-3 py-2.5 sm:px-4">
+        <span className="text-[15px] leading-none font-extrabold tracking-[-0.06em] text-ink">JR</span>
+        <div className="hidden items-center gap-3.5 text-[10px] font-semibold tracking-[0.16em] sm:flex">
+          <span className="text-ink">SHOP</span>
+          <span className="text-mist">BUNDLES</span>
+          <span className="text-mist">TRUST</span>
         </div>
-      ))}
+        <div className="ml-auto flex h-8 min-w-0 flex-1 items-center gap-2 rounded-full bg-[#f6f6f4] px-3 text-[11px] text-mist ring-1 ring-[#e4e4df] sm:max-w-56 sm:flex-none">
+          <svg viewBox="0 0 16 16" className="size-3.5 shrink-0" aria-hidden>
+            <circle cx="7" cy="7" r="4.25" fill="none" stroke="currentColor" strokeWidth="1.4" />
+            <path d="M10.2 10.2 13 13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          </svg>
+          <span className="truncate">Search...</span>
+        </div>
+        <span className="relative grid size-8 shrink-0 place-items-center text-ink">
+          <svg viewBox="0 0 24 24" className="size-5" aria-hidden>
+            <path d="M6 7h15l-1.6 8.2a1 1 0 0 1-1 .8H9.2a1 1 0 0 1-1-.8L6 7Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+            <path d="M6 7 5 4H2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            <circle cx="9" cy="19.5" r="1.2" fill="currentColor" />
+            <circle cx="17" cy="19.5" r="1.2" fill="currentColor" />
+          </svg>
+          <span className="orders-badge absolute -top-0.5 -right-0.5 grid size-4 place-items-center rounded-full bg-brand text-[9px] font-semibold text-white">
+            2
+          </span>
+        </span>
+      </div>
+
+      <div className="grid items-center gap-5 px-3 py-5 sm:px-5 sm:py-6 lg:grid-cols-[4.25rem_minmax(0,1fr)_21rem] lg:gap-5 lg:py-7">
+        <div className="flex items-center justify-center gap-4 lg:flex-col lg:gap-3">
+          <GuaranteeSeal className="orders-stamp size-14 sm:size-16" />
+          <BestSellerSeal className="orders-stamp orders-stamp-2 size-14 sm:size-16" />
+          <Seal id="orders-seal-jr" className="orders-stamp orders-stamp-3 size-14 sm:size-16" />
+        </div>
+
+        <div className="overflow-hidden rounded-xl bg-[#e7e7e3]">
+          <svg viewBox="40 18 360 312" className="block h-auto w-full">
+            <defs>
+              <linearGradient id="orders-front" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#1cba55" />
+                <stop offset="0.55" stopColor="#16a34a" />
+                <stop offset="1" stopColor="#118a3c" />
+              </linearGradient>
+              <linearGradient id="orders-side" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stopColor="#128a3e" />
+                <stop offset="1" stopColor="#0c5e2c" />
+              </linearGradient>
+              <filter id="orders-card" x="-30%" y="-30%" width="160%" height="170%">
+                <feDropShadow dx="0" dy="2" stdDeviation="1.6" floodColor="#141414" floodOpacity="0.16" />
+              </filter>
+              <clipPath id="orders-front-clip">
+                <path d="M82 134 L298 126 L304 294 L76 302 Z" />
+              </clipPath>
+            </defs>
+
+            <ellipse className="orders-shadow" cx="196" cy="312" rx="120" ry="9" fill="#141414" />
+
+            <g className="orders-bag">
+              <path d="M298 126 L340 116 L348 280 L304 294 Z" fill="url(#orders-side)" />
+              <path d="M140 124 C126 42 188 28 206 122" fill="none" stroke="#0e7034" strokeWidth="11" strokeLinecap="round" />
+              <path d="M140 124 C126 42 188 28 206 122" fill="none" stroke="#1aaa4e" strokeWidth="3" strokeLinecap="round" />
+              <path d="M236 118 C258 36 322 34 344 100" fill="none" stroke="#0c6230" strokeWidth="11" strokeLinecap="round" />
+              <path d="M236 118 C258 36 322 34 344 100" fill="none" stroke="#178f42" strokeWidth="3" strokeLinecap="round" />
+
+              <path d="M82 134 L298 126 L304 294 L76 302 Z" fill="url(#orders-front)" />
+              <path d="M82 134 L298 126 L290 158 L90 166 Z" fill="#fff" opacity="0.13" />
+              <ellipse cx="188" cy="128" rx="124" ry="26" fill="#19a34a" />
+              <ellipse cx="188" cy="124" rx="108" ry="16" fill="#084822" />
+
+              <g className="orders-drop" filter="url(#orders-card)">
+                <g transform="translate(96 86) rotate(-4)">
+                  <rect width="118" height="70" rx="3" fill="#fff" />
+                  <text x="8" y="13" fill="#141414" fontSize="7" fontWeight="650">
+                    Apex Pro Wireless
+                  </text>
+                  <rect x="7" y="18" width="104" height="44" rx="2" fill="#141414" />
+                  <RainbowKeys />
+                </g>
+              </g>
+              <g className="orders-drop orders-drop-2" filter="url(#orders-card)">
+                <g transform="translate(198 80) rotate(3)">
+                  <rect width="96" height="78" rx="3" fill="#fff" />
+                  <text x="7" y="13" fill="#141414" fontSize="6.5" fontWeight="650">
+                    Nimbus Laptop Stand
+                  </text>
+                  <text x="7" y="22" fill="#5e5e5e" fontSize="5.5">
+                    (Space Gray)
+                  </text>
+                  <g transform="translate(22 30)" fill="none" stroke="#141414" strokeWidth="1.4" strokeLinejoin="round">
+                    <path d="M3 18h44l-5 7H8L3 18Z" />
+                    <path d="M9 18 15 5h20l6 13" />
+                  </g>
+                </g>
+              </g>
+              <g className="orders-drop orders-drop-3" filter="url(#orders-card)">
+                <g transform="translate(108 66) rotate(-3)">
+                  <rect width="132" height="16" rx="2" fill="#128a3e" />
+                  <text x="7" y="11.5" fill="#fff" fontSize="7" fontWeight="650">
+                    Order #TF24-10-26-987
+                  </text>
+                </g>
+              </g>
+
+              <path d="M176 150 L168 286" stroke="#0e7a36" strokeWidth="1" opacity="0.28" />
+              <g clipPath="url(#orders-front-clip)">
+                <rect className="orders-sheen" x="70" y="120" width="18" height="180" fill="#fff" />
+              </g>
+              <g transform="translate(176 230)" opacity="0.42">
+                <circle r="24" fill="none" stroke="#0c5c2c" strokeWidth="1.2" />
+                <circle r="18" fill="none" stroke="#0c5c2c" strokeWidth="0.6" />
+                <text y="4" textAnchor="middle" fill="#0c5c2c" fontSize="10" fontWeight="650">
+                  JR
+                </text>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <div className="min-w-0">
+          <h4 className="orders-line text-sm font-semibold tracking-[0.05em] text-ink sm:text-[15px]">
+            PREMIUM WORKSPACE BUNDLE
+          </h4>
+          <ul className="mt-3">
+            <li className="orders-line orders-ld1 flex items-center gap-2.5 border-b border-[#e4e4df] py-2.5">
+              <span className="grid size-8 shrink-0 place-items-center rounded-md bg-white text-brand ring-1 ring-[#e4e4df]">
+                <KeysIcon />
+              </span>
+              <span className="min-w-0 flex-1 text-[12px] leading-4 font-medium text-ink">1× Apex Pro Wireless Keyboard</span>
+              <span className="text-[12px] font-medium text-ink tabular-nums">$199.99</span>
+            </li>
+            <li className="orders-line orders-ld2 flex items-center gap-2.5 border-b border-[#e4e4df] py-2.5">
+              <span className="grid size-8 shrink-0 place-items-center rounded-md bg-white text-brand ring-1 ring-[#e4e4df]">
+                <StandIcon />
+              </span>
+              <span className="min-w-0 flex-1 text-[12px] leading-4 font-medium text-ink">1× Nimbus Laptop Stand (Space Gray)</span>
+              <span className="text-[12px] font-medium text-ink tabular-nums">$79.99</span>
+            </li>
+          </ul>
+          <div className="orders-line orders-ld2 mt-3 flex items-end justify-between gap-3">
+            <p className="text-sm font-semibold text-ink">Total Bundle</p>
+            <p className="text-right">
+              <span className="block text-xl font-semibold tracking-tight text-ink tabular-nums">$259.99</span>
+              <span className="block text-[11px] font-medium text-brand">You save $259.99</span>
+            </p>
+          </div>
+          <p className="orders-line orders-ld3 mt-4 text-[12px] font-semibold text-ink">Order Details</p>
+          <p className="orders-ref orders-line orders-ld3 mt-2 flex items-center gap-2 rounded-md bg-white px-3 py-2 text-[11px] text-ink ring-1 ring-[#e4e4df]">
+            <span className="confirm-dot size-1.5 shrink-0 rounded-full bg-brand" />
+            <span className="min-w-0">Current Order Ref: #TF24-10-26-987</span>
+          </p>
+          <div className="orders-line orders-ld4 mt-3 grid gap-2">
+            <span className="inline-flex h-9 items-center justify-center rounded-md bg-ink text-[12px] font-semibold text-white">
+              Add to Cart
+            </span>
+            <span className="inline-flex h-9 items-center justify-center rounded-md bg-white text-[12px] font-semibold text-ink ring-1 ring-[#d7d7d2]">
+              View Item Details
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
+  )
+}
+
+function RainbowKeys() {
+  const colors = ["#ff4d4d", "#ff9f1a", "#ffe14a", "#3ddc6e", "#3ec6ff", "#4d7cff", "#b06bff"]
+  return (
+    <g>
+      {colors.map((color, i) => (
+        <rect key={`a-${color}`} x={12 + i * 13} y="24" width="10" height="6" rx="1" fill={color} />
+      ))}
+      {colors.slice(0, 6).map((color, i) => (
+        <rect key={`b-${color}`} x={16 + i * 13} y="33" width="10" height="6" rx="1" fill={color} opacity="0.9" />
+      ))}
+      <rect x="16" y="43" width="48" height="5" rx="1" fill="#3a3a3a" />
+    </g>
+  )
+}
+
+function GuaranteeSeal({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 96 96" className={className}>
+      <circle cx="48" cy="48" r="44" fill="#f6f6f4" stroke="#141414" strokeWidth="1.6" />
+      <circle cx="48" cy="48" r="37" fill="none" stroke="#141414" strokeWidth="0.7" />
+      <path id="orders-guarantee" d="M48 14a34 34 0 1 1 0 68 34 34 0 0 1 0-68" fill="none" />
+      <text fill="#141414" fontSize="6.2" letterSpacing="1.3">
+        <textPath href="#orders-guarantee" startOffset="8%">
+          CONSISTENCY · GUARANTEE · CONSISTENCY ·
+        </textPath>
+      </text>
+      <path d="M48 30 62 36v12c0 10-14 16-14 16S34 58 34 48V36l14-6Z" fill="none" stroke="#141414" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="m42 47 4 4 8-9" fill="none" stroke="#16a34a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function BestSellerSeal({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 96 96" className={className}>
+      <circle cx="48" cy="48" r="44" fill="#f6f6f4" stroke="#141414" strokeWidth="1.6" />
+      <circle cx="48" cy="48" r="37" fill="none" stroke="#141414" strokeWidth="0.7" />
+      <path fill="#141414" d="m48 18 1.6 3.6 3.9.4-2.9 2.6.8 3.8L48 26.4 44.6 28.4l.8-3.8-2.9-2.6 3.9-.4L48 18Z" />
+      <path fill="#141414" d="m48 68 1.6 3.6 3.9.4-2.9 2.6.8 3.8L48 76.4 44.6 78.4l.8-3.8-2.9-2.6 3.9-.4L48 68Z" />
+      <path d="M14 46h68l-8 10H22L14 46Z" fill="#141414" />
+      <path d="M22 56v8l8-8M74 56v8l-8-8" fill="#5e5e5e" />
+      <text x="48" y="50" textAnchor="middle" fill="#f6f6f4" fontSize="7.4" fontWeight="700" letterSpacing="0.8">
+        BEST SELLER
+      </text>
+    </svg>
   )
 }
 
