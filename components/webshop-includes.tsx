@@ -38,10 +38,23 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
               {includes.map((item, index) => {
                 const Mark = marks[item.title] ?? AssortmentMark
                 const number = String(index + 1).padStart(2, "0")
+                const assortment = item.title === "Assortiment dat klopt"
                 return (
                   <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
-                    <div className="grid items-center gap-4 py-5 sm:grid-cols-[8.5rem_1fr] sm:gap-8 sm:py-6">
-                      <div className="flex h-20 items-center justify-center rounded-xl bg-[#f6f6f4] ring-1 ring-[#ecece8]">
+                    <div
+                      className={
+                        assortment
+                          ? "grid items-center gap-4 py-5 sm:grid-cols-[11.5rem_1fr] sm:gap-8 sm:py-6"
+                          : "grid items-center gap-4 py-5 sm:grid-cols-[8.5rem_1fr] sm:gap-8 sm:py-6"
+                      }
+                    >
+                      <div
+                        className={
+                          assortment
+                            ? "mx-auto flex h-36 w-full max-w-[15rem] items-center justify-center overflow-hidden rounded-xl bg-[#e8e7e3] ring-1 ring-[#e4e0d8]"
+                            : "flex h-20 items-center justify-center rounded-xl bg-[#f6f6f4] ring-1 ring-[#ecece8]"
+                        }
+                      >
                         <Mark />
                       </div>
                       <div className="min-w-0">
@@ -63,12 +76,9 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
 
 function AssortmentMark() {
   return (
-    <div className="flex items-end gap-1.5" aria-hidden>
-      <span className="h-8 w-7 rounded-md bg-white ring-1 ring-[#e4e4df]" />
-      <span className="relative h-12 w-8 rounded-md bg-white ring-1 ring-brand">
-        <span className="pakket-pin absolute -top-1 left-1/2 size-2 -translate-x-1/2 rounded-full bg-brand" />
-      </span>
-      <span className="h-8 w-7 rounded-md bg-white ring-1 ring-[#e4e4df]" />
+    <div className="assort-logo relative h-full w-full" aria-hidden>
+      <img src="/webshop/aura-assortiment.png" alt="" className="h-full w-full object-contain" />
+      <span className="assort-sheen pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent)]" />
     </div>
   )
 }

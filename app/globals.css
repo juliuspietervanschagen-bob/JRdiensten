@@ -563,20 +563,38 @@
   animation: mind-live 2.4s ease-in-out infinite;
 }
 
-@keyframes pakket-pin {
+@keyframes assort-logo {
   0%,
   100% {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
+    transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateX(-50%) scale(1.45);
-    opacity: 0.45;
+    transform: translateY(-3px) scale(1.045);
   }
 }
 
-.pakket-pin {
-  animation: pakket-pin 2.8s ease-in-out infinite;
+.assort-logo {
+  animation: assort-logo 5.6s ease-in-out infinite;
+}
+
+@keyframes assort-sheen {
+  0%,
+  46% {
+    transform: translateX(-140%);
+    opacity: 0;
+  }
+  54% {
+    opacity: 1;
+  }
+  78%,
+  100% {
+    transform: translateX(340%);
+    opacity: 0;
+  }
+}
+
+.assort-sheen {
+  animation: assort-sheen 6.4s ease-in-out infinite;
 }
 
 @keyframes pakket-dot {
@@ -715,7 +733,8 @@
   .map-sparkle,
   .node-breathe,
   .mind-live,
-  .pakket-pin,
+  .assort-logo,
+  .assort-sheen,
   .pakket-dot,
   .pakket-check,
   .pakket-lift,
@@ -770,6 +789,14 @@
 
   .slide-progress {
     width: 100%;
+  }
+
+  .assort-logo {
+    transform: none;
+  }
+
+  .assort-sheen {
+    opacity: 0;
   }
 
   .pakket-dot {
