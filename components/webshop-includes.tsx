@@ -118,10 +118,20 @@ function CheckoutJourney() {
 
 function PaymentMark() {
   return (
-    <div className="flex w-[6.5rem] flex-col gap-1.5" aria-hidden>
-      <span className="h-2 rounded-full bg-white ring-1 ring-[#e4e4df]" />
-      <span className="h-2 rounded-full bg-brand" />
-      <span className="h-2 rounded-full bg-white ring-1 ring-[#e4e4df]" />
+    <div className="flex items-center rounded-lg bg-white px-2.5 py-2 ring-1 ring-[#e4e4df]" aria-hidden>
+      <svg viewBox="0 0 124 32" className="h-7 w-[6.4rem]" role="img">
+        <text
+          x="2"
+          y="24"
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="26"
+          fontStyle="italic"
+          fontWeight="700"
+        >
+          <tspan fill="#003087">Pay</tspan>
+          <tspan fill="#009cde">Pal</tspan>
+        </text>
+      </svg>
     </div>
   )
 }
