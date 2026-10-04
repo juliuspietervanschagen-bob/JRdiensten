@@ -1,22 +1,20 @@
 import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
-import { Search } from "lucide-react"
+import { Check, Search, ShoppingCart } from "lucide-react"
 import Link from "next/link"
 
-const rooms = ["/webshop/aura-living-room.jpg", "/webshop/aura-living-close.jpg"]
-
-const products = [
-  { name: "Modern armchair", price: "€499.90", src: "/webshop/aura-armchair.jpg" },
-  { name: "Ceramic vase", price: "€175.80", src: "/webshop/aura-vase.jpg" },
-  { name: "100% linen", price: "€179.90", src: "/webshop/aura-linen.jpg" },
-  { name: "Wire frame chair", price: "€179.90", src: "/webshop/aura-wire-chair.jpg" },
+const serenity = [
+  { name: "Linen Pillows", price: "€89.00", src: "/webshop/aura-pillows.jpg" },
+  { name: "Oak Floor Lamp", price: "€249.00", src: "/webshop/aura-lamp.jpg" },
+  { name: "Stoneware Vase", price: "€175.80", src: "/webshop/aura-vase.jpg" },
+  { name: "Linen Throw", price: "€179.90", src: "/webshop/aura-linen.jpg" },
 ]
 
-const decor = [
-  { name: "Linen pillows", price: "€89.00", src: "/webshop/aura-pillows.jpg" },
-  { name: "Oak floor lamp", price: "€249.00", src: "/webshop/aura-lamp.jpg" },
-  { name: "Stoneware vase", price: "€175.80", src: "/webshop/aura-vase.jpg" },
-  { name: "Linen throw", price: "€179.90", src: "/webshop/aura-linen.jpg" },
+const evening = [
+  { name: "Modern Armchair", price: "€499.90", src: "/webshop/aura-armchair.jpg" },
+  { name: "Wire Frame Chair", price: "€179.90", src: "/webshop/aura-wire-chair.jpg" },
+  { name: "Ceramic Vase", price: "€175.80", src: "/webshop/aura-vase.jpg" },
+  { name: "100% Linen", price: "€179.90", src: "/webshop/aura-linen.jpg" },
 ]
 
 const nav = ["Home", "Furniture", "Decor", "Kitchen", "Gift guide"]
@@ -74,97 +72,141 @@ export function WebshopHero({ service }: { service: Service }) {
 
 function ShopScreen() {
   return (
-    <div className="absolute inset-0 flex flex-col overflow-hidden bg-white text-ink">
-      <div className="relative shrink-0 border-b border-[#eeeae4] px-[2.2cqw] pt-[1.5cqw] pb-[1cqw]">
+    <div className="absolute inset-0 flex flex-col overflow-hidden bg-[#f6f3ec] text-[#2c2a26]">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse at 8% 0%, rgba(255,255,255,0.85), transparent 36%), radial-gradient(ellipse at 100% 100%, rgba(214,204,184,0.45), transparent 42%)",
+        }}
+      />
+      <svg
+        className="pointer-events-none absolute right-[-6%] bottom-[-18%] h-[46%] w-[54%] text-[#e4dcc8]"
+        viewBox="0 0 240 120"
+        aria-hidden
+      >
+        <path d="M10 90 C 70 20, 150 110, 230 30" fill="none" stroke="currentColor" strokeWidth="0.7" />
+        <path d="M30 110 C 90 40, 160 120, 230 55" fill="none" stroke="currentColor" strokeWidth="0.5" />
+      </svg>
+
+      <header className="relative z-10 shrink-0 px-[2.2cqw] pt-[1.35cqw] pb-[0.7cqw]">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center">
           <div />
-          <div className="px-[1cqw] text-center">
-            <p className="text-[clamp(13px,2.8cqw,24px)] leading-none font-semibold tracking-[0.28em]">
-              AURA
-            </p>
-            <p className="mt-[0.4cqw] text-[clamp(7px,1.15cqw,11px)] tracking-[0.42em] text-mist">
-              LIVING
-            </p>
+          <div className="relative px-[2cqw] text-center">
+            <svg
+              viewBox="0 0 140 78"
+              className="pointer-events-none absolute top-1/2 left-1/2 h-[9cqw] w-[16cqw] -translate-x-1/2 -translate-y-1/2 text-[#ddd4c2]"
+              aria-hidden
+            >
+              <circle cx="70" cy="39" r="30" fill="none" stroke="currentColor" strokeWidth="0.6" />
+              <circle cx="70" cy="39" r="22" fill="none" stroke="currentColor" strokeWidth="0.45" />
+              <path d="M70 8 V70 M28 39 H112" fill="none" stroke="currentColor" strokeWidth="0.4" />
+              <path d="M42 16 A 36 36 0 0 1 98 16" fill="none" stroke="currentColor" strokeWidth="0.4" />
+            </svg>
+            <p className="font-serif text-[clamp(13px,2.7cqw,26px)] leading-none tracking-[0.22em]">AURA</p>
+            <p className="mt-[0.35cqw] text-[clamp(6px,0.95cqw,10px)] tracking-[0.48em] text-[#8d877c]">LIVING</p>
           </div>
-          <div className="flex items-center justify-end">
-            <div className="flex h-[3.2cqw] min-h-4 w-[16cqw] min-w-14 items-center gap-[0.7cqw] rounded-full bg-[#f4f4f1] px-[1.1cqw] text-mist ring-1 ring-[#ecece8]">
-              <Search className="size-[clamp(9px,1.5cqw,13px)] shrink-0" aria-hidden />
-              <span className="truncate text-[clamp(7px,1.3cqw,11px)]">Search</span>
+          <div className="flex items-center justify-end gap-[1.1cqw]">
+            <div className="flex h-[3.1cqw] min-h-4 w-[15cqw] min-w-14 items-center gap-[0.6cqw] rounded-full bg-white/80 px-[1cqw] text-[#8d877c] ring-1 ring-[#e6e0d4]">
+              <Search className="size-[clamp(8px,1.35cqw,12px)] shrink-0" aria-hidden />
+              <span className="truncate text-[clamp(6px,1.1cqw,10px)]">Search</span>
             </div>
+            <span className="relative text-[#3a3834]">
+              <ShoppingCart className="size-[clamp(10px,1.7cqw,15px)]" aria-hidden />
+              <span className="absolute -top-[0.85cqw] -right-[1cqw] grid min-h-[1.7cqw] min-w-[1.7cqw] place-items-center rounded-full bg-brand px-[0.25cqw] text-[clamp(6px,0.85cqw,9px)] leading-none font-semibold text-white">
+                1
+              </span>
+            </span>
           </div>
         </div>
-        <p className="mt-[1.1cqw] flex items-center justify-center gap-[1.6cqw] text-[clamp(6px,1.15cqw,11px)] font-semibold tracking-[0.12em] text-mist uppercase">
+        <p className="mt-[0.9cqw] flex items-center justify-center gap-[1.7cqw] text-[clamp(6px,1.05cqw,11px)] tracking-[0.14em] text-[#8d877c] uppercase">
           {nav.map((item, index) => (
             <span
               key={item}
               className="aura-nav-item whitespace-nowrap"
-              style={{ animationDelay: `${index * -3}s` }}
+              style={{ animationDelay: `${index * -3.2}s` }}
             >
               {item}
             </span>
           ))}
         </p>
+      </header>
+
+      <div className="relative z-10 min-h-0 flex-1 overflow-hidden">
+        <ShopPage
+          title="Discover Curated Serenity"
+          heroes={["/webshop/aura-hero-sofa.jpg", "/webshop/aura-living-close.jpg"]}
+          toast={{ name: "Linen Pillows", src: "/webshop/aura-pillows.jpg" }}
+          products={serenity}
+        />
+        <ShopPage
+          late
+          title="Evening light, considered"
+          heroes={["/webshop/aura-living-room.jpg"]}
+          toast={{ name: "Modern Armchair", src: "/webshop/aura-armchair.jpg", delay: "-4.5s" }}
+          products={evening}
+          photoOffset={2}
+        />
       </div>
 
-      <div className="relative min-h-0 flex-1 overflow-hidden">
-        <div className="shop-page absolute inset-0">
-          <div className="flex h-full flex-col px-[2cqw] pt-[1.3cqw] pb-[1cqw]">
-            <div className="relative min-h-0 flex-[1.15] overflow-hidden rounded-[1cqw] bg-[#f3f1ec]">
-              {rooms.map((src, index) => (
-                <img
-                  key={src}
-                  src={src}
-                  alt=""
-                  className="aura-scene absolute inset-0 h-full w-full object-cover"
-                  style={{ animationDelay: `${index * -9}s, ${index * -6}s` }}
-                />
-              ))}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="rounded-full bg-brand px-[2.2cqw] py-[0.85cqw] text-[clamp(8px,1.5cqw,13px)] font-semibold tracking-wide text-white shadow-[0_10px_24px_-12px_rgba(22,163,74,0.9)]">
-                  SHOP PILLOWS
-                </span>
-              </div>
-              <p className="aura-toast absolute bottom-[1.1cqw] left-[1.2cqw] rounded-full bg-ink/90 px-[1.4cqw] py-[0.45cqw] text-[clamp(7px,1.15cqw,11px)] font-medium text-white">
-                Modern armchair added
-              </p>
-            </div>
-            <div className="mt-[1.1cqw] grid min-h-0 flex-1 grid-cols-4 gap-[1.1cqw]">
-              {products.map((product, index) => (
-                <ProductCard key={product.name} product={product} index={index} />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="shop-page shop-page-late absolute inset-0">
-          <div className="flex h-full flex-col px-[2cqw] pt-[1.3cqw] pb-[1cqw]">
-            <div className="relative min-h-0 flex-[1.15] overflow-hidden rounded-[1cqw] bg-[#f3f1ec]">
-              <img
-                src="/webshop/aura-living-close.jpg"
-                alt=""
-                className="aura-drift absolute inset-0 h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="rounded-full bg-brand px-[2.2cqw] py-[0.85cqw] text-[clamp(8px,1.5cqw,13px)] font-semibold tracking-wide text-white shadow-[0_10px_24px_-12px_rgba(22,163,74,0.9)]">
-                  SHOP THROWS
-                </span>
-              </div>
-              <p className="aura-toast absolute bottom-[1.1cqw] left-[1.2cqw] rounded-full bg-ink/90 px-[1.4cqw] py-[0.45cqw] text-[clamp(7px,1.15cqw,11px)] font-medium text-white [animation-delay:-4.5s]">
-                Linen pillows added
-              </p>
-            </div>
-            <div className="mt-[1.1cqw] grid min-h-0 flex-1 grid-cols-4 gap-[1.1cqw]">
-              {decor.map((product, index) => (
-                <ProductCard key={product.name} product={product} index={index + 2} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <p className="shrink-0 px-[2cqw] pb-[0.65cqw] text-[clamp(8px,1.35cqw,12px)] leading-none font-semibold tracking-wide text-brand">
+      <p className="relative z-10 shrink-0 px-[2cqw] pb-[0.55cqw] text-[clamp(8px,1.25cqw,12px)] leading-none font-semibold tracking-wide">
         JR
       </p>
+    </div>
+  )
+}
+
+function ShopPage({
+  late,
+  title,
+  heroes,
+  toast,
+  products,
+  photoOffset = 0,
+}: {
+  late?: boolean
+  title: string
+  heroes: string[]
+  toast: { name: string; src: string; delay?: string }
+  products: { name: string; price: string; src: string }[]
+  photoOffset?: number
+}) {
+  return (
+    <div className={`shop-page absolute inset-0 ${late ? "shop-page-late" : ""}`}>
+      <div className="flex h-full flex-col px-[1.8cqw] pt-[0.4cqw] pb-[0.7cqw]">
+        <div className="relative min-h-0 flex-[1.12] overflow-hidden rounded-[1cqw] bg-[#ece7df]">
+          {heroes.map((src, index) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              className={`${heroes.length > 1 ? "aura-scene" : "aura-drift"} absolute inset-0 h-full w-full object-cover`}
+              style={heroes.length > 1 ? { animationDelay: `${index * -9}s, ${index * -6}s` } : undefined}
+            />
+          ))}
+          <p className="absolute bottom-[1.15cqw] left-[1.4cqw] font-serif text-[clamp(11px,2.15cqw,22px)] leading-none text-white drop-shadow-[0_1px_8px_rgba(40,30,20,0.35)]">
+            {title}
+          </p>
+          <div
+            className="aura-toast absolute top-[0.9cqw] right-[0.9cqw] flex max-w-[46%] items-center gap-[0.7cqw] rounded-[0.8cqw] bg-white py-[0.45cqw] pr-[0.7cqw] pl-[0.5cqw] shadow-[0_10px_24px_-16px_rgba(30,24,16,0.7)] ring-1 ring-black/5"
+            style={toast.delay ? { animationDelay: toast.delay } : undefined}
+          >
+            <img src={toast.src} alt="" className="size-[3.3cqw] shrink-0 rounded-[0.4cqw] object-cover" />
+            <span className="min-w-0 leading-tight">
+              <span className="block truncate text-[clamp(7px,1.15cqw,11px)] font-semibold">{toast.name}</span>
+              <span className="block truncate text-[clamp(6px,0.95cqw,10px)] text-[#8d877c]">added to bag</span>
+            </span>
+            <span className="grid size-[2.1cqw] shrink-0 place-items-center rounded-full bg-brand text-white">
+              <Check className="size-[1.15cqw]" aria-hidden />
+            </span>
+          </div>
+        </div>
+        <div className="mt-[1cqw] grid min-h-0 flex-1 grid-cols-4 gap-[0.9cqw]">
+          {products.map((product, index) => (
+            <ProductCard key={product.name} product={product} index={index + photoOffset} />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
@@ -177,23 +219,19 @@ function ProductCard({
   index: number
 }) {
   return (
-    <article className="flex h-full min-h-0 flex-col rounded-[0.8cqw] bg-white p-[0.7cqw] ring-1 ring-[#e7e7e2]">
-      <div className="flex min-h-0 flex-1 items-center justify-center">
-        <div className="flex aspect-square max-h-full w-full items-center justify-center overflow-hidden rounded-[0.5cqw] bg-[#f4f3f0]">
-          <img
-            src={product.src}
-            alt=""
-            className="aura-photo h-[88%] w-[88%] object-contain"
-            style={{ animationDelay: `${index * -1.4}s` }}
-          />
-        </div>
+    <article className="flex h-full min-h-0 flex-col overflow-hidden rounded-[0.9cqw] bg-white shadow-[0_10px_22px_-18px_rgba(40,32,18,0.55)] ring-1 ring-[#e7e1d6]">
+      <div className="m-[0.55cqw] flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-[0.6cqw] bg-[#f3f0ea]">
+        <img
+          src={product.src}
+          alt=""
+          className="aura-photo h-[92%] w-[92%] object-contain"
+          style={{ animationDelay: `${index * -1.4}s` }}
+        />
       </div>
-      <p className="mt-[0.4cqw] truncate text-[clamp(7px,1.25cqw,12px)] leading-tight font-medium">
-        {product.name}
-      </p>
-      <p className="text-[clamp(7px,1.15cqw,11px)] leading-tight font-semibold">{product.price}</p>
-      <span className="mt-[0.4cqw] block shrink-0 rounded-full bg-brand py-[0.4cqw] text-center text-[clamp(6px,1.05cqw,10px)] font-semibold tracking-wide whitespace-nowrap text-white">
-        ADD TO CART
+      <p className="truncate px-[0.7cqw] text-[clamp(7px,1.15cqw,12px)] leading-tight">{product.name}</p>
+      <p className="px-[0.7cqw] text-[clamp(7px,1.05cqw,11px)] leading-tight font-semibold">{product.price}</p>
+      <span className="mx-[0.55cqw] mt-[0.35cqw] mb-[0.55cqw] block shrink-0 rounded-[0.4cqw] bg-[linear-gradient(90deg,#3e5c38,#8c9a5e)] py-[0.38cqw] text-center text-[clamp(5px,0.95cqw,10px)] font-semibold tracking-wide whitespace-nowrap text-white">
+        + ADD TO CART
       </span>
     </article>
   )
