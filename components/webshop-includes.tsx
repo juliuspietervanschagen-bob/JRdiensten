@@ -39,6 +39,20 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
                 const number = String(index + 1).padStart(2, "0")
                 const assortment = item.title === "Assortiment dat klopt"
                 const checkout = item.title === "Korte checkout"
+                if (assortment) {
+                  return (
+                    <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
+                      <div className="py-5 sm:py-6">
+                        <AssortmentMark />
+                        <div className="mt-4 min-w-0">
+                          <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
+                          <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
+                          <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )
+                }
                 if (checkout) {
                   return (
                     <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
@@ -55,20 +69,8 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
                 }
                 return (
                   <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
-                    <div
-                      className={
-                        assortment
-                          ? "grid items-center gap-4 py-5 sm:grid-cols-[11.5rem_1fr] sm:gap-8 sm:py-6"
-                          : "grid items-center gap-4 py-5 sm:grid-cols-[8.5rem_1fr] sm:gap-8 sm:py-6"
-                      }
-                    >
-                      <div
-                        className={
-                          assortment
-                            ? "mx-auto flex h-36 w-full max-w-[15rem] items-center justify-center overflow-hidden rounded-xl bg-[#e8e7e3] ring-1 ring-[#e4e0d8]"
-                            : "flex h-20 items-center justify-center rounded-xl bg-[#f6f6f4] ring-1 ring-[#ecece8]"
-                        }
-                      >
+                    <div className="grid items-center gap-4 py-5 sm:grid-cols-[8.5rem_1fr] sm:gap-8 sm:py-6">
+                      <div className="flex h-20 items-center justify-center rounded-xl bg-[#f6f6f4] ring-1 ring-[#ecece8]">
                         <Mark />
                       </div>
                       <div className="min-w-0">
@@ -90,9 +92,15 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
 
 function AssortmentMark() {
   return (
-    <div className="assort-logo relative h-full w-full" aria-hidden>
-      <img src="/webshop/aura-assortiment.png" alt="" className="h-full w-full object-contain" />
-      <span className="assort-sheen pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent)]" />
+    <div
+      className="assort-stage relative flex items-center justify-center overflow-hidden rounded-2xl bg-[#e8e7e3] px-3 py-6 ring-1 ring-[#e4e0d8] sm:px-8 sm:py-8"
+      aria-hidden
+    >
+      <span className="assort-glow pointer-events-none absolute top-1/2 left-1/2 h-[78%] w-[46%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+      <div className="assort-logo relative w-full max-w-[36rem]">
+        <img src="/webshop/aura-assortiment.png" alt="" className="block h-auto w-full" />
+        <span className="assort-sheen pointer-events-none absolute inset-y-[6%] left-0 w-1/4 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.75),transparent)]" />
+      </div>
     </div>
   )
 }
