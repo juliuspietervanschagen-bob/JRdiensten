@@ -36,68 +36,14 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
 
             <ul className="mt-6">
               {includes.map((item, index) => {
-                const Mark = marks[item.title] ?? AssortmentMark
                 const number = String(index + 1).padStart(2, "0")
-                const assortment = item.title === "Assortiment dat klopt"
-                const checkout = item.title === "Korte checkout"
-                const phone = item.title === "Gebouwd voor de telefoon"
-                if (assortment) {
-                  return (
-                    <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
-                      <div className="py-5 sm:py-6">
-                        <AssortmentMark />
-                        <div className="mt-4 min-w-0">
-                          <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
-                          <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
-                          <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
-                        </div>
-                      </div>
-                    </li>
-                  )
-                }
-                if (checkout) {
-                  return (
-                    <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
-                      <div className="py-5 sm:py-6">
-                        <div className="min-w-0">
-                          <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
-                          <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
-                          <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
-                        </div>
-                        <div className="mt-4">
-                          <CheckoutJourney />
-                        </div>
-                      </div>
-                    </li>
-                  )
-                }
-                if (phone) {
-                  return (
-                    <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
-                      <div className="py-5 sm:py-6">
-                        <div className="min-w-0">
-                          <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
-                          <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
-                          <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
-                        </div>
-                        <div className="mt-4">
-                          <PhonePicture />
-                        </div>
-                      </div>
-                    </li>
-                  )
-                }
                 return (
                   <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
-                    <div className="grid items-center gap-4 py-5 sm:grid-cols-[8.5rem_1fr] sm:gap-8 sm:py-6">
-                      <div className="flex h-20 items-center justify-center rounded-xl bg-[#f6f6f4] ring-1 ring-[#ecece8]">
-                        <Mark />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
-                        <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
-                        <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
-                      </div>
+                    <div className="py-5 sm:py-6">
+                      <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
+                      <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
+                      <p className="mt-1.5 max-w-2xl text-sm leading-6 text-mist">{item.text}</p>
+                      <div className="mt-4">{pictureFor(item.title)}</div>
                     </div>
                   </li>
                 )
@@ -107,6 +53,19 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
         </div>
       </Container>
     </section>
+  )
+}
+
+function pictureFor(title: string) {
+  if (title === "Assortiment dat klopt") return <AssortmentMark />
+  if (title === "Korte checkout") return <CheckoutJourney />
+  if (title === "Gebouwd voor de telefoon") return <PhonePicture />
+  const Mark = marks[title]
+  if (!Mark) return null
+  return (
+    <div className="flex h-20 w-fit items-center justify-center rounded-xl bg-[#f6f6f4] px-4 ring-1 ring-[#ecece8]">
+      <Mark />
+    </div>
   )
 }
 
