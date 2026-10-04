@@ -8,7 +8,6 @@ const marks: Record<string, () => ReactNode> = {
   "Assortiment dat klopt": AssortmentMark,
   "Betaalprovider": PaymentMark,
   "Bestellingen op één plek": OrdersMark,
-  "Automatische bevestiging": ConfirmMark,
 }
 
 export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
@@ -60,6 +59,7 @@ function pictureFor(title: string) {
   if (title === "Assortiment dat klopt") return <AssortmentMark />
   if (title === "Korte checkout") return <CheckoutJourney />
   if (title === "Gebouwd voor de telefoon") return <PhonePicture />
+  if (title === "Automatische bevestiging") return <ConfirmationPicture />
   const Mark = marks[title]
   if (!Mark) return null
   return (
@@ -185,31 +185,130 @@ function PhonePicture() {
   )
 }
 
-function ConfirmMark() {
+function ConfirmationPicture() {
   return (
-    <div className="flex items-center gap-1.5" aria-hidden>
-      <Slip label="Bon" late={false} />
-      <span className="h-px w-3 bg-brand" />
-      <Slip label="Mail" late />
+    <div className="relative mx-auto w-full max-w-[44rem] overflow-hidden rounded-2xl bg-[#ecece8] px-3 py-8 ring-1 ring-[#e4e4df] sm:px-8 sm:py-10" aria-hidden>
+      <div className="relative">
+        <article className="confirm-card relative z-10 mx-auto w-full max-w-[26rem] bg-white">
+          <div className="h-1 bg-brand" />
+          <header className="bg-[#e7f5ec] px-4 py-4 text-center sm:px-6 sm:py-5">
+            <h4 className="text-[15px] font-semibold tracking-[0.16em] text-ink sm:text-lg">ORDER CONFIRMATION</h4>
+            <p className="mt-1 text-xs text-mist sm:text-sm">Thank you for your trust, Sarah J.!</p>
+          </header>
+          <div className="grid gap-4 px-4 py-4 sm:grid-cols-2 sm:px-5">
+            <div className="confirm-line">
+              <p className="text-[10px] font-semibold tracking-[0.14em] text-ink">ORDER DETAILS</p>
+              <p className="mt-2 text-[11px] text-mist">Order ID: <span className="text-ink">#TF24-10-26-987</span></p>
+              <p className="text-[11px] text-mist">Order Date: <span className="text-ink">October 26, 2024</span></p>
+            </div>
+            <div className="confirm-line confirm-d1">
+              <p className="text-[10px] font-semibold tracking-[0.14em] text-ink">SHIPPING INFORMATION</p>
+              <p className="mt-2 text-[11px] text-mist">Method: <span className="text-ink">FedEx Express</span></p>
+              <p className="text-[11px] text-mist">Est. Delivery: <span className="text-ink">Oct 29 – 31, 2024</span></p>
+              <p className="text-[11px] text-mist">
+                Status: <span className="text-ink">Processing</span>
+                <span className="confirm-dot ml-1.5 inline-block size-1.5 rounded-full bg-brand align-middle" />
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-3 px-4 pb-4 sm:grid-cols-2 sm:px-5">
+            <div className="confirm-line confirm-d2 rounded-lg border border-[#e4e4df] p-3">
+              <p className="text-[10px] font-semibold tracking-[0.14em] text-ink">ORDER SUMMARY</p>
+              <SummaryRow name="Apex Pro Wireless Keyboard" meta="qty: 1" price="$179.99" mark="keys" />
+              <SummaryRow name="Nimbus Laptop Stand" meta="(Space Gray) qty: 1" price="$49.50" mark="stand" />
+              <p className="mt-2 border-t border-[#ecece8] pt-2 text-[11px] text-mist">Total items: 2</p>
+              <Total label="Subtotal" value="$229.49" />
+              <Total label="Shipping (Standard)" value="FREE" />
+              <Total label="Tax" value="$18.36" />
+              <p className="mt-2 flex justify-between text-[11px] font-semibold text-ink">
+                <span>ORDER TOTAL:</span>
+                <span>$247.85</span>
+              </p>
+            </div>
+            <div className="confirm-line confirm-d3 rounded-lg border border-[#e4e4df] p-3">
+              <p className="text-[10px] font-semibold tracking-[0.14em] text-ink">SHIPPING DETAILS</p>
+              <p className="mt-2 text-[11px] text-mist">Method: <span className="text-ink">FedEx Express</span></p>
+              <p className="text-[11px] text-mist">Est. Delivery: <span className="text-ink">Oct 29 – 31, 2024</span></p>
+              <p className="text-[11px] text-mist">Status: <span className="text-ink">Processing</span></p>
+              <p className="mt-3 text-[10px] font-semibold tracking-[0.14em] text-ink">Address:</p>
+              <p className="mt-1 text-[11px] leading-4 text-mist">
+                Sarah Johnson
+                <br />
+                123 Innovation Drive, Apt 4B,
+                <br />
+                Seattle, WA 98101
+              </p>
+            </div>
+          </div>
+          <div className="confirm-line confirm-d4 flex flex-wrap gap-2 px-4 pb-5 sm:px-5">
+            <span className="inline-flex h-8 items-center rounded-md bg-brand px-3 text-[11px] font-semibold text-white">View Order Details</span>
+            <span className="inline-flex h-8 items-center rounded-md bg-brand px-3 text-[11px] font-semibold text-white">Contact Support</span>
+          </div>
+          <Seal id="jr-seal-card" className="confirm-stamp absolute right-2 bottom-2 size-16 sm:size-[4.5rem]" />
+        </article>
+        <Seal id="jr-seal-side" className="confirm-stamp confirm-stamp-side pointer-events-none absolute top-16 left-[calc(50%+11.5rem)] hidden size-24 sm:block" />
+      </div>
     </div>
   )
 }
 
-function Slip({ label, late }: { label: string; late: boolean }) {
+function SummaryRow({ name, meta, price, mark }: { name: string; meta: string; price: string; mark: "keys" | "stand" }) {
   return (
-    <span className="flex w-11 flex-col rounded-md bg-white px-1.5 py-1 ring-1 ring-[#e4e4df]">
-      <span className="flex items-center justify-between">
-        <span className="text-[9px] font-semibold text-ink">{label}</span>
-        <span
-          className={
-            late
-              ? "pakket-check pakket-check-late size-1.5 rounded-full bg-brand"
-              : "pakket-check size-1.5 rounded-full bg-brand"
-          }
-        />
+    <div className="mt-2 flex items-center gap-2">
+      <span className="grid size-8 shrink-0 place-items-center rounded-md bg-[#f6f6f4] text-brand">
+        {mark === "keys" ? <KeysIcon /> : <StandIcon />}
       </span>
-      <span className="mt-1 h-px w-full bg-[#ecece8]" />
-      <span className="mt-1 h-px w-5 bg-[#ecece8]" />
-    </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[11px] leading-4 font-medium text-ink">{name}</span>
+        <span className="block text-[10px] text-mist">{meta}</span>
+      </span>
+      <span className="text-[11px] font-medium text-ink">{price}</span>
+    </div>
+  )
+}
+
+function Total({ label, value }: { label: string; value: string }) {
+  return (
+    <p className="mt-1 flex justify-between text-[11px] text-mist">
+      <span>{label}</span>
+      <span className="text-ink">{value}</span>
+    </p>
+  )
+}
+
+function KeysIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-4" aria-hidden>
+      <rect x="2" y="7" width="20" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M6 11h.01M10 11h.01M14 11h.01M18 11h.01M8 14h8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function StandIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-4" aria-hidden>
+      <path d="M4 15h16l-2 4H6l-2-4Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M7 15 9 7h6l2 8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function Seal({ id, className }: { id: string; className?: string }) {
+  return (
+    <svg viewBox="0 0 120 120" className={className} aria-hidden>
+      <circle cx="60" cy="60" r="56" fill="#f6f6f4" stroke="#141414" strokeWidth="2" />
+      <circle cx="60" cy="60" r="48" fill="none" stroke="#141414" strokeWidth="1" />
+      <circle cx="60" cy="60" r="52" fill="none" stroke="#16a34a" strokeWidth="1" strokeDasharray="2 3" />
+      <path id={id} d="M60 18a42 42 0 1 1 0 84 42 42 0 0 1 0-84" fill="none" />
+      <text fill="#141414" fontSize="7.5" fontFamily="Geist, ui-sans-serif, sans-serif" letterSpacing="1.6">
+        <textPath href={`#${id}`} startOffset="4%">
+          JR INTELLIGENCE · CONFIRMED · JR INTELLIGENCE · CONFIRMED ·
+        </textPath>
+      </text>
+      <text x="60" y="68" textAnchor="middle" fill="#141414" fontSize="28" fontFamily="Georgia, serif" fontWeight="600">
+        JR
+      </text>
+    </svg>
   )
 }
