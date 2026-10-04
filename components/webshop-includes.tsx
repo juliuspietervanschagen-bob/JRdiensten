@@ -145,15 +145,15 @@ function OrdersPicture() {
         </span>
       </div>
 
-      <div className="grid items-center gap-5 px-3 py-5 sm:px-5 sm:py-6 lg:grid-cols-[4.25rem_minmax(0,1fr)_21rem] lg:gap-5 lg:py-7">
-        <div className="flex items-center justify-center gap-4 lg:flex-col lg:gap-3">
+      <div className="grid items-center gap-5 px-3 py-5 sm:px-5 sm:py-6 md:grid-cols-[4.25rem_minmax(0,1fr)_minmax(15rem,19rem)] md:gap-4 md:py-7">
+        <div className="flex items-center justify-center gap-4 md:flex-col md:gap-3">
           <GuaranteeSeal className="orders-stamp size-14 sm:size-16" />
           <BestSellerSeal className="orders-stamp orders-stamp-2 size-14 sm:size-16" />
           <Seal id="orders-seal-jr" className="orders-stamp orders-stamp-3 size-14 sm:size-16" />
         </div>
 
         <div className="overflow-hidden rounded-xl bg-[#e7e7e3]">
-          <svg viewBox="40 18 360 312" className="block h-auto w-full">
+          <svg viewBox="40 18 360 328" className="block h-auto w-full">
             <defs>
               <linearGradient id="orders-front" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0" stopColor="#1cba55" />
@@ -172,9 +172,8 @@ function OrdersPicture() {
               </clipPath>
             </defs>
 
-            <ellipse className="orders-shadow" cx="196" cy="312" rx="120" ry="9" fill="#141414" />
-
             <g className="orders-bag">
+              <ellipse cx="196" cy="314" rx="112" ry="8" fill="#141414" opacity="0.12" />
               <path d="M298 126 L340 116 L348 280 L304 294 Z" fill="url(#orders-side)" />
               <path d="M140 124 C126 42 188 28 206 122" fill="none" stroke="#0e7034" strokeWidth="11" strokeLinecap="round" />
               <path d="M140 124 C126 42 188 28 206 122" fill="none" stroke="#1aaa4e" strokeWidth="3" strokeLinecap="round" />

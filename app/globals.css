@@ -794,24 +794,6 @@
   animation: orders-float 7.5s ease-in-out infinite;
 }
 
-@keyframes orders-shadow {
-  0%,
-  100% {
-    transform: scaleX(1);
-    opacity: 0.12;
-  }
-  50% {
-    transform: scaleX(0.9);
-    opacity: 0.06;
-  }
-}
-
-.orders-shadow {
-  transform-origin: center;
-  transform-box: fill-box;
-  animation: orders-shadow 7.5s ease-in-out infinite;
-}
-
 @keyframes orders-drop {
   from {
     opacity: 0;
@@ -1051,7 +1033,6 @@
   .confirm-stamp,
   .confirm-dot,
   .orders-bag,
-  .orders-shadow,
   .orders-drop,
   .orders-sheen,
   .orders-line,
@@ -1149,12 +1130,6 @@
   .orders-badge {
     animation: none;
     opacity: 1;
-    transform: none;
-  }
-
-  .orders-shadow {
-    animation: none;
-    opacity: 0.12;
     transform: none;
   }
 
