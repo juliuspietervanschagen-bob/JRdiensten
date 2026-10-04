@@ -1,4 +1,16 @@
-export const WIDGET_KINDS = ["MetricsDash", "DataGridPro", "AuthGate", "DynamicForm", "Button"] as const
+export const WIDGET_KINDS = [
+  "MetricsDash",
+  "DataGridPro",
+  "SearchField",
+  "OrderStatus",
+  "PersonRow",
+  "KeyFacts",
+  "ProgressTrack",
+  "Note",
+  "AuthGate",
+  "DynamicForm",
+  "Button",
+] as const
 
 export type WidgetKind = (typeof WIDGET_KINDS)[number]
 
@@ -7,6 +19,12 @@ export type PropValue = string | number | boolean
 export type WidgetProps = {
   MetricsDash: { label: string; value: string; trend: "up" | "down" | "flat" }
   DataGridPro: { title: string; rows: number }
+  SearchField: { placeholder: string; query: string }
+  OrderStatus: { ref: string; state: "processing" | "packed" | "shipped" }
+  PersonRow: { name: string; detail: string }
+  KeyFacts: { title: string; lines: number }
+  ProgressTrack: { label: string; value: number }
+  Note: { text: string; tone: "info" | "warning" | "ok" }
   AuthGate: { label: string; locked: boolean }
   DynamicForm: { title: string; steps: number }
   Button: { label: string; variant: "solid" | "outline" }
@@ -54,6 +72,60 @@ export const WIDGET_DEFS: { [K in WidgetKind]: WidgetDef<K> } = {
     fields: [
       { key: "title", label: "Title", type: "string" },
       { key: "rows", label: "Rows", type: "number" },
+    ],
+  },
+  SearchField: {
+    kind: "SearchField",
+    blurb: "Filter the orders",
+    defaults: { placeholder: "Search orders", query: "" },
+    fields: [
+      { key: "placeholder", label: "Placeholder", type: "string" },
+      { key: "query", label: "Query", type: "string" },
+    ],
+  },
+  OrderStatus: {
+    kind: "OrderStatus",
+    blurb: "Where an order stands",
+    defaults: { ref: "#TF24-10-26-987", state: "processing" },
+    fields: [
+      { key: "ref", label: "Reference", type: "string" },
+      { key: "state", label: "State", type: "enum", options: ["processing", "packed", "shipped"] },
+    ],
+  },
+  PersonRow: {
+    kind: "PersonRow",
+    blurb: "Customer on the order",
+    defaults: { name: "Sarah J.", detail: "Seattle · FedEx Express" },
+    fields: [
+      { key: "name", label: "Name", type: "string" },
+      { key: "detail", label: "Detail", type: "string" },
+    ],
+  },
+  KeyFacts: {
+    kind: "KeyFacts",
+    blurb: "Reference, date, and total",
+    defaults: { title: "Order", lines: 3 },
+    fields: [
+      { key: "title", label: "Title", type: "string" },
+      { key: "lines", label: "Lines", type: "number" },
+    ],
+  },
+  ProgressTrack: {
+    kind: "ProgressTrack",
+    blurb: "How far packing has gone",
+    defaults: { label: "Packed", value: 64 },
+    fields: [
+      { key: "label", label: "Label", type: "string" },
+      { key: "value", label: "Percent", type: "number" },
+    ],
+  },
+  Note: {
+    kind: "Note",
+    blurb: "Context next to a figure",
+    defaults: { text: "Two items, ready for the same shipment.", tone: "info" },
+    fields: [
+      { key: "text", label: "Text", type: "string" },
+      { key: "tone", label: "Tone", type: "enum", options: ["info", "warning", "ok"] },
     ],
   },
   AuthGate: {
