@@ -1,6 +1,8 @@
+"use client"
+
 import { Container } from "@/components/container"
 import type { ServicePoint } from "@/lib/services"
-import type { ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 
 const marks: Record<string, () => ReactNode> = {
   "Assortiment dat klopt": AssortmentMark,
@@ -178,9 +180,48 @@ function OrdersMark() {
 }
 
 function PhonePicture() {
+  const [view, setView] = useState<"logo" | "phone">("phone")
+  const options = [
+    { id: "logo", label: "Logo" },
+    { id: "phone", label: "Telefoon" },
+  ] as const
+
   return (
-    <div className="mx-auto w-full max-w-[40rem] overflow-hidden rounded-2xl ring-1 ring-[#e3eee6]" aria-hidden>
-      <img src="/webshop/aura-phone.png" alt="" className="phone-shot block h-auto w-full" />
+    <div className="mx-auto w-full max-w-[40rem]">
+      <div className="mb-3 flex justify-center">
+        <div className="inline-flex rounded-full bg-[#f6f6f4] p-1 ring-1 ring-[#e8e8e3]" role="group" aria-label="Kies een weergave">
+          {options.map((option) => {
+            const active = view === option.id
+            return (
+              <button
+                key={option.id}
+                type="button"
+                aria-pressed={active}
+                onClick={() => setView(option.id)}
+                className={
+                  active
+                    ? "min-h-9 rounded-full bg-brand px-4 text-xs font-semibold text-white"
+                    : "min-h-9 rounded-full px-4 text-xs font-semibold text-mist hover:text-ink"
+                }
+              >
+                {option.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+      <div className="relative overflow-hidden rounded-2xl ring-1 ring-[#e3eee6]">
+        <img
+          src="/webshop/aura-phone.png"
+          alt=""
+          className={`phone-shot block h-auto w-full transition-opacity duration-500 motion-reduce:transition-none ${view === "phone" ? "opacity-100" : "opacity-0"}`}
+        />
+        <img
+          src="/webshop/aura-logo.png"
+          alt=""
+          className={`phone-shot absolute inset-0 h-full w-full transition-opacity duration-500 motion-reduce:transition-none ${view === "logo" ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        />
+      </div>
     </div>
   )
 }
