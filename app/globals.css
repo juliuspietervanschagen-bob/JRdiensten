@@ -622,6 +622,21 @@
   width: 100%;
 }
 
+.phone-shot {
+  transform-origin: center;
+  animation: phone-shot 9s ease-in-out infinite;
+}
+
+@keyframes phone-shot {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.045);
+  }
+}
+
 .checkout-walker {
   position: absolute;
   z-index: 1;
@@ -795,6 +810,7 @@
   .assort-sheen,
   .checkout-reel,
   .checkout-walker,
+  .phone-shot,
   .pakket-check,
   .pakket-lift,
   .pref-in,
@@ -870,6 +886,10 @@
   .checkout-walker {
     left: 11.91%;
     top: 79.03%;
+  }
+
+  .phone-shot {
+    transform: none;
   }
 
   .pakket-check {

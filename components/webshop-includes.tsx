@@ -6,7 +6,6 @@ const marks: Record<string, () => ReactNode> = {
   "Assortiment dat klopt": AssortmentMark,
   "Betaalprovider": PaymentMark,
   "Bestellingen op één plek": OrdersMark,
-  "Gebouwd voor de telefoon": ScreensMark,
   "Automatische bevestiging": ConfirmMark,
 }
 
@@ -39,6 +38,7 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
                 const number = String(index + 1).padStart(2, "0")
                 const assortment = item.title === "Assortiment dat klopt"
                 const checkout = item.title === "Korte checkout"
+                const phone = item.title === "Gebouwd voor de telefoon"
                 if (assortment) {
                   return (
                     <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
@@ -64,6 +64,22 @@ export function WebshopIncludes({ includes }: { includes: ServicePoint[] }) {
                         </div>
                         <div className="mt-4">
                           <CheckoutJourney />
+                        </div>
+                      </div>
+                    </li>
+                  )
+                }
+                if (phone) {
+                  return (
+                    <li key={item.title} className="pakket-lift relative border-t border-[#ecece8]">
+                      <div className="py-5 sm:py-6">
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold tracking-[0.16em] text-brand">{number}</p>
+                          <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
+                          <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
+                        </div>
+                        <div className="mt-4">
+                          <PhonePicture />
                         </div>
                       </div>
                     </li>
@@ -161,19 +177,10 @@ function OrdersMark() {
   )
 }
 
-function ScreensMark() {
+function PhonePicture() {
   return (
-    <div className="flex items-end gap-2" aria-hidden>
-      <span className="flex h-12 w-7 flex-col rounded-md bg-white p-1 ring-1 ring-[#e4e4df]">
-        <span className="h-1 w-full rounded-sm bg-brand" />
-        <span className="mt-1 h-1 w-full rounded-sm bg-[#ecece8]" />
-        <span className="mt-1 h-1 w-3 rounded-sm bg-[#ecece8]" />
-      </span>
-      <span className="flex h-9 w-14 flex-col rounded-md bg-white p-1 ring-1 ring-[#e4e4df]">
-        <span className="h-1 w-6 rounded-sm bg-brand" />
-        <span className="mt-1 h-1 w-full rounded-sm bg-[#ecece8]" />
-        <span className="mt-1 h-1 w-8 rounded-sm bg-[#ecece8]" />
-      </span>
+    <div className="mx-auto w-full max-w-[40rem] overflow-hidden rounded-2xl ring-1 ring-[#e3eee6]" aria-hidden>
+      <img src="/webshop/aura-phone.png" alt="" className="phone-shot block h-auto w-full" />
     </div>
   )
 }
