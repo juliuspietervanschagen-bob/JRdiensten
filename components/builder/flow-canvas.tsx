@@ -24,11 +24,11 @@ function WidgetCard({ data, selected }: NodeProps<WidgetFlowNode>) {
     <article
       className={
         selected
-          ? "w-[240px] border border-[#10b981] bg-[#09090b] p-3"
-          : "w-[240px] border border-[#27272a] bg-[#09090b] p-3"
+          ? "w-[240px] rounded-2xl bg-white p-3 shadow-[0_16px_30px_-24px_rgba(20,20,20,0.45)] ring-1 ring-brand"
+          : "w-[240px] rounded-2xl bg-white p-3 shadow-[0_16px_30px_-24px_rgba(20,20,20,0.35)] ring-1 ring-[#e8e8e3]"
       }
     >
-      <p className="mb-2 text-[10px] tracking-[0.16em] text-[#10b981]">{data.widget.kind}</p>
+      <p className="mb-2 text-[10px] font-semibold tracking-[0.16em] text-brand">{data.widget.kind}</p>
       <WidgetPreview node={data.widget} />
     </article>
   )
@@ -56,7 +56,7 @@ export function FlowCanvas({
   onCursor: (x: number, y: number) => void
 }) {
   return (
-    <div ref={canvasRef} className="absolute inset-0 bg-black">
+    <div ref={canvasRef} className="absolute inset-0 bg-[#f6f6f4]">
       <ReactFlowProvider>
         <FlowSurface
           nodes={nodes}
@@ -69,8 +69,8 @@ export function FlowCanvas({
       </ReactFlowProvider>
       {cursors.map((cursor) => (
         <span key={cursor.id} className="pointer-events-none absolute z-10" style={{ left: `${cursor.x}%`, top: `${cursor.y}%` }}>
-          <span className="block size-2 bg-[#00ff66]" />
-          <span className="mt-1 block text-[9px] tracking-[0.12em] text-[#00ff66]">{cursor.id}</span>
+          <span className="block size-2 rounded-full bg-brand" />
+          <span className="mt-1 block text-[9px] font-semibold tracking-[0.12em] text-brand">{cursor.id}</span>
         </span>
       ))}
     </div>
@@ -144,14 +144,14 @@ function FlowSurface({
         minZoom={0.4}
         maxZoom={1.6}
         defaultViewport={{ x: 16, y: 16, zoom: 1 }}
-        colorMode="dark"
+        colorMode="light"
       >
-        <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#27272a" />
+        <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#d5e6da" />
       </ReactFlow>
       {nodes.length === 0 ? (
-        <div className="pointer-events-none absolute inset-8 flex items-center justify-center border border-dashed border-[#27272a]">
-          <p className="max-w-xs text-center text-[11px] leading-5 tracking-[0.08em] text-[#a1a1aa]">
-            Drop a widget on the grid. The file below updates with the same tree.
+        <div className="pointer-events-none absolute inset-8 flex items-center justify-center rounded-2xl border border-dashed border-[#d5e6da]">
+          <p className="max-w-xs text-center text-[12px] leading-5 text-mist">
+            Sleep een onderdeel op het vlak. Het bestand eronder volgt hetzelfde scherm.
           </p>
         </div>
       ) : null}

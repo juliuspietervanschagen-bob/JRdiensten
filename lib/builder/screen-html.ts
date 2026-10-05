@@ -3,17 +3,17 @@ import type { WidgetNode } from "@/lib/builder/codec"
 export function screenHtml(nodes: readonly WidgetNode[]): string {
   const cards =
     nodes.length === 0
-      ? `<p style="color:#a1a1aa;letter-spacing:0.08em;font-size:12px">Drop a widget on the grid.</p>`
+      ? `<p style="color:#5e5e5e;letter-spacing:0.08em;font-size:12px">Kies een onderdeel.</p>`
       : nodes
           .map((node) => {
             const facts = Object.entries(node.props)
               .map(
                 ([key, value]) =>
-                  `<p style="margin:4px 0;color:#a1a1aa;font-size:11px">${escapeHtml(key)} <span style="color:#fff">${escapeHtml(String(value))}</span></p>`,
+                  `<p style="margin:4px 0;color:#5e5e5e;font-size:11px">${escapeHtml(key)} <span style="color:#141414">${escapeHtml(String(value))}</span></p>`,
               )
               .join("")
-            return `<article style="position:absolute;left:${node.x * 6}px;top:${node.y * 6}px;width:240px;border:1px solid #27272a;background:#09090b;padding:12px">
-              <p style="margin:0 0 8px;color:#10b981;font-size:10px;letter-spacing:0.16em">${escapeHtml(node.kind)}</p>
+            return `<article style="position:absolute;left:${node.x * 6}px;top:${node.y * 6}px;width:240px;border:1px solid #e8e8e3;background:#ffffff;border-radius:16px;padding:12px">
+              <p style="margin:0 0 8px;color:#16a34a;font-size:10px;letter-spacing:0.16em">${escapeHtml(node.kind)}</p>
               ${facts}
             </article>`
           })
@@ -25,7 +25,7 @@ export function screenHtml(nodes: readonly WidgetNode[]): string {
   <meta charset="utf-8" />
   <title>screen</title>
 </head>
-<body style="margin:0;min-height:100vh;background:#000;color:#fff;font-family:ui-monospace,monospace">
+<body style="margin:0;min-height:100vh;background:#f6f6f4;color:#141414;font-family:ui-sans-serif,system-ui,sans-serif">
   <main style="position:relative;min-height:100vh">${cards}</main>
 </body>
 </html>`

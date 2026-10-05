@@ -78,7 +78,7 @@ export function ScreenPreview({ nodes, onClose }: { nodes: readonly WidgetNode[]
         container?.teardown()
         if (!cancelled) {
           setMode("local")
-          setNote("The screen is shown in this tab.")
+          setNote("Het scherm staat in dit tabblad.")
         }
         return null
       }
@@ -88,21 +88,21 @@ export function ScreenPreview({ nodes, onClose }: { nodes: readonly WidgetNode[]
   }, [])
 
   return (
-    <div className="absolute inset-0 z-20 flex flex-col bg-black">
-      <div className="flex h-8 shrink-0 items-center justify-between border-b border-[#27272a] px-3">
-        <p className="truncate text-[10px] tracking-[0.16em] text-[#10b981]">{mode === "live" ? "PREVIEW · WEBCONTAINER" : mode === "booting" ? "PREVIEW · STARTING" : "PREVIEW · THIS TAB"}</p>
-        <button type="button" onClick={onClose} className="text-[10px] tracking-[0.14em] text-[#a1a1aa] hover:text-white">
-          CLOSE
+    <div className="absolute inset-0 z-20 flex flex-col bg-[#f6f6f4]">
+      <div className="flex h-8 shrink-0 items-center justify-between border-b border-[#ecece8] bg-white px-3">
+        <p className="truncate text-[10px] font-semibold tracking-[0.16em] text-brand">{mode === "live" ? "VOORBEELD · SERVER" : mode === "booting" ? "VOORBEELD · START" : "VOORBEELD · DIT SCHERM"}</p>
+        <button type="button" onClick={onClose} className="text-[10px] font-semibold tracking-[0.14em] text-mist hover:text-ink">
+          SLUITEN
         </button>
       </div>
       {mode === "live" && url ? (
-        <iframe ref={frameRef} title="Screen preview" src={url} className="min-h-0 w-full flex-1 border-0 bg-black" />
+        <iframe ref={frameRef} title="Screen preview" src={url} className="min-h-0 w-full flex-1 border-0 bg-[#f6f6f4]" />
       ) : mode === "local" ? (
-        <iframe title="Screen preview" srcDoc={html} className="min-h-0 w-full flex-1 border-0 bg-black" />
+        <iframe title="Screen preview" srcDoc={html} className="min-h-0 w-full flex-1 border-0 bg-[#f6f6f4]" />
       ) : (
-        <p className="px-4 py-6 text-[11px] tracking-[0.08em] text-[#a1a1aa]">{note}</p>
+        <p className="px-4 py-6 text-[11px] text-mist">{note}</p>
       )}
-      {mode === "local" ? <p className="border-t border-[#27272a] px-3 py-2 text-[10px] tracking-[0.08em] text-[#a1a1aa]">{note}</p> : null}
+      {mode === "local" ? <p className="border-t border-[#ecece8] bg-white px-3 py-2 text-[10px] text-mist">{note}</p> : null}
     </div>
   )
 }

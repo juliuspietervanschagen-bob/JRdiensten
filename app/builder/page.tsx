@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { TabBuilder } from "@/components/builder/tab-builder"
 
 export const metadata: Metadata = {
-  title: "Tab App Builder",
-  description: "Compose a screen on the grid and keep the generated file in step.",
+  title: "App bouwer",
+  description: "Zet een scherm in elkaar in de webshop en houd het bestand gelijk.",
 }
 
 export default function BuilderPage() {
