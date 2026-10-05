@@ -1,6 +1,6 @@
 import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
-import { ServiceArt } from "@/components/service-art"
+import { ShopAppBuilder } from "@/components/shop-app-builder"
 import { AppForge } from "@/components/app-forge"
 import { AutomationMind } from "@/components/automation-mind"
 import { WebsiteBuild } from "@/components/website-build"
@@ -55,7 +55,7 @@ export function ServiceDetail({ service }: { service: Service }) {
             </div>
           </div>
           <div className="hero-in" style={{ animationDelay: "120ms" }}>
-            <ServiceArt slug={service.slug} />
+            <ShopAppBuilder />
           </div>
         </Container>
       </section>
