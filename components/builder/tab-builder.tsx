@@ -48,16 +48,6 @@ export function TabBuilder() {
     replaceNodes(parsed.nodes)
   }
 
-  function download() {
-    const file = new Blob([generateScreen(nodes)], { type: "text/plain" })
-    const url = URL.createObjectURL(file)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = "screen.tsx"
-    link.click()
-    URL.revokeObjectURL(url)
-  }
-
   return (
     <div className="bg-paper text-ink">
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">
@@ -88,16 +78,9 @@ export function TabBuilder() {
             <button
               type="button"
               onClick={() => setPreview((open) => !open)}
-              className="inline-flex h-10 items-center rounded-full bg-white px-4 text-xs font-semibold text-ink ring-1 ring-[#e8e8e3] hover:ring-brand"
-            >
-              Voorbeeld
-            </button>
-            <button
-              type="button"
-              onClick={download}
               className="inline-flex h-10 items-center rounded-full bg-brand px-4 text-xs font-semibold text-white hover:bg-brand-dark"
             >
-              Publiceer
+              Voorbeeld
             </button>
           </div>
         </div>
