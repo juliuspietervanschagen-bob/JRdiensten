@@ -92,7 +92,7 @@ const includeDetail: Record<
     code: "TOESTEL",
     tone: "wash",
     points: [
-      "Eén app, gebouwd voor beide platformen.",
+      "Hetzelfde account en dezelfde taken op iPhone en Android.",
       "Knoppen en tekst blijven leesbaar, en je haalt ze met een duim.",
       "Geen website die je in de browser opent.",
     ],
