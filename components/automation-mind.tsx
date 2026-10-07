@@ -5,7 +5,7 @@ import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useRef, useState, type ReactNode } from "react"
+import { useEffect, useRef, type ReactNode } from "react"
 
 const VIEW_W = 640
 const VIEW_H = 540
@@ -63,8 +63,6 @@ const feedbackCapabilities = [
   { name: "Team", mode: "Weet het", detail: "Wanneer ingrijpen" },
 ] as const
 
-const signals = sources.map((source) => `${source.source}: ${source.signal.toLowerCase()} — ${source.capability.toLowerCase()}.`)
-
 const palette = ["#22d3ee", "#4ade80", "#facc15", "#fb7185", "#c084fc", "#60a5fa", "#f9a8d4"]
 
 const flows = [
@@ -119,8 +117,6 @@ type FieldMote = { angle: number; radius: number; speed: number; drift: number; 
 const fieldColors = ["#22d3ee", "#4ade80", "#facc15", "#fb7185", "#c084fc", "#60a5fa", "#f9a8d4", "#e879f9"].map(hexRgb)
 
 export function AutomationMind({ service }: { service: Service }) {
-  const [signal, setSignal] = useState(0)
-
   return (
     <>
       <section className="overflow-hidden pt-8 pb-4 sm:pt-12">
@@ -163,7 +159,7 @@ export function AutomationMind({ service }: { service: Service }) {
 
             <div className="mt-3 grid grid-cols-1 gap-2.5 px-3 pb-4 sm:grid-cols-[minmax(0,16.5rem)_minmax(0,1fr)_minmax(0,16.5rem)] sm:gap-3 sm:px-5 sm:pb-5">
               <div className="relative h-[420px] sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:h-auto sm:min-h-[540px]">
-                <MatrixBrain onPulse={() => setSignal((current) => (current + 1) % signals.length)} />
+                <MatrixBrain />
               </div>
               <Panel className="sm:col-start-1 sm:row-start-1" title="Signalen" accent="#22d3ee">
                 <SignalGraphic />
@@ -177,13 +173,6 @@ export function AutomationMind({ service }: { service: Service }) {
               <Panel className="sm:col-start-3 sm:row-start-2" title="Terugkoppeling" accent="#e879f9">
                 <FeedbackGraphic />
               </Panel>
-            </div>
-
-            <div className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-3.5 sm:px-7">
-              <p className="min-w-0 text-sm text-white/85" aria-live="polite">
-                {signals[signal]}
-              </p>
-              <p className="hidden shrink-0 text-xs tracking-wide text-white/45 sm:block">4 bronnen, 6 onderdelen</p>
             </div>
           </div>
 
@@ -241,12 +230,10 @@ export function AutomationMind({ service }: { service: Service }) {
   )
 }
 
-function MatrixBrain({ onPulse }: { onPulse: () => void }) {
+function MatrixBrain() {
   const stageRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const labelRefs = useRef<(HTMLDivElement | null)[]>([])
-  const onPulseRef = useRef(onPulse)
-  onPulseRef.current = onPulse
 
   useEffect(() => {
     const stage = stageRef.current
@@ -292,7 +279,6 @@ function MatrixBrain({ onPulse }: { onPulse: () => void }) {
     }))
 
     let frame = 0
-    let lastSignal = 0
     const context = canvas.getContext("2d")
     if (!context) return
 
@@ -372,14 +358,10 @@ function MatrixBrain({ onPulse }: { onPulse: () => void }) {
       context.globalCompositeOperation = "source-over"
     }
 
-    function step(now: number) {
-      let arrived = false
+    function step() {
       for (const mote of streams) {
         mote.t += mote.speed
-        if (mote.t >= 1) {
-          mote.t = 0
-          arrived = true
-        }
+        if (mote.t >= 1) mote.t = 0
       }
       for (const mote of field) {
         mote.radius -= mote.speed
@@ -388,10 +370,6 @@ function MatrixBrain({ onPulse }: { onPulse: () => void }) {
           mote.radius = 240 + Math.random() * 40
           mote.angle += 0.35
         }
-      }
-      if (arrived && now - lastSignal > 1100) {
-        lastSignal = now
-        onPulseRef.current()
       }
       draw()
       frame = window.requestAnimationFrame(step)
