@@ -128,19 +128,16 @@ export function AutomationMind({ service }: { service: Service }) {
             <span className="px-2">/</span>
             <span className="text-ink">{service.title}</span>
           </p>
-          <div className="mt-8 grid items-end gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-            <div>
-              <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
-                <span className="h-px w-8 bg-brand" />
-                AUTOMATISERING
-              </p>
-              <h1 className="mt-4 max-w-xl text-4xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.05]">
-                {service.title}
-              </h1>
-              <p className="mt-5 max-w-xl text-lg leading-8 text-mist">{service.summary}</p>
-            </div>
-            <p className="max-w-md text-sm leading-6 text-mist lg:justify-self-end lg:pb-1">
-              {service.audience} Wat hier stroomt, is het werk dat daarna niet meer overgetypt wordt.
+          <div className="mt-8 max-w-3xl">
+            <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
+              <span className="h-px w-8 bg-brand" />
+              AUTOMATISERING
+            </p>
+            <h1 className="mt-4 text-4xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.05]">
+              {service.title}
+            </h1>
+            <p className="mt-5 text-lg leading-8 text-mist">
+              {service.summary} {service.audience} Wat hier stroomt, is het werk dat daarna niet meer overgetypt wordt.
             </p>
           </div>
 
