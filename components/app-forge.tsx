@@ -29,6 +29,103 @@ const screens = [
 
 type ScreenId = (typeof screens)[number]["id"]
 
+const patternField = {
+  ink: {
+    bg: "#141414",
+    image: "radial-gradient(circle, rgba(22,163,74,0.95) 1.15px, transparent 1.25px)",
+    size: "14px 14px",
+  },
+  green: {
+    bg: "#16a34a",
+    image:
+      "repeating-linear-gradient(-45deg, transparent, transparent 9px, rgba(255,255,255,0.18) 9px, rgba(255,255,255,0.18) 10px)",
+    size: "auto",
+  },
+  wash: {
+    bg: "#e7f6ec",
+    image:
+      "linear-gradient(rgba(22,163,74,0.28) 1px, transparent 1px), linear-gradient(90deg, rgba(22,163,74,0.28) 1px, transparent 1px)",
+    size: "16px 16px",
+  },
+  deep: {
+    bg: "#128a3e",
+    image:
+      "radial-gradient(circle at 18% 30%, rgba(255,255,255,0.22) 0 20px, transparent 21px), radial-gradient(circle at 86% 72%, rgba(255,255,255,0.16) 0 34px, transparent 35px)",
+    size: "auto",
+  },
+  paper: {
+    bg: "#f6f6f4",
+    image: "radial-gradient(circle, #16a34a 1px, transparent 1.1px)",
+    size: "13px 13px",
+  },
+  stripe: {
+    bg: "#0c100e",
+    image:
+      "repeating-linear-gradient(90deg, transparent, transparent 13px, rgba(22,163,74,0.45) 13px, rgba(22,163,74,0.45) 14px)",
+    size: "auto",
+  },
+} as const
+
+const includeDetail: Record<
+  string,
+  { code: string; tone: keyof typeof patternField; points: string[] }
+> = {
+  "App Store en Play Store": {
+    code: "STORES",
+    tone: "ink",
+    points: [
+      "De vermelding: naam, icoon en de tekst die een klant in de store leest.",
+      "Versie 1.0 gaat mee als we de app indienen.",
+      "We begeleiden de publicatie tot de app live staat.",
+    ],
+  },
+  "Schermen in jullie merk": {
+    code: "MERK",
+    tone: "green",
+    points: [
+      "Kleur, toon en de woorden zijn van jullie bedrijf.",
+      "Op het scherm staat wat een klant echt doet: een account, een afspraak of een status.",
+      "Je ziet die schermen voordat de bouw start.",
+    ],
+  },
+  "iPhone en Android": {
+    code: "TOESTEL",
+    tone: "wash",
+    points: [
+      "Eén app, gebouwd voor beide platformen.",
+      "Knoppen en tekst blijven leesbaar, en je haalt ze met een duim.",
+      "Geen website die je in de browser opent.",
+    ],
+  },
+  "Account voor de klant": {
+    code: "ACCOUNT",
+    tone: "deep",
+    points: [
+      "Inloggen en een profiel op het toestel.",
+      "Gegevens die bij de dienst horen, zoals het adres.",
+      "Een melding zodra de status van een rit of order wijzigt.",
+    ],
+  },
+  "Getest op echte toestellen": {
+    code: "TEST",
+    tone: "paper",
+    points: [
+      "De belangrijkste schermen op een iPhone.",
+      "Dezelfde schermen op een Android-telefoon.",
+      "Daarna pas de indiening bij de stores.",
+    ],
+  },
+  "Eerste update inbegrepen": {
+    code: "UPDATE",
+    tone: "stripe",
+    points: [
+      "De eerste fouten die na livegang in de stores naar boven komen.",
+      "Die aanpassing zit in deze opdracht, als versie 1.0.1.",
+      "Je ziet wat er is gewijzigd voordat de update live gaat.",
+    ],
+  },
+}
+
 const previews: Record<string, "stores" | "brand" | "devices" | "account" | "test" | "update"> = {
   "App Store en Play Store": "stores",
   "Schermen in jullie merk": "brand",
@@ -153,16 +250,68 @@ export function AppForge({ service }: { service: Service }) {
           </div>
         </div>
 
-        <div className="mt-14">
-          <h2 className="text-2xl font-semibold tracking-tight">In de app</h2>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {service.includes.map((item) => (
-              <li key={item.title} className="rounded-3xl bg-white p-4 ring-1 ring-[#e8e8e3]">
-                <Preview kind={previews[item.title] ?? "brand"} />
-                <h3 className="mt-4 text-base font-semibold">{item.title}</h3>
-                <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
-              </li>
-            ))}
+        <div className="mt-16">
+          <p className="flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-brand">
+            <span className="h-px w-8 bg-brand" />
+            IN DE APP
+          </p>
+          <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+            Wat de eerste versie bevat
+          </h2>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-mist">
+            Zes onderdelen zitten in de eerste versie. JR Intelligence bouwt ze, test ze op een
+            echte telefoon en dient de app in bij de App Store en de Play Store.
+          </p>
+          <ul className="mt-8 grid gap-4 lg:grid-cols-2">
+            {service.includes.map((item, itemIndex) => {
+              const detail = includeDetail[item.title]
+              const field = detail ? patternField[detail.tone] : patternField.paper
+              const light = detail?.tone === "wash" || detail?.tone === "paper"
+              return (
+                <li key={item.title} className="pakket-lift rounded-3xl bg-white ring-1 ring-[#e8e8e3]">
+                  <div className="overflow-hidden rounded-3xl">
+                    <div
+                      className="relative flex h-32 items-center px-5"
+                      style={{
+                        backgroundColor: field.bg,
+                        backgroundImage: field.image,
+                        backgroundSize: field.size,
+                      }}
+                    >
+                      <span
+                        className={cn(
+                          "pointer-events-none absolute right-5 top-3 font-mono text-4xl font-semibold tabular-nums",
+                          light ? "text-ink/15" : "text-white/25",
+                        )}
+                        aria-hidden
+                      >
+                        {String(itemIndex + 1).padStart(2, "0")}
+                      </span>
+                      <div className="relative rounded-2xl bg-white px-3 py-2 ring-1 ring-[#e8e8e3]">
+                        <Preview kind={previews[item.title] ?? "brand"} />
+                      </div>
+                    </div>
+                    <div className="px-5 py-5">
+                      <p className="font-mono text-[10px] font-semibold tracking-[0.16em] text-brand">
+                        {String(itemIndex + 1).padStart(2, "0")} / {detail?.code ?? "APP"}
+                      </p>
+                      <h3 className="mt-2 text-lg font-semibold tracking-tight">{item.title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-mist">{item.text}</p>
+                      {detail ? (
+                        <ul className="mt-4 space-y-2">
+                          {detail.points.map((point) => (
+                            <li key={point} className="flex gap-2.5 text-sm leading-6 text-ink">
+                              <span className="mt-[0.55rem] size-1.5 shrink-0 rounded-full bg-brand" aria-hidden />
+                              {point}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </div>
+                  </div>
+                </li>
+              )
+            })}
           </ul>
         </div>
 
