@@ -8,9 +8,16 @@ import { WebshopHero } from "@/components/webshop-hero"
 import { WebshopIncludes } from "@/components/webshop-includes"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { WebshopStudio } from "@/components/webshop-studio"
-import { formatFromPrice, services, type Service } from "@/lib/services"
-import { ArrowRight, Check } from "lucide-react"
+import { formatFromPrice, services, type Service, type ServiceSlug } from "@/lib/services"
+import { ArrowRight, Check, Monitor, ShoppingBag, Smartphone, Workflow, type LucideIcon } from "lucide-react"
 import Link from "next/link"
+
+const otherTone: Record<ServiceSlug, { kicker: string; color: string; wash: string; icon: LucideIcon }> = {
+  webshop: { kicker: "Shop", color: "#16a34a", wash: "#e8f7ee", icon: ShoppingBag },
+  website: { kicker: "Site", color: "#0f766e", wash: "#e6f4f2", icon: Monitor },
+  app: { kicker: "App", color: "#1d4ed8", wash: "#e8eeff", icon: Smartphone },
+  automatisering: { kicker: "Systeem", color: "#7c3aed", wash: "#f3eaff", icon: Workflow },
+}
 
 export function ServiceDetail({ service }: { service: Service }) {
   const others = services.filter((item) => item.slug !== service.slug)
@@ -158,20 +165,37 @@ export function ServiceDetail({ service }: { service: Service }) {
       <section className="py-16">
         <Container>
           <h2 className="text-2xl font-semibold tracking-tight">Andere diensten</h2>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {others.map((item) => (
-              <Link
-                key={item.slug}
-                href={`/diensten/${item.slug}`}
-                className="group flex items-center justify-between rounded-2xl bg-white px-5 py-4 ring-1 ring-[#ecece8] transition hover:-translate-y-0.5 hover:ring-brand/40"
-              >
-                <span>
-                  <span className="block font-semibold">{item.title}</span>
-                  <span className="mt-1 block text-sm text-mist">{item.menuDescription}</span>
-                </span>
-                <ArrowRight className="size-4 text-brand transition group-hover:translate-x-0.5" />
-              </Link>
-            ))}
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {others.map((item) => {
+              const tone = otherTone[item.slug]
+              const ToneIcon = tone.icon
+              return (
+                <Link
+                  key={item.slug}
+                  href={`/diensten/${item.slug}`}
+                  className="pakket-lift group relative rounded-2xl bg-white px-5 py-5 ring-1 ring-[#ecece8]"
+                >
+                  <span className="absolute inset-x-5 top-0 h-1 rounded-b-full" style={{ background: tone.color }} />
+                  <span className="flex items-center justify-between">
+                    <span
+                      className="grid size-11 place-items-center rounded-xl"
+                      style={{ background: tone.wash, color: tone.color }}
+                    >
+                      <ToneIcon className="size-5" aria-hidden />
+                    </span>
+                    <span className="text-[11px] font-semibold tracking-[0.16em] uppercase" style={{ color: tone.color }}>
+                      {tone.kicker}
+                    </span>
+                  </span>
+                  <span className="mt-4 block text-lg font-semibold tracking-tight">{item.title}</span>
+                  <span className="mt-1.5 block text-sm leading-6 text-mist">{item.menuDescription}</span>
+                  <span className="mt-4 flex items-center gap-1.5 text-sm font-semibold" style={{ color: tone.color }}>
+                    Bekijk de dienst
+                    <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
+              )
+            })}
           </div>
         </Container>
       </section>
