@@ -18,7 +18,7 @@ import {
   UserRound,
   type LucideIcon,
 } from "lucide-react"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react"
 
 const includeIcons: Record<string, LucideIcon> = {
   "Ontwerp in jullie merk": Palette,
@@ -158,6 +158,75 @@ function flowPath(
   return d
 }
 
+const surfaceMoves = [
+  { title: "Menu", text: "Home, diensten en contact wisselen van taal mee." },
+  { title: "Knop", text: "De actie blijft dezelfde zin, in het Nederlands of in het Engels." },
+  { title: "Stand", text: "Licht of donker kleurt de pagina, de tekst blijft leesbaar." },
+]
+
+const routes = [
+  { from: "Home", to: "Diensten", text: "De openingspagina wijst naar het werk dat iemand kan aanvragen." },
+  { from: "Diensten", to: "Contact", text: "Bij elke dienst staat de stap om een bericht te sturen." },
+  { from: "Contact", to: "Inbox", text: "Naam, onderwerp en telefoon komen aan in de inbox die jullie al lezen." },
+]
+
+const pages = [
+  {
+    name: "Home",
+    lead: "De eerste zin zegt wat het bedrijf doet en waar het werkt.",
+    screen: "Daaronder één knop naar diensten of contact, en daarna ruimte voor het werk zelf.",
+  },
+  {
+    name: "Diensten",
+    lead: "Elke dienst is een taak die een bezoeker kan aanvragen.",
+    screen: "Per dienst: wat er gebeurt, voor wie het is, en de knop om te starten.",
+  },
+  {
+    name: "Over",
+    lead: "Hier wordt het bedrijf herkenbaar: wie er langskomt, en het gebied rond Reeuwijk.",
+    screen: "Een korte tekst en een beeld, zodat een bezoeker weet bij wie het bericht aankomt.",
+  },
+  {
+    name: "Contact",
+    lead: "Het formulier vraagt alleen wat nodig is om terug te bellen of te mailen.",
+    screen: "Naam, onderwerp en telefoonnummer. Het bericht landt in de inbox, met die drie velden erbij.",
+  },
+]
+
+const agreements = [
+  { title: "Welke pagina's", text: "Home, diensten, over en contact. Extra pagina's alleen als een bezoeker ze echt nodig heeft." },
+  { title: "Taal en stand", text: "Nederlands, Engels, of allebei. Licht, donker, of de twee naast elkaar." },
+  { title: "De inbox", text: "Welk adres de formulieren ontvangt, en wie er dezelfde dag op antwoordt." },
+  { title: "Zelf wijzigen", text: "Welke zin en welke foto jullie na live zelf vervangen, en waar dat in de site zit." },
+]
+
+function Depth({
+  index,
+  label,
+  title,
+  text,
+  id,
+  children,
+}: {
+  index: string
+  label: string
+  title: string
+  text: string
+  id?: string
+  children: ReactNode
+}) {
+  return (
+    <section id={id} className="scroll-mt-24 border-t border-[#e4eee8] py-12 sm:py-16">
+      <p className="text-[11px] font-semibold tracking-[0.18em] text-brand">
+        {index} · {label}
+      </p>
+      <h2 className="mt-3 max-w-xl text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-mist sm:text-base sm:leading-7">{text}</p>
+      <div className="mt-8">{children}</div>
+    </section>
+  )
+}
+
 export function WebsiteBuild({ service }: { service: Service }) {
   return (
     <section className="overflow-hidden pt-8 pb-8 sm:pt-12 sm:pb-10">
@@ -178,37 +247,121 @@ export function WebsiteBuild({ service }: { service: Service }) {
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-8 text-mist">{service.summary}</p>
 
-        <div className="mt-10 grid items-stretch gap-4 lg:grid-cols-[1.05fr_0.95fr] lg:[grid-template-areas:'prefs_graph'_'bento_bento'_'steps_steps']">
-          <div className="hero-in h-full lg:[grid-area:prefs]">
-            <DetailPreferences />
-          </div>
-          <div className="h-full lg:[grid-area:graph]">
-            <ConnectivityMap />
-          </div>
-          <div className="lg:[grid-area:bento]">
-            <WebsiteBento includes={service.includes} />
-          </div>
-          <div id="aanpak" className="scroll-mt-24 pt-6 lg:[grid-area:steps]">
-            <h2 className="text-3xl font-semibold tracking-tight">Hoe het werkt</h2>
-            <p className="mt-3 max-w-2xl text-mist">
-              Eerst het gesprek, dan de opzet, dan de pagina's, en pas daarna live. In deze vier
-              stappen staat wat we daarbij concreet doen.
-            </p>
-            <ol className="mt-8 grid gap-6 md:grid-cols-4">
-              {service.steps.map((step, index) => (
-                <li key={step.title} className="relative">
-                  {index < service.steps.length - 1 ? (
-                    <span className="absolute top-4 left-10 hidden h-px w-[calc(100%-1.5rem)] bg-[#dfe8e2] md:block" />
-                  ) : null}
-                  <span className="relative grid size-8 place-items-center rounded-full bg-brand text-sm font-semibold text-white">
-                    {index + 1}
-                  </span>
-                  <h3 className="mt-4 text-base font-semibold">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-mist">{stepCopy[step.title] ?? step.text}</p>
+        <div className="mt-14 flex flex-col">
+          <Depth
+            index="01"
+            label="Oppervlak"
+            title="Wat de bezoeker meteen ziet"
+            text="Taal, en een lichte of donkere stand. De kop, de knop en het formulier volgen die keuze. De bezoeker wisselt zelf."
+          >
+            <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_16rem]">
+              <DetailPreferences />
+              <ul className="grid gap-3">
+                {surfaceMoves.map((item) => (
+                  <li key={item.title} className="rounded-2xl bg-white px-4 py-3 ring-1 ring-[#e8e8e3]">
+                    <p className="text-sm font-semibold">{item.title}</p>
+                    <p className="mt-1 text-sm leading-6 text-mist">{item.text}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Depth>
+
+          <Depth
+            index="02"
+            label="Opbouw"
+            title="Hoe de pagina's naar elkaar wijzen"
+            text="Home leidt naar diensten, diensten naar contact, en de inbox vangt wat de bezoeker stuurt."
+          >
+            <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_16rem]">
+              <ConnectivityMap />
+              <ol className="grid gap-3">
+                {routes.map((item, index) => (
+                  <li key={item.from} className="rounded-2xl bg-white px-4 py-3 ring-1 ring-[#e8e8e3]">
+                    <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">{String(index + 1).padStart(2, "0")}</p>
+                    <p className="mt-1 text-sm font-semibold">
+                      {item.from} → {item.to}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-mist">{item.text}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </Depth>
+
+          <Depth
+            index="03"
+            label="Pagina's"
+            title="Wat er op elke pagina staat"
+            text="Vier pagina's, elk met één taak. Hieronder staat eerst de taak, en daarna wat er concreet op het scherm komt."
+          >
+            <ol className="grid gap-4">
+              {pages.map((page, index) => (
+                <li key={page.name} className="rounded-3xl bg-white p-5 ring-1 ring-[#e8e8e3] sm:p-6">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h3 className="text-xl font-semibold tracking-tight">{page.name}</h3>
+                    <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">{String(index + 1).padStart(2, "0")}</p>
+                  </div>
+                  <p className="mt-3 max-w-2xl text-sm leading-6 text-mist">{page.lead}</p>
+                  <div className="mt-4 rounded-2xl bg-[#f6f6f4] px-4 py-3">
+                    <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">OP HET SCHERM</p>
+                    <p className="mt-1 text-sm leading-6 text-ink">{page.screen}</p>
+                  </div>
                 </li>
               ))}
             </ol>
-          </div>
+          </Depth>
+
+          <Depth
+            index="04"
+            label="Onderdelen"
+            title="Wat we onder die pagina's bouwen"
+            text="Merk, schermen, het formulier, vindbaarheid en de plek waar je later zelf een zin wijzigt."
+          >
+            <WebsiteBento includes={service.includes} />
+          </Depth>
+
+          <Depth
+            id="aanpak"
+            index="05"
+            label="Werk"
+            title="Hoe het werk loopt"
+            text="Eerst het gesprek, dan de opzet, dan de pagina's, en daarna live. Per stap staat wat we daarbij doen."
+          >
+            <ol className="grid gap-4">
+              {service.steps.map((step, index) => (
+                <li key={step.title} className="grid gap-3 rounded-3xl bg-white p-5 ring-1 ring-[#e8e8e3] sm:grid-cols-[auto_1fr] sm:p-6">
+                  <span className="grid size-8 place-items-center rounded-full bg-brand text-sm font-semibold text-white">
+                    {index + 1}
+                  </span>
+                  <div>
+                    <h3 className="text-base font-semibold">{step.title}</h3>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-mist">{step.text}</p>
+                    <p className="mt-3 max-w-2xl border-l-2 border-brand pl-3 text-sm leading-6 text-ink">
+                      {stepCopy[step.title] ?? step.text}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Depth>
+
+          <Depth
+            index="06"
+            label="Afspraken"
+            title="Wat we opschrijven voordat de bouw start"
+            text="Dit is de laag die de site vastzet. Zonder deze afspraken blijft de rest een schets."
+          >
+            <ol className="grid gap-3 sm:grid-cols-2">
+              {agreements.map((item, index) => (
+                <li key={item.title} className="rounded-2xl bg-[#101412] px-5 py-4 text-white">
+                  <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">{String(index + 1).padStart(2, "0")}</p>
+                  <h3 className="mt-2 text-base font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/65">{item.text}</p>
+                </li>
+              ))}
+            </ol>
+          </Depth>
         </div>
       </Container>
     </section>
