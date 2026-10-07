@@ -39,11 +39,19 @@ export function ServiceDetail({ service }: { service: Service }) {
             <h1 className="mt-4 max-w-xl text-4xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.05]">
               {service.title}
             </h1>
-            <p className="mt-5 max-w-lg text-lg leading-8 text-mist">{service.summary}</p>
-            <p className="mt-3 max-w-lg text-sm leading-6 text-mist">{service.audience}</p>
-            <p className="mt-6 text-2xl font-semibold tracking-tight text-ink">
-              {formatFromPrice(service.fromPrice)}
-            </p>
+            <div className="mt-5 max-w-xl space-y-4 text-lg leading-8 text-mist">
+              <p>{service.summary}</p>
+              <p>
+                We bouwen de schermen, het account en de taken die een klant in de app doet. De app
+                komt op iPhone en Android, in jullie merk, en niet als een website die je in de
+                browser opent. We testen op een echte iPhone en een Android-telefoon, en dienen de
+                eerste versie in bij beide stores.
+              </p>
+              <p>
+                Voor bedrijven die hun klanten iets op het toestel willen geven: een account, een
+                afspraak of de status van een order.
+              </p>
+            </div>
             <div className="mt-7 flex flex-wrap gap-3">
               <BrandButton href={`/contact?dienst=${service.slug}`}>
                 Start vandaag
