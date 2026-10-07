@@ -86,7 +86,7 @@ export function TabBuilder() {
       </div>
 
       {preview ? (
-        <div className="fixed inset-x-0 bottom-0 top-20 z-40 flex items-center justify-center bg-paper/90 px-4 py-6">
+        <div className="fixed inset-x-0 bottom-0 top-20 z-40 flex items-center justify-center bg-paper px-4 py-6">
           <div className="flex w-full max-w-[26rem] flex-col items-center gap-4">
             <div className="flex w-full items-center justify-between">
               <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">VOORBEELD</p>
