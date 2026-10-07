@@ -68,60 +68,114 @@ const patternField = {
 
 const includeDetail: Record<
   string,
-  { code: string; tone: keyof typeof patternField; points: string[] }
+  { code: string; tone: keyof typeof patternField; sections: { label: string; text: string }[] }
 > = {
   "App Store en Play Store": {
     code: "STORES",
     tone: "ink",
-    points: [
-      "De vermelding: naam, icoon en de tekst die een klant in de store leest.",
-      "Versie 1.0 gaat mee als we de app indienen.",
-      "We begeleiden de publicatie tot de app live staat.",
+    sections: [
+      {
+        label: "Vermelding",
+        text: "Naam, icoon en de korte tekst die een klant leest voordat hij downloadt. Daar komen schermafbeeldingen bij van de schermen in de app, zodat duidelijk is wat hij krijgt.",
+      },
+      {
+        label: "Versie 1.0",
+        text: "De versie die we indienen is de app zoals afgesproken: de schermen, het account en de taken. Geen losse proef, maar de eerste versie die in de store kan.",
+      },
+      {
+        label: "Tot hij live staat",
+        text: "We dienen in bij beide stores en blijven bij de publicatie tot de app live staat. Jullie lezen de vermelding voordat die de deur uit gaat.",
+      },
     ],
   },
   "Schermen in jullie merk": {
     code: "MERK",
     tone: "green",
-    points: [
-      "Kleur, toon en de woorden zijn van jullie bedrijf.",
-      "Op het scherm staat wat een klant echt doet: een account, een afspraak of een status.",
-      "Je ziet die schermen voordat de bouw start.",
+    sections: [
+      {
+        label: "Herkenbaar",
+        text: "Kleur, toon en de woorden komen uit jullie bedrijf. Een klant legt de app naast de site of de winkel en ziet hetzelfde merk, niet een standaard scherm.",
+      },
+      {
+        label: "Drie schermen",
+        text: "Home, de taak en het account. De taak is wat de klant komt doen: een afspraak zetten, een order volgen, of de status van een rit zien.",
+      },
+      {
+        label: "Voor de bouw",
+        text: "Je ziet die schermen voordat JR Intelligence bouwt. Elke tik heeft een vervolg: een melding, een status of het volgende scherm.",
+      },
     ],
   },
   "iPhone en Android": {
     code: "TOESTEL",
     tone: "wash",
-    points: [
-      "Hetzelfde account en dezelfde taken op iPhone en Android.",
-      "Knoppen en tekst blijven leesbaar, en je haalt ze met een duim.",
-      "Geen website die je in de browser opent.",
+    sections: [
+      {
+        label: "Dezelfde app",
+        text: "Hetzelfde account en dezelfde taken op beide platformen. Wat een klant op de iPhone kan, kan hij ook op de Android-telefoon.",
+      },
+      {
+        label: "In de hand",
+        text: "Tekst blijft leesbaar. Knoppen zitten waar een duim ze haalt, niet tegen de rand of onder de balk van het toestel.",
+      },
+      {
+        label: "Geïnstalleerd",
+        text: "De klant installeert de app uit de store. Het is geen website die hij in de browser opent, en een melding kan op het toestel binnenkomen.",
+      },
     ],
   },
   "Account voor de klant": {
     code: "ACCOUNT",
     tone: "deep",
-    points: [
-      "Inloggen en een profiel op het toestel.",
-      "Gegevens die bij de dienst horen, zoals het adres.",
-      "Een melding zodra de status van een rit of order wijzigt.",
+    sections: [
+      {
+        label: "Eigen account",
+        text: "De klant logt in en ziet zijn eigen gegevens. Hij ziet niet het account van een andere klant, en hij kan weer uitloggen.",
+      },
+      {
+        label: "Wat hij bijhoudt",
+        text: "Naam en de gegevens die bij de dienst horen, zoals het adres. De status van een order of een rit werkt het bedrijf bij, niet de klant.",
+      },
+      {
+        label: "Melding",
+        text: "Zodra die status wijzigt, krijgt de klant een melding op het toestel. Hij hoeft niet te bellen om te vragen waar het blijft.",
+      },
     ],
   },
   "Getest op echte toestellen": {
     code: "TEST",
     tone: "paper",
-    points: [
-      "De belangrijkste schermen op een iPhone.",
-      "Dezelfde schermen op een Android-telefoon.",
-      "Daarna pas de indiening bij de stores.",
+    sections: [
+      {
+        label: "Op een iPhone",
+        text: "We lopen de route na op een echte iPhone: inloggen, de taak openen, het account bekijken en een status die wijzigt.",
+      },
+      {
+        label: "Op Android",
+        text: "Dezelfde route op een Android-telefoon. We kijken of de tekst blijft staan en of een knop doet wat het scherm belooft.",
+      },
+      {
+        label: "Pas daarna indienen",
+        text: "Klopt die route op beide toestellen, dan dienen we versie 1.0 in. Een scherm dat alleen op een computer is bekeken, gaat niet de store in.",
+      },
     ],
   },
   "Eerste update inbegrepen": {
     code: "UPDATE",
     tone: "stripe",
-    points: [
-      "De eerste fouten die na livegang in de stores naar boven komen.",
-      "Die aanpassing zit in deze opdracht, als versie 1.0.1.",
-      "Je ziet wat er is gewijzigd voordat de update live gaat.",
+    sections: [
+      {
+        label: "De eerste fouten",
+        text: "Na livegang lossen we op wat in de stores naar boven komt: een scherm dat vastloopt, een knop die niets doet, een zin die niet op het scherm past.",
+      },
+      {
+        label: "Wel in deze opdracht",
+        text: "Die reparatie gaat mee als versie 1.0.1. Een nieuwe taak of een extra scherm hoort daar niet bij. Dat is een volgende opdracht.",
+      },
+      {
+        label: "Eerst laten zien",
+        text: "Je leest wat er wijzigt voordat de update live gaat. Daarna dienen we 1.0.1 in bij dezelfde stores.",
+      },
     ],
   },
 }
@@ -259,8 +313,8 @@ export function AppForge({ service }: { service: Service }) {
             Wat de eerste versie bevat
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-mist">
-            Zes onderdelen zitten in de eerste versie. JR Intelligence bouwt ze, test ze op een
-            echte telefoon en dient de app in bij de App Store en de Play Store.
+            Zes onderdelen zitten in de eerste versie. Per onderdeel staat wat JR Intelligence
+            bouwt, wat jullie zien voordat het live gaat, en waar deze opdracht ophoudt.
           </p>
           <ul className="mt-8 grid gap-4 lg:grid-cols-2">
             {service.includes.map((item, itemIndex) => {
@@ -298,11 +352,11 @@ export function AppForge({ service }: { service: Service }) {
                       <h3 className="mt-2 text-lg font-semibold tracking-tight">{item.title}</h3>
                       <p className="mt-2 text-sm leading-6 text-mist">{item.text}</p>
                       {detail ? (
-                        <ul className="mt-4 space-y-2">
-                          {detail.points.map((point) => (
-                            <li key={point} className="flex gap-2.5 text-sm leading-6 text-ink">
-                              <span className="mt-[0.55rem] size-1.5 shrink-0 rounded-full bg-brand" aria-hidden />
-                              {point}
+                        <ul className="mt-4 divide-y divide-[#ecece8] border-t border-[#ecece8]">
+                          {detail.sections.map((section) => (
+                            <li key={section.label} className="py-3">
+                              <p className="text-sm font-semibold text-ink">{section.label}</p>
+                              <p className="mt-1 text-sm leading-6 text-mist">{section.text}</p>
                             </li>
                           ))}
                         </ul>
