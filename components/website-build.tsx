@@ -173,23 +173,91 @@ const routes = [
 const pages = [
   {
     name: "Home",
-    lead: "De eerste zin zegt wat het bedrijf doet en waar het werkt.",
-    screen: "Daaronder één knop naar diensten of contact, en daarna ruimte voor het werk zelf.",
+    lead: "Home heeft één taak: meteen zeggen wat het bedrijf doet, en waar het werkt. De rest van de pagina wijst naar dat werk. Een bezoeker hoeft hier niet te zoeken naar de volgende stap.",
+    blocks: [
+      {
+        label: "De eerste zin",
+        text: "Wat het bedrijf doet, en het gebied waarin het werkt. Die zin staat bovenaan, in gewone taal, zodat een bezoeker meteen weet of hij hier goed is.",
+      },
+      {
+        label: "Eén knop",
+        text: "Daaronder één knop: naar diensten, of meteen naar contact. De bezoeker ziet welke stap de site van hem vraagt, en tikt die meteen aan.",
+      },
+      {
+        label: "Het werk",
+        text: "Daarna ruimte voor het werk zelf. Een paar beelden, of een korte rij van wat het bedrijf maakt of doet. De volledige lijst van diensten blijft op de volgende pagina.",
+      },
+      {
+        label: "Op een telefoon",
+        text: "De zin en de knop blijven in het eerste scherm. De bezoeker hoeft niet te scrollen voordat hij weet waar hij moet tikken. Het beeld van het werk volgt daarna.",
+      },
+    ],
   },
   {
     name: "Diensten",
-    lead: "Elke dienst is een taak die een bezoeker kan aanvragen.",
-    screen: "Per dienst: wat er gebeurt, voor wie het is, en de knop om te starten.",
+    lead: "Diensten laat zien wat een bezoeker kan aanvragen. Elke dienst is een taak met een begin en een einde, geen losse alinea. Aan het eind van die taak staat hoe hij start.",
+    blocks: [
+      {
+        label: "Wat er gebeurt",
+        text: "Per dienst een korte uitleg van het werk, in de woorden van het bedrijf. Wat de bezoeker krijgt als hij deze taak aanvraagt, en wat hij daarvoor moet aanleveren.",
+      },
+      {
+        label: "Voor wie het is",
+        text: "Voor wie die dienst bedoeld is. Iemand die er niet bij hoort, ziet dat vroeg en leest niet door tot een knop die niet voor hem is.",
+      },
+      {
+        label: "De knop om te starten",
+        text: "Elke dienst eindigt met de knop om te starten. Die gaat naar contact, en het onderwerp hoort bij die dienst, zodat het bericht niet blanco in de inbox valt.",
+      },
+      {
+        label: "De volgorde",
+        text: "De diensten staan in de volgorde waarin een bezoeker ze tegenkomt: eerst het werk dat het vaakst wordt gevraagd. Een dienst zonder aanvraag krijgt geen eigen blok.",
+      },
+    ],
   },
   {
     name: "Over",
-    lead: "Hier wordt het bedrijf herkenbaar: wie er langskomt, en het gebied rond Reeuwijk.",
-    screen: "Een korte tekst en een beeld, zodat een bezoeker weet bij wie het bericht aankomt.",
+    lead: "Over maakt het bedrijf herkenbaar voordat iemand een bericht stuurt. De bezoeker ziet wie er langskomt, en dat het werk in het gebied rond Reeuwijk gebeurt.",
+    blocks: [
+      {
+        label: "Wie er langskomt",
+        text: "Een korte tekst over de mensen die het werk doen, en waarom iemand hen inschakelt. Genoeg om te weten bij wie het bericht aankomt.",
+      },
+      {
+        label: "Het gebied",
+        text: "Waar het bedrijf werkt, met Reeuwijk als het punt dat bezoekers herkennen. Iemand van verderop leest of hij hier terecht kan, of dat het werk ook bij hem langskomt.",
+      },
+      {
+        label: "Het beeld",
+        text: "Een foto van de mensen of van het werk, naast de tekst. Het beeld hoort bij die zin, zodat een bezoeker de mensen herkent die langskomen.",
+      },
+      {
+        label: "Door naar contact",
+        text: "Onderaan staat de knop naar contact. De pagina eindigt bij de volgende stap, niet bij een laatste alinea waarna de bezoeker moet terugzoeken in het menu.",
+      },
+    ],
   },
   {
     name: "Contact",
-    lead: "Het formulier vraagt alleen wat nodig is om terug te bellen of te mailen.",
-    screen: "Naam, onderwerp en telefoonnummer. Het bericht landt in de inbox, met die drie velden erbij.",
+    lead: "Contact vraagt alleen wat nodig is om terug te bellen of te mailen. Het bericht komt aan in de inbox die jullie al lezen, met de velden die op het scherm stonden.",
+    blocks: [
+      {
+        label: "Drie velden",
+        text: "Naam, onderwerp en telefoonnummer. Daarmee kan iemand dezelfde dag terugbellen of mailen. Extra vragen maken het versturen langer en horen er alleen bij als jullie ze echt nodig hebben.",
+      },
+      {
+        label: "In de inbox",
+        text: "Het bericht landt in de inbox die jullie al lezen, met die drie velden erbij. Jullie zien wie het stuurde, waar het over gaat, en welk nummer je belt.",
+      },
+      {
+        label: "Vanaf een dienst",
+        text: "Komt de bezoeker vanaf een dienst, dan hoort het onderwerp bij die dienst. Hij hoeft op contact niet opnieuw te typen wat hij wil aanvragen.",
+      },
+      {
+        label: "Meteen in beeld",
+        text: "Het formulier staat bovenaan, op een telefoon en op een groot scherm. Een adres of het telefoonnummer van het bedrijf kan ernaast, als jullie dat ook op de pagina willen.",
+      },
+    ],
   },
 ]
 
@@ -293,7 +361,7 @@ export function WebsiteBuild({ service }: { service: Service }) {
             index="03"
             label="Pagina's"
             title="Wat er op elke pagina staat"
-            text="Vier pagina's, elk met één taak. Hieronder staat eerst de taak, en daarna wat er concreet op het scherm komt."
+            text="Vier pagina's, elk met één taak. Per pagina staat wat de bezoeker daar komt doen, en welke onderdelen daarvoor op het scherm staan."
           >
             <ol className="grid gap-4">
               {pages.map((page, index) => (
@@ -302,10 +370,17 @@ export function WebsiteBuild({ service }: { service: Service }) {
                     <h3 className="text-xl font-semibold tracking-tight">{page.name}</h3>
                     <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">{String(index + 1).padStart(2, "0")}</p>
                   </div>
-                  <p className="mt-3 max-w-2xl text-sm leading-6 text-mist">{page.lead}</p>
-                  <div className="mt-4 rounded-2xl bg-[#f6f6f4] px-4 py-3">
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-mist sm:text-base sm:leading-7">{page.lead}</p>
+                  <div className="mt-4 rounded-2xl bg-[#f6f6f4] px-4 py-4 sm:px-5">
                     <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">OP HET SCHERM</p>
-                    <p className="mt-1 text-sm leading-6 text-ink">{page.screen}</p>
+                    <ul className="mt-3 grid gap-4 sm:grid-cols-2">
+                      {page.blocks.map((block) => (
+                        <li key={block.label}>
+                          <p className="text-sm font-semibold text-ink">{block.label}</p>
+                          <p className="mt-1 text-sm leading-6 text-mist">{block.text}</p>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </li>
               ))}
