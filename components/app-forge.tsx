@@ -386,12 +386,7 @@ function Account() {
 }
 
 function AppStoreLogo({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" className={className} aria-hidden>
-      <rect width="32" height="32" rx="8" fill="#0A84FF" />
-      <path fill="#fff" d="M17.2 7.2 10.2 25h3.1l1.4-3.8h6.6L23 25h3.2l-7.2-17.8h-1.8zm.9 5.1 2.2 6.1h-4.4l2.2-6.1z" />
-    </svg>
-  )
+  return <img src="/app/app-store.png" alt="" className={className} />
 }
 
 function PlayStoreLogo({ className }: { className?: string }) {
@@ -431,8 +426,8 @@ function Preview({ kind }: { kind: (typeof previews)[string] }) {
   if (kind === "stores") {
     return (
       <div className="flex items-center gap-2" aria-label="App Store en Play Store">
-        <AppStoreLogo className="size-8" />
-        <PlayStoreLogo className="size-8" />
+        <AppStoreLogo className="size-10" />
+        <PlayStoreLogo className="size-10" />
       </div>
     )
   }
