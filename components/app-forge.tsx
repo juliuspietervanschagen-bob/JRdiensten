@@ -325,12 +325,21 @@ export function AppForge({ service }: { service: Service }) {
                 <li key={item.title} className="pakket-lift rounded-3xl bg-white ring-1 ring-[#e8e8e3]">
                   <div className="overflow-hidden rounded-3xl">
                     <div
-                      className="relative flex h-32 items-center px-5"
-                      style={{
-                        backgroundColor: field.bg,
-                        backgroundImage: field.image,
-                        backgroundSize: field.size,
-                      }}
+                      className="relative flex h-32 items-center overflow-hidden px-5"
+                      style={
+                        detail?.tone === "green"
+                          ? {
+                              backgroundColor: "#173b22",
+                              backgroundImage: "url(/app/aura-banner.png)",
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                            }
+                          : {
+                              backgroundColor: field.bg,
+                              backgroundImage: field.image,
+                              backgroundSize: field.size,
+                            }
+                      }
                     >
                       <span
                         className={cn(
@@ -628,13 +637,7 @@ function Preview({ kind }: { kind: (typeof previews)[string] }) {
     )
   }
   if (kind === "brand") {
-    return (
-      <div className="flex gap-1.5" aria-hidden>
-        <span className="h-8 w-8 rounded-lg bg-ink" />
-        <span className="h-8 w-8 rounded-lg bg-brand" />
-        <span className="h-8 flex-1 rounded-lg bg-[#f3f6f3] ring-1 ring-[#e8e8e3]" />
-      </div>
-    )
+    return <img src="/app/aura.png" alt="Aura" className="h-14 w-14 rounded-xl object-cover" />
   }
   if (kind === "devices") {
     return (
