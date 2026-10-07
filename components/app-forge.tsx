@@ -4,7 +4,7 @@ import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
 import { cn } from "cn"
 import { Bell } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const screens = [
   {
@@ -166,22 +166,128 @@ export function AppForge({ service }: { service: Service }) {
           </ul>
         </div>
 
-        <div id="aanpak" className="scroll-mt-24 pt-14">
-          <h2 className="text-2xl font-semibold tracking-tight">Van zin tot store</h2>
-          <ol className="mt-6 grid gap-3 md:grid-cols-4">
-            {service.steps.map((step, stepIndex) => (
-              <li key={step.title} className="rounded-3xl bg-white px-4 py-5 ring-1 ring-[#e8e8e3]">
-                <p className="font-mono text-[11px] tracking-[0.16em] text-brand">
-                  0{stepIndex + 1}
-                </p>
-                <h3 className="mt-3 text-base font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-mist">{step.text}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
+        <StorePath steps={service.steps} />
       </Container>
     </section>
+  )
+}
+
+const storeDetail: Record<string, { code: string; points: string[] }> = {
+  "Wat de app moet doen": {
+    code: "BRIEF",
+    points: [
+      "Welke klant de app opent, en wat die als eerste moet kunnen.",
+      "De taken op het toestel: een account, een afspraak of de status van een order.",
+      "Of de app in de App Store en de Play Store komt, en onder welke naam.",
+    ],
+  },
+  "De schermen": {
+    code: "SCHERM",
+    points: [
+      "Je ziet home, de taak en het account voordat JR Intelligence bouwt.",
+      "Kleur, toon en de woorden zijn van jullie merk.",
+      "Elke tik heeft een vervolg: een melding, een status of het volgende scherm.",
+    ],
+  },
+  "Bouwen en testen": {
+    code: "BUILD",
+    points: [
+      "Eén app, gebouwd zodat hij prettig werkt op iPhone en Android.",
+      "Inloggen, een profiel en de gegevens die bij jullie dienst horen.",
+      "We lopen de schermen na op een echte iPhone en een Android-telefoon.",
+    ],
+  },
+  "In de stores": {
+    code: "LIVE",
+    points: [
+      "We dienen de app in bij de App Store en de Play Store.",
+      "De vermelding en de eerste versie gaan mee, zodat de klant kan downloaden.",
+      "Na livegang lossen we de eerste fouten op die in de stores naar boven komen.",
+    ],
+  },
+}
+
+function StorePath({ steps }: { steps: Service["steps"] }) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const dotRef = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    const track = trackRef.current
+    const dot = dotRef.current
+    if (!track || !dot) return
+
+    let frame = 0
+    function place() {
+      const rect = track.getBoundingClientRect()
+      const mark = window.innerHeight * 0.42
+      const travel = Math.max(rect.height - 16, 1)
+      const passed = Math.min(Math.max(mark - rect.top, 0), travel)
+      dot.style.top = `${(passed / travel) * 100}%`
+    }
+    function onScroll() {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(place)
+    }
+    place()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [])
+
+  return (
+    <div id="aanpak" className="scroll-mt-24 pt-16 sm:pt-20">
+      <p className="font-mono text-[11px] tracking-[0.18em] text-brand">VAN ZIN TOT STORE</p>
+      <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+        Vier stappen. JR Intelligence bouwt de app.
+      </h2>
+      <p className="mt-4 max-w-2xl text-base leading-7 text-mist">
+        Jij zegt wat de klant moet kunnen. Wij maken de schermen, testen op een echte telefoon en
+        zetten de app in de App Store en de Play Store.
+      </p>
+      <div ref={trackRef} className="relative mt-10 pl-8">
+        <div className="absolute top-4 bottom-4 left-[7px] w-px bg-[#d7e8dc]" />
+        <span
+          ref={dotRef}
+          className="absolute top-0 left-0 size-3.5 rounded-full bg-brand shadow-[0_0_0_6px_rgba(22,163,74,0.28)]"
+          aria-hidden
+        />
+        <ol className="space-y-6">
+          {steps.map((step, index) => {
+            const detail = storeDetail[step.title]
+            return (
+              <li key={step.title} className="pakket-lift rounded-3xl bg-white ring-1 ring-[#e8e8e3]">
+                <div className="flex items-center justify-between rounded-t-3xl bg-[#0c100e] px-5 py-3 font-mono text-[10px] tracking-[0.16em] text-brand sm:px-8">
+                  <span>
+                    0{index + 1} / {detail?.code ?? "STORE"}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="size-1.5 rounded-full bg-brand shadow-[0_0_8px_#16a34a]" />
+                    STORE
+                  </span>
+                </div>
+                <div className="px-5 py-6 sm:px-8 sm:py-8">
+                  <h3 className="text-2xl font-semibold tracking-tight">{step.title}</h3>
+                  <p className="mt-3 max-w-3xl text-base leading-7 text-mist">{step.text}</p>
+                  {detail ? (
+                    <ul className="mt-6 grid gap-3 lg:grid-cols-3">
+                      {detail.points.map((point) => (
+                        <li key={point} className="rounded-2xl bg-[#f6f6f4] px-4 py-4 text-sm leading-6 text-ink ring-1 ring-[#e8e8e3]">
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+      </div>
+    </div>
   )
 }
 
