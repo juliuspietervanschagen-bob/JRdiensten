@@ -320,37 +320,41 @@ export function AppForge({ service }: { service: Service }) {
             {service.includes.map((item, itemIndex) => {
               const detail = includeDetail[item.title]
               const field = detail ? patternField[detail.tone] : patternField.paper
-              const light = detail?.tone === "wash" || detail?.tone === "paper"
+              const tone = detail?.tone
+              const light = tone === "paper"
               return (
                 <li key={item.title} className="pakket-lift rounded-3xl bg-white ring-1 ring-[#e8e8e3]">
                   <div className="overflow-hidden rounded-3xl">
                     <div
                       className="relative flex h-32 items-center overflow-hidden px-5"
                       style={
-                        detail?.tone === "green"
+                        tone === "green"
                           ? {
                               backgroundColor: "#173b22",
                               backgroundImage: "url(/app/aura-banner.png)",
                               backgroundSize: "cover",
                               backgroundPosition: "center",
                             }
-                          : {
-                              backgroundColor: field.bg,
-                              backgroundImage: field.image,
-                              backgroundSize: field.size,
-                            }
+                          : tone === "wash"
+                            ? { backgroundColor: "#141414" }
+                            : {
+                                backgroundColor: field.bg,
+                                backgroundImage: field.image,
+                                backgroundSize: field.size,
+                              }
                       }
                     >
+                      {tone === "wash" ? <DuelScene /> : null}
                       <span
                         className={cn(
-                          "pointer-events-none absolute right-5 top-3 font-mono text-4xl font-semibold tabular-nums",
+                          "pointer-events-none absolute right-5 top-3 z-10 font-mono text-4xl font-semibold tabular-nums",
                           light ? "text-ink/15" : "text-white/25",
                         )}
                         aria-hidden
                       >
                         {String(itemIndex + 1).padStart(2, "0")}
                       </span>
-                      <div className="relative rounded-2xl bg-white px-3 py-2 ring-1 ring-[#e8e8e3]">
+                      <div className="relative z-10 rounded-2xl bg-white px-3 py-2 ring-1 ring-[#e8e8e3]">
                         <Preview kind={previews[item.title] ?? "brand"} />
                       </div>
                     </div>
@@ -623,6 +627,64 @@ function AndroidLogo({ className }: { className?: string }) {
         fill="currentColor"
         d="M6.4 9.5 5 6.7a.4.4 0 0 1 .7-.4l1.4 2.5a7 7 0 0 1 9.8 0l1.4-2.5a.4.4 0 0 1 .7.4l-1.4 2.8A6.5 6.5 0 0 1 19 13.5V18a1 1 0 0 1-1 1h-1v3.2a1.3 1.3 0 0 1-2.6 0V19H9.6v3.2a1.3 1.3 0 0 1-2.6 0V19H6a1 1 0 0 1-1-1v-4.5a6.5 6.5 0 0 1 1.4-4zM9 14.2a.9.9 0 1 0 0-1.8.9.9 0 0 0 0 1.8zm6 0a.9.9 0 1 0 0-1.8.9.9 0 0 0 0 1.8z"
       />
+    </svg>
+  )
+}
+
+function DuelScene() {
+  return (
+    <svg
+      viewBox="0 0 640 160"
+      preserveAspectRatio="xMaxYMid slice"
+      className="pointer-events-none absolute inset-0 h-full w-full"
+      aria-hidden
+    >
+      <rect width="640" height="160" fill="#141414" />
+      <polygon points="392,0 640,0 640,160 318,160" fill="#16a34a" />
+      <g opacity="0.45" stroke="#16a34a" strokeWidth="2" strokeLinecap="round">
+        <path d="M24 36h120M8 72h96M40 112h110" />
+      </g>
+      <g opacity="0.35" stroke="#141414" strokeWidth="2" strokeLinecap="round">
+        <path d="M500 34h120M520 74h110M486 116h130" />
+      </g>
+      <g transform="translate(214 22)">
+        <g className="duel-apple">
+          <path d="M30 86 16 128" stroke="#f6f6f4" strokeWidth="8" strokeLinecap="round" />
+          <path d="M52 88 70 128" stroke="#f6f6f4" strokeWidth="8" strokeLinecap="round" />
+          <path d="M22 62 4 84" stroke="#f6f6f4" strokeWidth="8" strokeLinecap="round" />
+          <circle cx="36" cy="62" r="28" fill="#f6f6f4" />
+          <circle cx="56" cy="58" r="22" fill="#f6f6f4" />
+          <circle cx="74" cy="50" r="11" fill="#141414" />
+          <path d="M44 38c2-12 16-14 18-2" stroke="#16a34a" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path d="M48 36c8-14 24-8 16 4-8-2-14 0-16-4z" fill="#16a34a" />
+          <path d="M64 58 112 42" stroke="#16a34a" strokeWidth="9" strokeLinecap="round" />
+          <circle cx="118" cy="40" r="10" fill="#16a34a" />
+        </g>
+      </g>
+      <g transform="translate(392 16)">
+        <g className="duel-bot">
+          <path d="M28 22 14 4" stroke="#141414" strokeWidth="4" strokeLinecap="round" />
+          <circle cx="12" cy="3" r="4" fill="#141414" />
+          <path d="M48 22 62 4" stroke="#141414" strokeWidth="4" strokeLinecap="round" />
+          <circle cx="64" cy="3" r="4" fill="#141414" />
+          <rect x="16" y="20" width="44" height="28" rx="14" fill="#141414" />
+          <circle cx="30" cy="33" r="3" fill="#16a34a" />
+          <circle cx="46" cy="33" r="3" fill="#16a34a" />
+          <rect x="18" y="50" width="40" height="36" rx="8" fill="#141414" />
+          <path d="M18 62-16 48" stroke="#141414" strokeWidth="9" strokeLinecap="round" />
+          <circle cx="-22" cy="46" r="10" fill="#141414" />
+          <path d="M58 64 78 54" stroke="#141414" strokeWidth="8" strokeLinecap="round" />
+          <path d="M30 86 22 124" stroke="#141414" strokeWidth="8" strokeLinecap="round" />
+          <path d="M48 86 60 124" stroke="#141414" strokeWidth="8" strokeLinecap="round" />
+        </g>
+      </g>
+      <g className="duel-spark">
+        <path
+          d="M332 80 344 62 340 80 358 78 342 90 348 108 332 94 316 108 322 90 306 78 324 80 320 62Z"
+          fill="#f6f6f4"
+        />
+        <circle cx="332" cy="82" r="5" fill="#16a34a" />
+      </g>
     </svg>
   )
 }

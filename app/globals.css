@@ -1030,6 +1030,54 @@
   animation: matrix-star 3.8s ease-in-out infinite;
 }
 
+.duel-apple {
+  transform-box: fill-box;
+  transform-origin: 20% 70%;
+  animation: duel-apple 1.15s ease-in-out infinite;
+}
+
+.duel-bot {
+  transform-box: fill-box;
+  transform-origin: 80% 70%;
+  animation: duel-bot 1.15s ease-in-out infinite;
+}
+
+.duel-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: duel-spark 1.15s ease-in-out infinite;
+}
+
+@keyframes duel-apple {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(18px);
+  }
+}
+
+@keyframes duel-bot {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-18px);
+  }
+}
+
+@keyframes duel-spark {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-in,
   .float-slow,
@@ -1081,7 +1129,10 @@
   .pref-in,
   .matrix-draw,
   .matrix-bar,
-  .matrix-star {
+  .matrix-star,
+  .duel-apple,
+  .duel-bot,
+  .duel-spark {
     animation: none;
   }
 
@@ -1218,6 +1269,15 @@
 
   .matrix-star {
     opacity: 0.8;
+  }
+
+  .duel-apple,
+  .duel-bot {
+    transform: none;
+  }
+
+  .duel-spark {
+    opacity: 1;
   }
 }
 
