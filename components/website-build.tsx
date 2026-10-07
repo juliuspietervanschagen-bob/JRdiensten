@@ -5,14 +5,26 @@ import type { Service } from "@/lib/services"
 import Link from "next/link"
 import { cn } from "cn"
 import {
+  ArrowUpRight,
+  House,
+  Image,
   Inbox,
+  ListOrdered,
+  Mail,
+  MapPin,
   MonitorSmartphone,
+  MousePointerClick,
   Palette,
   PanelsTopLeft,
   Moon,
   PenLine,
   Search,
+  Smartphone,
   Sun,
+  Type,
+  UserRound,
+  Users,
+  Workflow,
   type LucideIcon,
 } from "lucide-react"
 import { useState, type ReactNode } from "react"
@@ -61,91 +73,152 @@ const surfaceMoves = [
   { title: "Stand", text: "Licht of donker kleurt de pagina, de tekst blijft leesbaar." },
 ]
 
-const pages = [
+const pageField = {
+  ink: {
+    bg: "#141414",
+    image: "radial-gradient(circle, rgba(22,163,74,0.95) 1.15px, transparent 1.25px)",
+    size: "14px 14px",
+  },
+  green: {
+    bg: "#16a34a",
+    image:
+      "repeating-linear-gradient(-45deg, transparent, transparent 9px, rgba(255,255,255,0.18) 9px, rgba(255,255,255,0.18) 10px)",
+    size: "auto",
+  },
+  deep: {
+    bg: "#128a3e",
+    image:
+      "radial-gradient(circle at 16% 30%, rgba(255,255,255,0.2) 0 18px, transparent 19px), radial-gradient(circle at 84% 75%, rgba(255,255,255,0.14) 0 32px, transparent 33px)",
+    size: "auto",
+  },
+  stripe: {
+    bg: "#0c100e",
+    image:
+      "repeating-linear-gradient(90deg, transparent, transparent 13px, rgba(22,163,74,0.45) 13px, rgba(22,163,74,0.45) 14px)",
+    size: "auto",
+  },
+} as const
+
+const pages: {
+  name: string
+  code: string
+  icon: LucideIcon
+  tone: keyof typeof pageField
+  lead: string
+  blocks: { label: string; text: string; icon: LucideIcon }[]
+}[] = [
   {
     name: "Home",
+    code: "HOME",
+    icon: House,
+    tone: "ink",
     lead: "Home heeft één taak: meteen zeggen wat het bedrijf doet, en waar het werkt. De rest van de pagina wijst naar dat werk. Een bezoeker hoeft hier niet te zoeken naar de volgende stap.",
     blocks: [
       {
         label: "De eerste zin",
+        icon: Type,
         text: "Wat het bedrijf doet, en het gebied waarin het werkt. Die zin staat bovenaan, in gewone taal, zodat een bezoeker meteen weet of hij hier goed is.",
       },
       {
         label: "Eén knop",
+        icon: MousePointerClick,
         text: "Daaronder één knop: naar diensten, of meteen naar contact. De bezoeker ziet welke stap de site van hem vraagt, en tikt die meteen aan.",
       },
       {
         label: "Het werk",
+        icon: Image,
         text: "Daarna ruimte voor het werk zelf. Een paar beelden, of een korte rij van wat het bedrijf maakt of doet. De volledige lijst van diensten blijft op de volgende pagina.",
       },
       {
         label: "Op een telefoon",
+        icon: Smartphone,
         text: "De zin en de knop blijven in het eerste scherm. De bezoeker hoeft niet te scrollen voordat hij weet waar hij moet tikken. Het beeld van het werk volgt daarna.",
       },
     ],
   },
   {
     name: "Diensten",
+    code: "WERK",
+    icon: PanelsTopLeft,
+    tone: "green",
     lead: "Diensten laat zien wat een bezoeker kan aanvragen. Elke dienst is een taak met een begin en een einde, geen losse alinea. Aan het eind van die taak staat hoe hij start.",
     blocks: [
       {
         label: "Wat er gebeurt",
+        icon: Workflow,
         text: "Per dienst een korte uitleg van het werk, in de woorden van het bedrijf. Wat de bezoeker krijgt als hij deze taak aanvraagt, en wat hij daarvoor moet aanleveren.",
       },
       {
         label: "Voor wie het is",
+        icon: Users,
         text: "Voor wie die dienst bedoeld is. Iemand die er niet bij hoort, ziet dat vroeg en leest niet door tot een knop die niet voor hem is.",
       },
       {
         label: "De knop om te starten",
+        icon: ArrowUpRight,
         text: "Elke dienst eindigt met de knop om te starten. Die gaat naar contact, en het onderwerp hoort bij die dienst, zodat het bericht niet blanco in de inbox valt.",
       },
       {
         label: "De volgorde",
+        icon: ListOrdered,
         text: "De diensten staan in de volgorde waarin een bezoeker ze tegenkomt: eerst het werk dat het vaakst wordt gevraagd. Een dienst zonder aanvraag krijgt geen eigen blok.",
       },
     ],
   },
   {
     name: "Over",
+    code: "MENSEN",
+    icon: UserRound,
+    tone: "deep",
     lead: "Over maakt het bedrijf herkenbaar voordat iemand een bericht stuurt. De bezoeker ziet wie er langskomt, en dat het werk in het gebied rond Reeuwijk gebeurt.",
     blocks: [
       {
         label: "Wie er langskomt",
+        icon: UserRound,
         text: "Een korte tekst over de mensen die het werk doen, en waarom iemand hen inschakelt. Genoeg om te weten bij wie het bericht aankomt.",
       },
       {
         label: "Het gebied",
+        icon: MapPin,
         text: "Waar het bedrijf werkt, met Reeuwijk als het punt dat bezoekers herkennen. Iemand van verderop leest of hij hier terecht kan, of dat het werk ook bij hem langskomt.",
       },
       {
         label: "Het beeld",
+        icon: Image,
         text: "Een foto van de mensen of van het werk, naast de tekst. Het beeld hoort bij die zin, zodat een bezoeker de mensen herkent die langskomen.",
       },
       {
         label: "Door naar contact",
+        icon: ArrowUpRight,
         text: "Onderaan staat de knop naar contact. De pagina eindigt bij de volgende stap, niet bij een laatste alinea waarna de bezoeker moet terugzoeken in het menu.",
       },
     ],
   },
   {
     name: "Contact",
+    code: "BERICHT",
+    icon: Mail,
+    tone: "stripe",
     lead: "Contact vraagt alleen wat nodig is om terug te bellen of te mailen. Het bericht komt aan in de inbox die jullie al lezen, met de velden die op het scherm stonden.",
     blocks: [
       {
         label: "Drie velden",
+        icon: PenLine,
         text: "Naam, onderwerp en telefoonnummer. Daarmee kan iemand dezelfde dag terugbellen of mailen. Extra vragen maken het versturen langer en horen er alleen bij als jullie ze echt nodig hebben.",
       },
       {
         label: "In de inbox",
+        icon: Inbox,
         text: "Het bericht landt in de inbox die jullie al lezen, met die drie velden erbij. Jullie zien wie het stuurde, waar het over gaat, en welk nummer je belt.",
       },
       {
         label: "Vanaf een dienst",
+        icon: PanelsTopLeft,
         text: "Komt de bezoeker vanaf een dienst, dan hoort het onderwerp bij die dienst. Hij hoeft op contact niet opnieuw te typen wat hij wil aanvragen.",
       },
       {
         label: "Meteen in beeld",
+        icon: MonitorSmartphone,
         text: "Het formulier staat bovenaan, op een telefoon en op een groot scherm. Een adres of het telefoonnummer van het bedrijf kan ernaast, als jullie dat ook op de pagina willen.",
       },
     ],
@@ -188,7 +261,7 @@ function Depth({
 
 export function WebsiteBuild({ service }: { service: Service }) {
   return (
-    <section className="overflow-hidden pt-8 pb-8 sm:pt-12 sm:pb-10">
+    <section className="pt-8 pb-8 sm:pt-12 sm:pb-10">
       <Container>
         <p className="text-sm text-mist">
           <Link href="/" className="hover:text-ink">
@@ -248,27 +321,62 @@ export function WebsiteBuild({ service }: { service: Service }) {
             title="Wat er op elke pagina staat"
             text="Vier pagina's, elk met één taak. Per pagina staat wat de bezoeker daar komt doen, en welke onderdelen daarvoor op het scherm staan."
           >
-            <ol className="grid gap-4">
-              {pages.map((page, index) => (
-                <li key={page.name} className="rounded-3xl bg-white p-5 ring-1 ring-[#e8e8e3] sm:p-6">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <h3 className="text-xl font-semibold tracking-tight">{page.name}</h3>
-                    <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">{String(index + 1).padStart(2, "0")}</p>
-                  </div>
-                  <p className="mt-3 max-w-3xl text-sm leading-6 text-mist sm:text-base sm:leading-7">{page.lead}</p>
-                  <div className="mt-4 rounded-2xl bg-[#f6f6f4] px-4 py-4 sm:px-5">
-                    <p className="text-[10px] font-semibold tracking-[0.16em] text-brand">OP HET SCHERM</p>
-                    <ul className="mt-3 grid gap-4 sm:grid-cols-2">
-                      {page.blocks.map((block) => (
-                        <li key={block.label}>
-                          <p className="text-sm font-semibold text-ink">{block.label}</p>
-                          <p className="mt-1 text-sm leading-6 text-mist">{block.text}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
+            <ol className="grid gap-5">
+              {pages.map((page, index) => {
+                const field = pageField[page.tone]
+                const PageIcon = page.icon
+                const number = String(index + 1).padStart(2, "0")
+                return (
+                  <li key={page.name} className="pakket-lift rounded-3xl bg-white ring-1 ring-[#e8e8e3]">
+                    <div className="overflow-hidden rounded-3xl">
+                      <div
+                        className="relative flex items-center gap-4 px-5 py-6 sm:px-7"
+                        style={{
+                          backgroundColor: field.bg,
+                          backgroundImage: field.image,
+                          backgroundSize: field.size,
+                        }}
+                      >
+                        <span
+                          className="pointer-events-none absolute right-6 top-4 font-mono text-4xl font-semibold tabular-nums text-white/20"
+                          aria-hidden
+                        >
+                          {number}
+                        </span>
+                        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-white text-brand ring-1 ring-white/50">
+                          <PageIcon className="size-6" aria-hidden />
+                        </span>
+                        <div className="relative min-w-0">
+                          <p className="flex items-center gap-2 font-mono text-[10px] font-semibold tracking-[0.16em] text-white/80">
+                            <span className="size-1.5 rounded-full bg-white shadow-[0_0_8px_#ffffff]" aria-hidden />
+                            {number} · {page.code}
+                          </p>
+                          <h3 className="mt-1 text-2xl font-semibold tracking-tight text-white">{page.name}</h3>
+                        </div>
+                      </div>
+                      <div className="px-5 py-5 sm:px-7 sm:py-6">
+                        <p className="max-w-3xl text-sm leading-6 text-mist sm:text-base sm:leading-7">{page.lead}</p>
+                        <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                          {page.blocks.map((block) => {
+                            const BlockIcon = block.icon
+                            return (
+                              <li key={block.label} className="rounded-2xl bg-[#f6f6f4] p-4">
+                                <div className="flex items-center gap-2.5">
+                                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-white text-brand ring-1 ring-[#e4eee8]">
+                                    <BlockIcon className="size-4" aria-hidden />
+                                  </span>
+                                  <p className="text-sm font-semibold text-ink">{block.label}</p>
+                                </div>
+                                <p className="mt-2 text-sm leading-6 text-mist">{block.text}</p>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+                )
+              })}
             </ol>
           </Depth>
 
