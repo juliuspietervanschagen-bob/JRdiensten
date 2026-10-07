@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+
+Every user prompt is grilled with the grill-me-cursor skill before any other work.
+
+Read `.cursor/skills/grill-me-cursor/SKILL.md` and follow it first. Do not edit files, run commands, or answer the request until that grill has resolved the decisions and the user has confirmed the summary.
+
+If the user is answering the current grill, continue that grill. Do not open a second one on top of those answers.
+
+A message that only tells you to carry out a plan you already summarized is the go-ahead. Build that plan. Any other prompt, including a small edit or a new idea, starts a new grill.

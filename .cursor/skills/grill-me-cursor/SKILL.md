@@ -1,9 +1,15 @@
 ---
 name: grill-me-cursor
-description: Interview the user relentlessly about a plan or design using Cursor's batched multiple-choice question tool. Use when the user wants to stress-test a plan, get grilled on their design, or mentions "grill me" inside Cursor.
+description: Run on every user message before any other work. Interview the user relentlessly about the request with Cursor's batched multiple-choice question tool, including small edits and questions. Continue an open grill when the user is answering it. Build only after they confirm the summarized plan.
 ---
 
 Cursor-flavored variant of the `grill-me` skill. Same goal — interview the user relentlessly about every aspect of a plan until you reach shared understanding, walking down each branch of the design tree and resolving dependencies between decisions — but optimized for Cursor's `AskQuestion` tool so you spend fewer round-trips and tokens.
+
+## Always on
+
+This skill applies to every user prompt. Read it and start the loop before editing files, running commands, or answering the request.
+
+When the user is answering the open grill, treat that message as the next round of the same grill. When the user confirms a plan you already summarized, carry out that plan. Any other message, including a small change or a new idea, starts the grill again.
 
 ## Core behavior
 
