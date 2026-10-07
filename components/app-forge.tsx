@@ -356,7 +356,7 @@ export function AppForge({ service }: { service: Service }) {
                     </div>
                     <div className="px-5 py-5">
                       <p className="font-mono text-[10px] font-semibold tracking-[0.16em] text-brand">
-                        {String(itemIndex + 1).padStart(2, "0")} / {detail?.code ?? "APP"}
+                        {String(itemIndex + 1).padStart(2, "0")}: {detail?.code ?? "APP"}
                       </p>
                       <h3 className="mt-2 text-lg font-semibold tracking-tight">{item.title}</h3>
                       <p className="mt-2 text-sm leading-6 text-mist">{item.text}</p>
