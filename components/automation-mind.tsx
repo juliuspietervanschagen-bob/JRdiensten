@@ -3,7 +3,7 @@
 import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, FileText, Search, Users, Wrench, type LucideIcon } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useRef, type ReactNode } from "react"
 
@@ -116,6 +116,13 @@ type FieldMote = { angle: number; radius: number; speed: number; drift: number; 
 
 const fieldColors = ["#22d3ee", "#4ade80", "#facc15", "#fb7185", "#c084fc", "#60a5fa", "#f9a8d4", "#e879f9"].map(hexRgb)
 
+const stepIcon: Record<string, LucideIcon> = {
+  Proces: Search,
+  Voorstel: FileText,
+  Bouw: Wrench,
+  Overdracht: Users,
+}
+
 const stepDetail: Record<string, string> = {
   Proces: "We brengen in kaart waar gegevens worden gekopieerd, gemaild of waar een status wordt bijgewerkt.",
   Voorstel: "Je ziet welke koppelingen automatisch lopen en welke prijs daarvoor vaststaat.",
@@ -224,14 +231,19 @@ export function AutomationMind({ service }: { service: Service }) {
               <p className="text-xs font-semibold tracking-[0.18em] text-brand">AANPAK</p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight">Van proces tot overdracht</h2>
               <ol className="mt-8 space-y-3">
-                {service.steps.map((step, index) => (
+                {service.steps.map((step, index) => {
+                  const StepIcon = stepIcon[step.title]
+                  return (
                   <li key={step.title} className={`${outline} px-5 py-4`}>
                     <div className="flex items-start gap-4">
                       <span className="mt-0.5 text-xs font-semibold tracking-[0.14em] text-brand tabular-nums">
                         0{index + 1}
                       </span>
                       <div className="min-w-0">
-                        <h3 className="text-[15px] font-semibold tracking-tight">{step.title}</h3>
+                        <h3 className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
+                          {StepIcon ? <StepIcon className="size-4 shrink-0 text-brand" aria-hidden /> : null}
+                          {step.title}
+                        </h3>
                         <p className="mt-1.5 text-sm leading-6 text-mist">{step.text}</p>
                         {stepDetail[step.title] ? (
                           <p className="mt-2 border-t border-[#e7eee9] pt-2 text-sm leading-6 text-mist">
@@ -241,7 +253,8 @@ export function AutomationMind({ service }: { service: Service }) {
                       </div>
                     </div>
                   </li>
-                ))}
+                  )
+                })}
               </ol>
             </div>
             <div>
