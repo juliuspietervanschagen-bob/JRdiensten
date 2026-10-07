@@ -1030,51 +1030,34 @@
   animation: matrix-star 3.8s ease-in-out infinite;
 }
 
-.duel-apple {
-  transform-box: fill-box;
-  transform-origin: 20% 70%;
-  animation: duel-apple 1.15s ease-in-out infinite;
+.lab-led {
+  animation: lab-led 1.8s ease-in-out infinite;
 }
 
-.duel-bot {
-  transform-box: fill-box;
-  transform-origin: 80% 70%;
-  animation: duel-bot 1.15s ease-in-out infinite;
+.lab-led-late {
+  animation-delay: -0.8s;
 }
 
-.duel-spark {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: duel-spark 1.15s ease-in-out infinite;
+.lab-scan {
+  animation: lab-scan 2.6s linear infinite;
 }
 
-@keyframes duel-apple {
+@keyframes lab-led {
   0%,
   100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(18px);
-  }
-}
-
-@keyframes duel-bot {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(-18px);
-  }
-}
-
-@keyframes duel-spark {
-  0%,
-  100% {
-    opacity: 0.25;
+    opacity: 0.3;
   }
   50% {
     opacity: 1;
+  }
+}
+
+@keyframes lab-scan {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(26px);
   }
 }
 
@@ -1130,9 +1113,9 @@
   .matrix-draw,
   .matrix-bar,
   .matrix-star,
-  .duel-apple,
-  .duel-bot,
-  .duel-spark {
+  .lab-led,
+  .lab-led-late,
+  .lab-scan {
     animation: none;
   }
 
@@ -1271,13 +1254,13 @@
     opacity: 0.8;
   }
 
-  .duel-apple,
-  .duel-bot {
-    transform: none;
+  .lab-led,
+  .lab-led-late {
+    opacity: 1;
   }
 
-  .duel-spark {
-    opacity: 1;
+  .lab-scan {
+    transform: none;
   }
 }
 

@@ -344,7 +344,7 @@ export function AppForge({ service }: { service: Service }) {
                               }
                       }
                     >
-                      {tone === "wash" ? <DuelScene /> : null}
+                      {tone === "wash" ? <LabScene /> : null}
                       <span
                         className={cn(
                           "pointer-events-none absolute right-5 top-3 z-10 font-mono text-4xl font-semibold tabular-nums",
@@ -631,7 +631,7 @@ function AndroidLogo({ className }: { className?: string }) {
   )
 }
 
-function DuelScene() {
+function LabScene() {
   return (
     <svg
       viewBox="0 0 640 160"
@@ -639,53 +639,56 @@ function DuelScene() {
       className="pointer-events-none absolute inset-0 h-full w-full"
       aria-hidden
     >
-      <rect width="640" height="160" fill="#141414" />
-      <polygon points="392,0 640,0 640,160 318,160" fill="#16a34a" />
-      <g opacity="0.45" stroke="#16a34a" strokeWidth="2" strokeLinecap="round">
-        <path d="M24 36h120M8 72h96M40 112h110" />
+      <rect width="640" height="160" fill="#0c100e" />
+      <rect x="0" y="18" width="640" height="3" fill="#16a34a" opacity="0.35" />
+      <rect x="0" y="28" width="640" height="1" fill="#16a34a" opacity="0.2" />
+      <g opacity="0.55" stroke="#16a34a" strokeWidth="1">
+        <path d="M80 118 L320 96 L560 118" fill="none" />
+        <path d="M40 160 L300 108 L600 160" fill="none" />
+        <path d="M120 160 V118 M220 150 V108 M420 150 V108 M520 160 V118" />
       </g>
-      <g opacity="0.35" stroke="#141414" strokeWidth="2" strokeLinecap="round">
-        <path d="M500 34h120M520 74h110M486 116h130" />
-      </g>
-      <g transform="translate(214 22)">
-        <g className="duel-apple">
-          <path d="M30 86 16 128" stroke="#f6f6f4" strokeWidth="8" strokeLinecap="round" />
-          <path d="M52 88 70 128" stroke="#f6f6f4" strokeWidth="8" strokeLinecap="round" />
-          <path d="M22 62 4 84" stroke="#f6f6f4" strokeWidth="8" strokeLinecap="round" />
-          <circle cx="36" cy="62" r="28" fill="#f6f6f4" />
-          <circle cx="56" cy="58" r="22" fill="#f6f6f4" />
-          <circle cx="74" cy="50" r="11" fill="#141414" />
-          <path d="M44 38c2-12 16-14 18-2" stroke="#16a34a" strokeWidth="3" fill="none" strokeLinecap="round" />
-          <path d="M48 36c8-14 24-8 16 4-8-2-14 0-16-4z" fill="#16a34a" />
-          <path d="M64 58 112 42" stroke="#16a34a" strokeWidth="9" strokeLinecap="round" />
-          <circle cx="118" cy="40" r="10" fill="#16a34a" />
+      <Rack x={168} />
+      <g>
+        <rect x="248" y="78" width="150" height="10" rx="2" fill="#141414" />
+        <rect x="262" y="36" width="78" height="46" rx="3" fill="#141414" stroke="#16a34a" strokeWidth="1.5" />
+        <rect x="348" y="28" width="86" height="54" rx="3" fill="#141414" stroke="#16a34a" strokeWidth="1.5" />
+        <clipPath id="lab-left-screen">
+          <rect x="266" y="40" width="70" height="34" rx="1" />
+        </clipPath>
+        <g clipPath="url(#lab-left-screen)">
+          <rect x="266" y="40" width="70" height="34" fill="#07140c" />
+          <path d="M270 48h28M270 54h40M270 60h18M270 66h34" stroke="#16a34a" strokeWidth="1.4" />
+          <rect className="lab-scan" x="266" y="40" width="70" height="6" fill="#16a34a" opacity="0.35" />
         </g>
-      </g>
-      <g transform="translate(392 16)">
-        <g className="duel-bot">
-          <path d="M28 22 14 4" stroke="#141414" strokeWidth="4" strokeLinecap="round" />
-          <circle cx="12" cy="3" r="4" fill="#141414" />
-          <path d="M48 22 62 4" stroke="#141414" strokeWidth="4" strokeLinecap="round" />
-          <circle cx="64" cy="3" r="4" fill="#141414" />
-          <rect x="16" y="20" width="44" height="28" rx="14" fill="#141414" />
-          <circle cx="30" cy="33" r="3" fill="#16a34a" />
-          <circle cx="46" cy="33" r="3" fill="#16a34a" />
-          <rect x="18" y="50" width="40" height="36" rx="8" fill="#141414" />
-          <path d="M18 62-16 48" stroke="#141414" strokeWidth="9" strokeLinecap="round" />
-          <circle cx="-22" cy="46" r="10" fill="#141414" />
-          <path d="M58 64 78 54" stroke="#141414" strokeWidth="8" strokeLinecap="round" />
-          <path d="M30 86 22 124" stroke="#141414" strokeWidth="8" strokeLinecap="round" />
-          <path d="M48 86 60 124" stroke="#141414" strokeWidth="8" strokeLinecap="round" />
+        <clipPath id="lab-right-screen">
+          <rect x="352" y="32" width="78" height="42" rx="1" />
+        </clipPath>
+        <g clipPath="url(#lab-right-screen)">
+          <rect x="352" y="32" width="78" height="42" fill="#07140c" />
+          <path d="M358 58 H390 L404 44 L418 64 L426 50" fill="none" stroke="#16a34a" strokeWidth="1.6" />
+          <circle cx="390" cy="58" r="1.6" fill="#f6f6f4" />
         </g>
+        <rect x="300" y="88" width="70" height="4" rx="1" fill="#1c1c1c" />
+        <path d="M308 94h8M320 94h8M332 94h8M344 94h8" stroke="#16a34a" strokeWidth="1" opacity="0.7" />
       </g>
-      <g className="duel-spark">
-        <path
-          d="M332 80 344 62 340 80 358 78 342 90 348 108 332 94 316 108 322 90 306 78 324 80 320 62Z"
-          fill="#f6f6f4"
-        />
-        <circle cx="332" cy="82" r="5" fill="#16a34a" />
-      </g>
+      <Rack x={520} />
+      <ellipse cx="360" cy="70" rx="90" ry="28" fill="#16a34a" opacity="0.08" />
     </svg>
+  )
+}
+
+function Rack({ x }: { x: number }) {
+  return (
+    <g transform={`translate(${x} 34)`}>
+      <rect width="36" height="96" rx="3" fill="#141414" stroke="#16a34a" strokeWidth="1" />
+      {Array.from({ length: 6 }, (_, row) => (
+        <g key={row} transform={`translate(0 ${8 + row * 14})`}>
+          <rect x="5" y="0" width="26" height="8" rx="1" fill="#0c100e" />
+          <circle className={row % 2 ? "lab-led lab-led-late" : "lab-led"} cx="10" cy="4" r="1.4" fill="#16a34a" />
+          <circle cx="16" cy="4" r="1.4" fill="#16a34a" opacity="0.45" />
+        </g>
+      ))}
+    </g>
   )
 }
 
