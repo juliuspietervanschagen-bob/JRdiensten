@@ -38,8 +38,6 @@ const includeIcons: Record<string, LucideIcon> = {
   "Zelf teksten aanpassen": PenLine,
 }
 
-const wideIncludes = new Set(["Ontwerp in jullie merk", "Contact dat aankomt"])
-
 const includeCopy: Record<string, string> = {
   "Ontwerp in jullie merk":
     "Geen standaard template. Lettertype, kleur en indeling komen uit jullie merk, en die lijn blijft staan op elke pagina, van de kop tot de knop.",
@@ -536,28 +534,233 @@ function DetailPreferences() {
 }
 
 
+const buildMeta: Record<string, { code: string; Scene: () => ReactNode }> = {
+  "Ontwerp in jullie merk": { code: "MERK", Scene: MerkScene },
+  "Pagina's met een taak": { code: "PAGINA", Scene: PagesScene },
+  "Telefoon en desktop": { code: "SCHERM", Scene: ScreensScene },
+  "Contact dat aankomt": { code: "INBOX", Scene: InboxScene },
+  "Vindbaar van start": { code: "ZOEK", Scene: SearchScene },
+  "Zelf teksten aanpassen": { code: "TEKST", Scene: EditScene },
+}
+
 function WebsiteBento({ includes }: { includes: Service["includes"] }) {
   return (
-    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {includes.map((item) => {
+    <ul className="grid gap-4 sm:grid-cols-2">
+      {includes.map((item, index) => {
         const Icon = includeIcons[item.title] ?? PanelsTopLeft
-        const wide = wideIncludes.has(item.title)
+        const meta = buildMeta[item.title]
+        const Scene = meta?.Scene
+        const number = String(index + 1).padStart(2, "0")
         return (
-          <li
-            key={item.title}
-            className={cn(
-              "rounded-2xl bg-white p-4 ring-1 ring-[#e8e8e3] transition duration-200 hover:shadow-[0_16px_40px_-28px_rgba(20,20,20,0.4)] hover:ring-brand/40",
-              wide && "sm:col-span-2",
-            )}
-          >
-            <span className="grid size-8 place-items-center rounded-lg bg-[#eef8f1] text-brand">
-              <Icon className="size-4" aria-hidden />
-            </span>
-            <h3 className="mt-3 text-base font-semibold">{item.title}</h3>
-            <p className="mt-1.5 text-sm leading-6 text-mist">{includeCopy[item.title] ?? item.text}</p>
+          <li key={item.title} className="pakket-lift rounded-3xl bg-white ring-1 ring-[#e8e8e3]">
+            <div className="overflow-hidden rounded-3xl">
+              <div className="relative h-40 sm:h-44">
+                {Scene ? <Scene /> : null}
+                <span className="absolute top-3 right-4 font-mono text-[10px] font-semibold tracking-[0.16em] text-white/75">
+                  {number} · {meta?.code ?? "SITE"}
+                </span>
+                <span className="absolute bottom-3 left-4 grid size-11 place-items-center rounded-2xl bg-white text-brand shadow-[0_8px_20px_-12px_rgba(0,0,0,0.6)] ring-1 ring-white/70">
+                  <Icon className="size-5" aria-hidden />
+                </span>
+              </div>
+              <div className="px-4 py-4 sm:px-5">
+                <h3 className="text-base font-semibold tracking-tight">{item.title}</h3>
+                <p className="mt-1.5 text-sm leading-6 text-mist">{includeCopy[item.title] ?? item.text}</p>
+              </div>
+            </div>
           </li>
         )
       })}
     </ul>
+  )
+}
+
+function MerkScene() {
+  return (
+    <svg viewBox="0 0 500 170" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
+      <rect width="500" height="170" fill="#141414" />
+      <g fill="#16a34a">
+        {Array.from({ length: 65 }, (_, i) => (
+          <circle key={i} cx={(i % 13) * 40 + 8} cy={Math.floor(i / 13) * 34 + 8} r="1.2" opacity="0.85" />
+        ))}
+      </g>
+      <ellipse cx="250" cy="156" rx="160" ry="22" fill="#16a34a" opacity="0.16" />
+      <text x="78" y="74" fill="#f6f6f4" fontSize="42" fontWeight="650" fontFamily="ui-sans-serif, system-ui, sans-serif">
+        JR
+      </text>
+      <path d="M78 88h64" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" />
+      <path d="M78 104h40M78 116h52" stroke="#f6f6f4" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
+      <rect x="188" y="36" width="20" height="98" rx="6" fill="#16a34a" />
+      <rect x="216" y="36" width="20" height="98" rx="6" fill="#f6f6f4" />
+      <rect x="244" y="36" width="20" height="98" rx="6" fill="#0c100e" stroke="#16a34a" strokeWidth="1.5" />
+      <circle cx="348" cy="84" r="44" fill="#16a34a" />
+      <circle cx="398" cy="58" r="26" fill="#f6f6f4" />
+      <circle cx="308" cy="112" r="20" fill="#0c100e" stroke="#16a34a" strokeWidth="3" />
+      <circle cx="360" cy="76" r="6" fill="#f6f6f4" />
+    </svg>
+  )
+}
+
+function PagesScene() {
+  const sheets = [
+    { x: 78, label: "HOME" },
+    { x: 172, label: "WERK" },
+    { x: 266, label: "OVER" },
+    { x: 360, label: "MAIL" },
+  ]
+  return (
+    <svg viewBox="0 0 500 170" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
+      <rect width="500" height="170" fill="#16a34a" />
+      <g opacity="0.18" stroke="#fff" strokeWidth="8">
+        <path d="M-40 20 L540 120 M-40 78 L540 178 M-40 -30 L540 70" />
+      </g>
+      <circle cx="430" cy="24" r="40" fill="#fff" opacity="0.12" />
+      {sheets.map((sheet) => (
+        <g key={sheet.label}>
+          <rect x={sheet.x} y="26" width="78" height="118" rx="8" fill="#0c100e" />
+          <rect x={sheet.x} y="26" width="78" height="18" rx="8" fill="#141414" />
+          <rect x={sheet.x} y="36" width="78" height="8" fill="#141414" />
+          <text
+            x={sheet.x + 8}
+            y="39"
+            fill="#f6f6f4"
+            fontSize="8"
+            fontWeight="700"
+            letterSpacing="0.12em"
+            fontFamily="ui-monospace, monospace"
+          >
+            {sheet.label}
+          </text>
+          <path
+            d={`M${sheet.x + 10} 60h42M${sheet.x + 10} 74h28M${sheet.x + 10} 88h36`}
+            stroke="#16a34a"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <rect x={sheet.x + 10} y="108" width="30" height="12" rx="6" fill="#16a34a" />
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+function ScreensScene() {
+  return (
+    <svg viewBox="0 0 500 170" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
+      <rect width="500" height="170" fill="#0c100e" />
+      <g stroke="#16a34a" strokeWidth="1" opacity="0.35">
+        <path d="M0 128 H500 M0 148 H500 M70 128 L150 170 M250 128 V170 M430 128 L350 170" />
+      </g>
+      <path d="M0 0 H500" stroke="#16a34a" strokeWidth="3" opacity="0.65" />
+      <ellipse cx="210" cy="158" rx="110" ry="16" fill="#16a34a" opacity="0.18" />
+      <rect x="78" y="22" width="210" height="112" rx="8" fill="#141414" />
+      <rect x="88" y="32" width="190" height="84" rx="3" fill="#07140c" />
+      <path d="M100 46h36M148 46h22M182 46h18" stroke="#f6f6f4" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+      <path d="M100 66h92" stroke="#f6f6f4" strokeWidth="3" strokeLinecap="round" />
+      <path d="M100 80h64" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+      <rect x="100" y="94" width="40" height="10" rx="5" fill="#16a34a" />
+      <rect x="148" y="134" width="70" height="6" rx="2" fill="#141414" />
+      <rect x="328" y="16" width="86" height="136" rx="12" fill="#f6f6f4" />
+      <rect x="336" y="30" width="70" height="104" rx="4" fill="#141414" />
+      <path d="M346 46h30M346 58h44M346 72h22" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+      <rect x="346" y="86" width="46" height="26" rx="3" fill="#16a34a" />
+      <circle cx="371" cy="144" r="3.5" fill="#16a34a" />
+      <circle cx="96" cy="12" r="2.4" fill="#16a34a" className="lab-led" />
+      <circle cx="420" cy="12" r="2.4" fill="#16a34a" className="lab-led lab-led-late" />
+    </svg>
+  )
+}
+
+function InboxScene() {
+  return (
+    <svg viewBox="0 0 500 170" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
+      <rect width="500" height="170" fill="#0c100e" />
+      <g opacity="0.32" stroke="#16a34a" strokeWidth="1">
+        {Array.from({ length: 18 }, (_, i) => (
+          <path key={i} d={`M${i * 30} 0 V170`} />
+        ))}
+      </g>
+      <rect x="86" y="24" width="340" height="122" rx="12" fill="#141414" stroke="#16a34a" strokeWidth="1.5" />
+      <path d="M86 50 H426" stroke="#16a34a" strokeWidth="1" opacity="0.45" />
+      <circle cx="106" cy="37" r="3.5" fill="#16a34a" className="lab-led" />
+      <circle cx="120" cy="37" r="3.5" fill="#128a3e" opacity="0.75" />
+      <text x="136" y="41" fill="#f6f6f4" fontSize="9" fontWeight="650" letterSpacing="0.16em" fontFamily="ui-monospace, monospace">
+        INBOX
+      </text>
+      <rect x="100" y="62" width="96" height="22" rx="4" fill="#16a34a" />
+      <rect x="100" y="90" width="96" height="16" rx="4" fill="#0c100e" />
+      <rect x="100" y="112" width="96" height="16" rx="4" fill="#0c100e" />
+      <path d="M108 73h52M108 99h40M108 121h44" stroke="#f6f6f4" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
+      <text x="214" y="76" fill="#16a34a" fontSize="8" fontWeight="700" letterSpacing="0.14em" fontFamily="ui-monospace, monospace">
+        NAAM
+      </text>
+      <text x="214" y="98" fill="#16a34a" fontSize="8" fontWeight="700" letterSpacing="0.14em" fontFamily="ui-monospace, monospace">
+        ONDERWERP
+      </text>
+      <text x="214" y="120" fill="#16a34a" fontSize="8" fontWeight="700" letterSpacing="0.14em" fontFamily="ui-monospace, monospace">
+        TEL
+      </text>
+      <path d="M292 72h110M292 94h84M292 116h62" stroke="#f6f6f4" strokeWidth="2" strokeLinecap="round" opacity="0.75" />
+    </svg>
+  )
+}
+
+function SearchScene() {
+  return (
+    <svg viewBox="0 0 500 170" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
+      <rect width="500" height="170" fill="#141414" />
+      <g fill="#16a34a">
+        {Array.from({ length: 52 }, (_, i) => (
+          <circle key={i} cx={(i % 13) * 40 + 10} cy={Math.floor(i / 13) * 42 + 12} r="1.15" opacity="0.75" />
+        ))}
+      </g>
+      <circle cx="168" cy="84" r="24" fill="none" stroke="#16a34a" strokeWidth="1.5" opacity="0.4" />
+      <circle cx="168" cy="84" r="46" fill="none" stroke="#16a34a" strokeWidth="1.25" opacity="0.35" />
+      <circle
+        cx="168"
+        cy="84"
+        r="62"
+        fill="none"
+        stroke="#16a34a"
+        strokeWidth="14"
+        strokeLinecap="round"
+        strokeDasharray="36 360"
+        opacity="0.35"
+        className="build-sweep"
+      />
+      <circle cx="168" cy="84" r="5" fill="#16a34a" className="lab-led" />
+      <path d="M200 114 232 146" stroke="#f6f6f4" strokeWidth="8" strokeLinecap="round" />
+      <rect x="286" y="42" width="150" height="86" rx="10" fill="#0c100e" stroke="#16a34a" strokeWidth="1.5" />
+      <text x="300" y="64" fill="#16a34a" fontSize="9" fontWeight="700" letterSpacing="0.16em" fontFamily="ui-monospace, monospace">
+        PAGINA
+      </text>
+      <path d="M300 80h100M300 96h72" stroke="#f6f6f4" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="310" cy="112" r="3.5" fill="#16a34a" className="lab-led" />
+      <path d="M320 112h70" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
+    </svg>
+  )
+}
+
+function EditScene() {
+  return (
+    <svg viewBox="0 0 500 170" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
+      <rect width="500" height="170" fill="#0c100e" />
+      <g opacity="0.4" stroke="#16a34a" strokeWidth="1">
+        {Array.from({ length: 18 }, (_, i) => (
+          <path key={i} d={`M${i * 30} 0 V170`} />
+        ))}
+      </g>
+      <rect x="72" y="26" width="230" height="118" rx="10" fill="#141414" />
+      <path d="M88 50h130" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" opacity="0.4" />
+      <rect x="86" y="62" width="168" height="16" rx="3" fill="#f6f6f4" />
+      <path d="M94 70h86" stroke="#141414" strokeWidth="2" strokeLinecap="round" />
+      <rect x="184" y="65" width="2" height="10" fill="#16a34a" className="caret-blink" />
+      <path d="M88 96h160M88 112h104M88 128h132" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
+      <rect x="328" y="40" width="78" height="56" rx="6" fill="#141414" stroke="#f6f6f4" strokeWidth="1.5" />
+      <rect x="346" y="54" width="86" height="62" rx="6" fill="#16a34a" />
+      <path d="M360 82h42M360 96h26" stroke="#f6f6f4" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
+      <path d="M360 22 418 80 398 86 340 28Z" fill="#f6f6f4" />
+      <path d="M398 86 418 80 412 100Z" fill="#128a3e" />
+    </svg>
   )
 }

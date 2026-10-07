@@ -1042,6 +1042,18 @@
   animation: lab-scan 2.6s linear infinite;
 }
 
+.build-sweep {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: build-sweep 9s linear infinite;
+}
+
+@keyframes build-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes lab-led {
   0%,
   100% {
@@ -1115,7 +1127,8 @@
   .matrix-star,
   .lab-led,
   .lab-led-late,
-  .lab-scan {
+  .lab-scan,
+  .build-sweep {
     animation: none;
   }
 
@@ -1259,7 +1272,8 @@
     opacity: 1;
   }
 
-  .lab-scan {
+  .lab-scan,
+  .build-sweep {
     transform: none;
   }
 }
