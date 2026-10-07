@@ -263,10 +263,19 @@ function OrdersPicture() {
                   <text x="7" y="22" fill="#5e5e5e" fontSize="5.5">
                     (Space Gray)
                   </text>
-                  <g transform="translate(22 30)" fill="none" stroke="#141414" strokeWidth="1.4" strokeLinejoin="round">
-                    <path d="M3 18h44l-5 7H8L3 18Z" />
-                    <path d="M9 18 15 5h20l6 13" />
-                  </g>
+                  <clipPath id="orders-nimbus-photo">
+                    <rect x="17" y="26" width="62" height="46" rx="2" />
+                  </clipPath>
+                  <rect x="17" y="26" width="62" height="46" rx="2" fill="#f3f3f1" />
+                  <image
+                    href="/webshop/nimbus-laptop-stand.png"
+                    x="17"
+                    y="26"
+                    width="62"
+                    height="46"
+                    preserveAspectRatio="xMidYMid slice"
+                    clipPath="url(#orders-nimbus-photo)"
+                  />
                 </g>
               </g>
               <g className="orders-drop orders-drop-3" filter="url(#orders-card)">
