@@ -86,8 +86,8 @@ export function AppForge({ service }: { service: Service }) {
               Eerst de zin, dan de app
             </h2>
             <p className="mt-4 max-w-md text-sm leading-6 text-mist sm:text-base sm:leading-7">
-              Je zegt wat de klant in de app moet kunnen. Daaruit komen de schermen, voor iPhone
-              en Android, klaar voor de twee stores.
+              Je zegt wat de klant in de app moet kunnen. JR Intelligence bouwt die app voor je:
+              de schermen, voor iPhone en Android, klaar voor de twee stores.
             </p>
 
             <div className="mt-8 overflow-hidden rounded-3xl bg-[#0c100e] px-4 py-4 text-white ring-1 ring-brand/20 sm:px-5">
