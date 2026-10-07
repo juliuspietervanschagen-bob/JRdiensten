@@ -12,11 +12,11 @@ import { services, type Service, type ServiceSlug } from "@/lib/services"
 import { ArrowRight, Check, Monitor, ShoppingBag, Smartphone, Workflow, type LucideIcon } from "lucide-react"
 import Link from "next/link"
 
-const otherTone: Record<ServiceSlug, { kicker: string; color: string; wash: string; icon: LucideIcon }> = {
-  webshop: { kicker: "Shop", color: "#16a34a", wash: "#e8f7ee", icon: ShoppingBag },
-  website: { kicker: "Site", color: "#0f766e", wash: "#e6f4f2", icon: Monitor },
-  app: { kicker: "App", color: "#1d4ed8", wash: "#e8eeff", icon: Smartphone },
-  automatisering: { kicker: "Systeem", color: "#7c3aed", wash: "#f3eaff", icon: Workflow },
+const otherMeta: Record<ServiceSlug, { kicker: string; icon: LucideIcon }> = {
+  webshop: { kicker: "Shop", icon: ShoppingBag },
+  website: { kicker: "Site", icon: Monitor },
+  app: { kicker: "App", icon: Smartphone },
+  automatisering: { kicker: "Systeem", icon: Workflow },
 }
 
 export function ServiceDetail({ service }: { service: Service }) {
@@ -161,34 +161,42 @@ export function ServiceDetail({ service }: { service: Service }) {
       <section className="py-16">
         <Container>
           <h2 className="text-2xl font-semibold tracking-tight">Andere diensten</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="mt-6 grid gap-4 lg:grid-cols-3">
             {others.map((item) => {
-              const tone = otherTone[item.slug]
-              const ToneIcon = tone.icon
+              const meta = otherMeta[item.slug]
+              const ItemIcon = meta.icon
               return (
                 <Link
                   key={item.slug}
                   href={`/diensten/${item.slug}`}
-                  className="pakket-lift group relative rounded-2xl bg-white px-5 py-5 ring-1 ring-[#ecece8]"
+                  className="pakket-lift group rounded-3xl bg-white ring-1 ring-[#e8e8e3]"
                 >
-                  <span className="absolute inset-x-5 top-0 h-1 rounded-b-full" style={{ background: tone.color }} />
-                  <span className="flex items-center justify-between">
-                    <span
-                      className="grid size-11 place-items-center rounded-xl"
-                      style={{ background: tone.wash, color: tone.color }}
+                  <div className="overflow-hidden rounded-3xl">
+                    <div
+                      className="flex items-center justify-between px-5 py-4"
+                      style={{
+                        backgroundColor: "#141414",
+                        backgroundImage:
+                          "radial-gradient(circle, rgba(22,163,74,0.95) 1.15px, transparent 1.25px)",
+                        backgroundSize: "14px 14px",
+                      }}
                     >
-                      <ToneIcon className="size-5" aria-hidden />
-                    </span>
-                    <span className="text-[11px] font-semibold tracking-[0.16em] uppercase" style={{ color: tone.color }}>
-                      {tone.kicker}
-                    </span>
-                  </span>
-                  <span className="mt-4 block text-lg font-semibold tracking-tight">{item.title}</span>
-                  <span className="mt-1.5 block text-sm leading-6 text-mist">{item.menuDescription}</span>
-                  <span className="mt-4 flex items-center gap-1.5 text-sm font-semibold" style={{ color: tone.color }}>
-                    Bekijk de dienst
-                    <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
-                  </span>
+                      <span className="grid size-11 place-items-center rounded-xl bg-brand text-white">
+                        <ItemIcon className="size-5" aria-hidden />
+                      </span>
+                      <span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-brand">
+                        {meta.kicker.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="px-5 py-5">
+                      <span className="block text-lg font-semibold tracking-tight">{item.title}</span>
+                      <span className="mt-1.5 block text-sm leading-6 text-mist">{item.menuDescription}</span>
+                      <span className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-brand">
+                        Bekijk de dienst
+                        <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+                      </span>
+                    </div>
+                  </div>
                 </Link>
               )
             })}
