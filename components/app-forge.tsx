@@ -390,14 +390,7 @@ function AppStoreLogo({ className }: { className?: string }) {
 }
 
 function PlayStoreLogo({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" className={className} aria-hidden>
-      <path fill="#ea4335" d="M6.2 27.4 18.4 16 6.2 4.6A2 2 0 0 0 5.4 6.4v19.2c0 .6.3 1.2.8 1.8z" />
-      <path fill="#fbbc04" d="M23.2 19.6 18.4 16l4.8-3.6 4.6 2.7c1.1.6 1.1 2.2 0 2.9l-4.6 2.6z" />
-      <path fill="#4285f4" d="M6.2 4.6 18.4 16l4.8-3.6L8.4 2.8c-.9-.5-1.9.1-2.2 1.8z" />
-      <path fill="#34a853" d="M18.4 16 6.2 27.4c.3.4.8.8 1.4.8.4 0 .8-.1 1.1-.3l14.5-8.3L18.4 16z" />
-    </svg>
-  )
+  return <img src="/app/play-store.png" alt="" className={className} />
 }
 
 function AppleLogo({ className }: { className?: string }) {
