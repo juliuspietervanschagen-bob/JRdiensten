@@ -12,12 +12,58 @@ const VIEW_H = 540
 const CX = 320
 const CY = 268
 
-const signals = [
-  "Een bericht van de website is doorgezet.",
-  "Een aanvraag uit de inbox loopt vanzelf door.",
-  "Een order uit de webshop staat bij de voorraad.",
-  "De status is bijgewerkt. Niemand typte het over.",
-]
+const sources = [
+  {
+    source: "Website",
+    color: "#facc15",
+    signal: "Aanvraag",
+    capability: "Doorzenden naar de inbox",
+    routeTo: "Inbox",
+    carries: "Aanvraag",
+  },
+  {
+    source: "Inbox",
+    color: "#22d3ee",
+    signal: "Bericht",
+    capability: "Vanzelf laten doorlopen",
+    routeTo: "Status",
+    carries: "Bericht",
+  },
+  {
+    source: "Webshop",
+    color: "#4ade80",
+    signal: "Order",
+    capability: "Neerzetten bij de voorraad",
+    routeTo: "Voorraad",
+    carries: "Order",
+  },
+  {
+    source: "Voorraad",
+    color: "#e879f9",
+    signal: "Mutatie",
+    capability: "Status bijwerken",
+    routeTo: "Shop",
+    carries: "Stand",
+  },
+] as const
+
+const featureCapabilities = [
+  { key: "Het handwerk in beeld", name: "Handwerk", value: 3, unit: "plekken", detail: "Kopieert, mailt, status", color: "#38bdf8" },
+  { key: "Koppeling met wat je hebt", name: "Koppeling", value: 4, unit: "systemen", detail: "Site, shop, mail, sheet", color: "#60a5fa" },
+  { key: "De volgende stap vanzelf", name: "Doorloop", value: 3, unit: "soorten", detail: "Order, aanvraag, status", color: "#818cf8" },
+  { key: "Zicht op wat er liep", name: "Spoor", value: 2, unit: "uitkomsten", detail: "Automatisch of een mens", color: "#7dd3fc" },
+  { key: "Getest met jouw voorbeelden", name: "Test", value: 1, unit: "voorbeeld", detail: "Echte aanvraag of order", color: "#93c5fd" },
+  { key: "Uitleg voor het team", name: "Uitleg", value: 1, unit: "handleiding", detail: "Kort, voor het team", color: "#bfdbfe" },
+] as const
+
+const feedbackCapabilities = [
+  { name: "Status", mode: "Automatisch", detail: "Bijgewerkt, niemand typt" },
+  { name: "Spoor", mode: "Automatisch", detail: "Elke stap blijft zichtbaar" },
+  { name: "Uitzondering", mode: "Een mens", detail: "Alleen als het moet" },
+  { name: "Team", mode: "Weet het", detail: "Wanneer ingrijpen" },
+] as const
+
+const signals = sources.map((source) => `${source.source}: ${source.signal.toLowerCase()} — ${source.capability.toLowerCase()}.`)
 
 const palette = ["#22d3ee", "#4ade80", "#facc15", "#fb7185", "#c084fc", "#60a5fa", "#f9a8d4"]
 
@@ -115,8 +161,8 @@ export function AutomationMind({ service }: { service: Service }) {
               </p>
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-2.5 px-3 pb-4 sm:grid-cols-[minmax(0,11.5rem)_minmax(0,1fr)_minmax(0,11.5rem)] sm:gap-3 sm:px-5 sm:pb-5">
-              <div className="relative col-span-2 h-[420px] sm:col-span-1 sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:h-auto sm:min-h-[540px]">
+            <div className="mt-3 grid grid-cols-1 gap-2.5 px-3 pb-4 sm:grid-cols-[minmax(0,16.5rem)_minmax(0,1fr)_minmax(0,16.5rem)] sm:gap-3 sm:px-5 sm:pb-5">
+              <div className="relative h-[420px] sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:h-auto sm:min-h-[540px]">
                 <MatrixBrain onPulse={() => setSignal((current) => (current + 1) % signals.length)} />
               </div>
               <Panel className="sm:col-start-1 sm:row-start-1" title="Signalen" accent="#22d3ee">
@@ -126,7 +172,7 @@ export function AutomationMind({ service }: { service: Service }) {
                 <RouteGraphic />
               </Panel>
               <Panel className="sm:col-start-1 sm:row-start-2" title="Volume" accent="#60a5fa">
-                <VolumeGraphic />
+                <VolumeGraphic includes={service.includes} />
               </Panel>
               <Panel className="sm:col-start-3 sm:row-start-2" title="Terugkoppeling" accent="#e879f9">
                 <FeedbackGraphic />
@@ -137,7 +183,7 @@ export function AutomationMind({ service }: { service: Service }) {
               <p className="min-w-0 text-sm text-white/85" aria-live="polite">
                 {signals[signal]}
               </p>
-              <p className="hidden shrink-0 text-xs tracking-wide text-white/45 sm:block">Vier bronnen, één systeem</p>
+              <p className="hidden shrink-0 text-xs tracking-wide text-white/45 sm:block">4 bronnen, 6 onderdelen</p>
             </div>
           </div>
 
@@ -452,80 +498,119 @@ function Panel({
       <p className="text-[10px] font-semibold tracking-[0.16em] uppercase" style={{ color: accent }}>
         {title}
       </p>
-      <div className="mt-2 flex min-h-0 flex-1 items-center">{children}</div>
+      <div className="mt-2 flex min-h-0 w-full flex-1 flex-col">{children}</div>
     </article>
+  )
+}
+
+function StatHead({ value, unit }: { value: number; unit: string }) {
+  return (
+    <p className="text-white">
+      <span className="text-xl font-semibold tracking-tight tabular-nums">{value}</span>
+      <span className="ml-1.5 text-[10px] font-medium tracking-[0.14em] text-white/50 uppercase">{unit}</span>
+    </p>
   )
 }
 
 function SignalGraphic() {
   return (
-    <svg viewBox="0 0 160 96" className="h-full w-full" aria-hidden>
-      <path d="M8 78 H152 M8 78 V14" stroke="#1e293b" strokeWidth="1" />
-      <path className="matrix-draw" d="M12 62 L30 56 L46 66 L64 44 L82 50 L102 32 L122 28 L148 16" fill="none" stroke="#22d3ee" strokeWidth="1.6" strokeLinecap="round" />
-      <path className="matrix-draw" d="M12 70 L32 64 L50 58 L70 60 L90 42 L112 46 L130 30 L148 26" fill="none" stroke="#facc15" strokeWidth="1.6" strokeLinecap="round" style={{ animationDelay: "0.25s" }} />
-      <path className="matrix-draw" d="M12 74 L34 68 L52 72 L74 54 L96 58 L116 40 L134 44 L148 34" fill="none" stroke="#fb7185" strokeWidth="1.6" strokeLinecap="round" style={{ animationDelay: "0.45s" }} />
-      <g className="fill-current text-[8px]" fill="#94a3b8">
-        <circle cx="14" cy="90" r="2" fill="#22d3ee" />
-        <text x="20" y="93">Instroom</text>
-        <circle cx="68" cy="90" r="2" fill="#facc15" />
-        <text x="74" y="93">Kosten</text>
-        <circle cx="112" cy="90" r="2" fill="#fb7185" />
-        <text x="118" y="93">Tijd</text>
-      </g>
-    </svg>
+    <div className="flex w-full flex-col">
+      <StatHead value={sources.length} unit="bronnen" />
+      <ul className="mt-2.5 space-y-2">
+        {sources.map((source) => (
+          <li key={source.source} className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5">
+            <span className="mt-1 size-1.5 rounded-full" style={{ background: source.color }} />
+            <span className="flex items-baseline justify-between gap-2">
+              <span className="text-[11px] font-medium text-white">{source.source}</span>
+              <span className="text-[10px] text-white/45">{source.signal}</span>
+            </span>
+            <span className="col-start-2 text-[10px] leading-4 text-white/60">{source.capability}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
 function RouteGraphic() {
   return (
-    <svg viewBox="0 0 160 120" className="h-full w-full" aria-hidden>
-      <ellipse cx="34" cy="36" rx="9" ry="16" fill="#12324e" />
-      <ellipse cx="62" cy="40" rx="7" ry="15" fill="#12324e" />
-      <ellipse cx="96" cy="34" rx="16" ry="11" fill="#12324e" />
-      <path className="matrix-draw" d="M40 32 C 58 18, 78 20, 96 30" fill="none" stroke="#22d3ee" strokeWidth="1.4" />
-      <path className="matrix-draw" d="M36 46 C 58 58, 80 50, 108 38" fill="none" stroke="#fb923c" strokeWidth="1.4" style={{ animationDelay: "0.3s" }} />
-      <circle cx="40" cy="32" r="2" fill="#22d3ee" />
-      <circle cx="96" cy="30" r="2" fill="#facc15" />
-      <circle cx="108" cy="38" r="2" fill="#fb923c" />
-      <path d="M18 102 A 22 22 0 1 1 62 102" fill="none" stroke="#1e293b" strokeWidth="5" strokeLinecap="round" />
-      <path d="M18 102 A 22 22 0 0 1 52 84" fill="none" stroke="#4ade80" strokeWidth="5" strokeLinecap="round" />
-      <path d="M40 102 L40 88" stroke="#e8eef8" strokeWidth="1.4" strokeLinecap="round" />
-      {[0, 1, 2, 3].map((bar) => (
-        <rect key={bar} className="matrix-bar" x={78 + bar * 16} y={96 - bar * 8} width="8" height={14 + bar * 8} rx="1.5" fill={palette[bar + 2]} style={{ animationDelay: `${bar * 0.08}s` }} />
-      ))}
-    </svg>
+    <div className="flex w-full flex-col">
+      <StatHead value={sources.length} unit="routes" />
+      <p className="mt-1 text-[10px] leading-4 text-white/55">Elke bron heeft één route, zonder overtypen.</p>
+      <ul className="mt-2.5 space-y-2">
+        {sources.map((source) => (
+          <li key={source.source}>
+            <span className="flex items-baseline justify-between gap-2 text-[11px]">
+              <span className="font-medium text-white">
+                {source.source}
+                <span className="px-1 text-white/35">→</span>
+                {source.routeTo}
+              </span>
+              <span className="text-[10px] text-white/45">{source.carries}</span>
+            </span>
+            <span className="mt-1 block h-1 overflow-hidden rounded-full bg-white/10">
+              <span className="block h-full w-full rounded-full" style={{ background: source.color }} />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
-function VolumeGraphic() {
-  const heights = [28, 36, 32, 48, 44, 62, 70, 84]
+function VolumeGraphic({ includes }: { includes: { title: string }[] }) {
+  const items = featureCapabilities.filter((item) => includes.some((include) => include.title === item.key))
+  const max = Math.max(1, ...items.map((item) => item.value))
   return (
-    <svg viewBox="0 0 160 96" className="h-full w-full" aria-hidden>
-      {heights.map((height, index) => (
-        <rect
-          key={height}
-          className="matrix-bar"
-          x={10 + index * 18}
-          y={88 - height}
-          width="12"
-          height={height}
-          rx="1.5"
-          fill={index > 5 ? "#7dd3fc" : "#3b82f6"}
-          style={{ animationDelay: `${index * 0.06}s` }}
-        />
-      ))}
-    </svg>
+    <div className="flex w-full flex-col">
+      <StatHead value={items.length} unit="onderdelen" />
+      <ul className="mt-2.5 space-y-2">
+        {items.map((item) => (
+          <li key={item.key}>
+            <span className="flex items-baseline justify-between gap-2">
+              <span className="text-[11px] font-medium text-white">{item.name}</span>
+              <span className="text-[10px] tabular-nums text-white/55">
+                {item.value} {item.unit}
+              </span>
+            </span>
+            <span className="mt-1 block h-1 overflow-hidden rounded-full bg-white/10">
+              <span
+                className="matrix-bar block h-full rounded-full"
+                style={{
+                  width: `${(item.value / max) * 100}%`,
+                  background: item.color,
+                  transformOrigin: "left center",
+                }}
+              />
+            </span>
+            <span className="mt-0.5 block text-[10px] leading-4 text-white/45">{item.detail}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
 function FeedbackGraphic() {
+  const automatic = feedbackCapabilities.filter((item) => item.mode === "Automatisch").length
   return (
-    <svg viewBox="0 0 160 96" className="h-full w-full" aria-hidden>
-      <path d="M8 80 H150" stroke="#1e293b" strokeWidth="1" />
-      <path className="matrix-draw" d="M10 68 L28 64 L44 70 L62 52 L80 58 L98 36 L116 42 L134 22 L148 14" fill="none" stroke="#22d3ee" strokeWidth="1.6" strokeLinecap="round" />
-      <path className="matrix-draw" d="M10 76 L30 72 L48 66 L66 68 L84 50 L104 54 L122 34 L148 26" fill="none" stroke="#f9a8d4" strokeWidth="1.6" strokeLinecap="round" style={{ animationDelay: "0.2s" }} />
-      <path d="M140 14 L150 12 L146 22" fill="none" stroke="#4ade80" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div className="flex w-full flex-col">
+      <StatHead value={feedbackCapabilities.length} unit="antwoorden" />
+      <p className="mt-1 text-[10px] leading-4 text-white/55">
+        {automatic} automatisch, {feedbackCapabilities.length - automatic} met een mens.
+      </p>
+      <ul className="mt-2.5 space-y-2">
+        {feedbackCapabilities.map((item) => (
+          <li key={item.name} className="flex items-start justify-between gap-3">
+            <span>
+              <span className="block text-[11px] font-medium text-white">{item.name}</span>
+              <span className="block text-[10px] leading-4 text-white/45">{item.detail}</span>
+            </span>
+            <span className="shrink-0 text-[10px] text-[#f0abfc]">{item.mode}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
