@@ -385,6 +385,26 @@ function Account() {
   )
 }
 
+function AppStoreLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} aria-hidden>
+      <rect width="32" height="32" rx="8" fill="#0A84FF" />
+      <path fill="#fff" d="M17.2 7.2 10.2 25h3.1l1.4-3.8h6.6L23 25h3.2l-7.2-17.8h-1.8zm.9 5.1 2.2 6.1h-4.4l2.2-6.1z" />
+    </svg>
+  )
+}
+
+function PlayStoreLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} aria-hidden>
+      <path fill="#ea4335" d="M6.2 27.4 18.4 16 6.2 4.6A2 2 0 0 0 5.4 6.4v19.2c0 .6.3 1.2.8 1.8z" />
+      <path fill="#fbbc04" d="M23.2 19.6 18.4 16l4.8-3.6 4.6 2.7c1.1.6 1.1 2.2 0 2.9l-4.6 2.6z" />
+      <path fill="#4285f4" d="M6.2 4.6 18.4 16l4.8-3.6L8.4 2.8c-.9-.5-1.9.1-2.2 1.8z" />
+      <path fill="#34a853" d="M18.4 16 6.2 27.4c.3.4.8.8 1.4.8.4 0 .8-.1 1.1-.3l14.5-8.3L18.4 16z" />
+    </svg>
+  )
+}
+
 function AppleLogo({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
@@ -410,9 +430,9 @@ function AndroidLogo({ className }: { className?: string }) {
 function Preview({ kind }: { kind: (typeof previews)[string] }) {
   if (kind === "stores") {
     return (
-      <div className="flex gap-2">
-        <span className="rounded-lg bg-ink px-2 py-1 text-[10px] font-semibold text-white">App Store</span>
-        <span className="rounded-lg bg-brand px-2 py-1 text-[10px] font-semibold text-white">Play Store</span>
+      <div className="flex items-center gap-2" aria-label="App Store en Play Store">
+        <AppStoreLogo className="size-8" />
+        <PlayStoreLogo className="size-8" />
       </div>
     )
   }
