@@ -146,7 +146,7 @@ const replacements = [
   },
 ]
 
-const outline = "pakket-lift rounded-2xl border-2 border-brand bg-white"
+const outline = "pakket-lift rounded-xl border border-brand bg-white"
 
 export function AutomationMind({ service }: { service: Service }) {
   return (
@@ -225,16 +225,18 @@ export function AutomationMind({ service }: { service: Service }) {
               <h2 className="mt-3 text-3xl font-semibold tracking-tight">Van proces tot overdracht</h2>
               <ol className="mt-8 space-y-3">
                 {service.steps.map((step, index) => (
-                  <li key={step.title} className={`${outline} px-4 py-4`}>
-                    <div className="flex items-start gap-3">
-                      <span className="grid size-8 shrink-0 place-items-center rounded-full border-2 border-brand text-xs font-semibold text-brand">
+                  <li key={step.title} className={`${outline} px-5 py-4`}>
+                    <div className="flex items-start gap-4">
+                      <span className="mt-0.5 text-xs font-semibold tracking-[0.14em] text-brand tabular-nums">
                         0{index + 1}
                       </span>
-                      <div>
-                        <h3 className="pt-1 text-base font-semibold">{step.title}</h3>
+                      <div className="min-w-0">
+                        <h3 className="text-[15px] font-semibold tracking-tight">{step.title}</h3>
                         <p className="mt-1.5 text-sm leading-6 text-mist">{step.text}</p>
                         {stepDetail[step.title] ? (
-                          <p className="mt-2 text-sm leading-6 text-ink">{stepDetail[step.title]}</p>
+                          <p className="mt-2 border-t border-[#e7eee9] pt-2 text-sm leading-6 text-mist">
+                            {stepDetail[step.title]}
+                          </p>
                         ) : null}
                       </div>
                     </div>
@@ -247,9 +249,9 @@ export function AutomationMind({ service }: { service: Service }) {
               <h2 className="mt-3 text-3xl font-semibold tracking-tight">Het handwerk eruit</h2>
               <ul className="mt-8 space-y-3">
                 {service.includes.map((item) => (
-                  <li key={item.title} className={`${outline} grid gap-1 px-4 py-4 sm:grid-cols-[0.8fr_1.2fr] sm:gap-6`}>
-                    <h3 className="text-base font-semibold">{item.title}</h3>
-                    <p className="text-sm leading-6 text-mist">{item.text}</p>
+                  <li key={item.title} className={`${outline} px-5 py-4`}>
+                    <h3 className="text-[15px] font-semibold tracking-tight">{item.title}</h3>
+                    <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>
                   </li>
                 ))}
               </ul>
@@ -261,10 +263,10 @@ export function AutomationMind({ service }: { service: Service }) {
             <h2 className="mt-3 text-3xl font-semibold tracking-tight">Van handmatig naar automatisch</h2>
             <ul className="mt-8 grid gap-4 sm:grid-cols-2">
               {replacements.map((item) => (
-                <li key={item.title} className={`${outline} p-5`}>
-                  <h3 className="text-base font-semibold">{item.title}</h3>
+                <li key={item.title} className={`${outline} px-5 py-4`}>
+                  <h3 className="text-[15px] font-semibold tracking-tight">{item.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-mist">{item.manual}</p>
-                  <p className="mt-2 text-sm leading-6 text-ink">{item.auto}</p>
+                  <p className="mt-2 border-t border-[#e7eee9] pt-2 text-sm leading-6 text-ink">{item.auto}</p>
                 </li>
               ))}
             </ul>
