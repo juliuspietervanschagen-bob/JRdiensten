@@ -8,7 +8,7 @@ import { WebshopHero } from "@/components/webshop-hero"
 import { WebshopIncludes } from "@/components/webshop-includes"
 import { WebshopJourney } from "@/components/webshop-journey"
 import { WebshopStudio } from "@/components/webshop-studio"
-import { formatFromPrice, services, type Service, type ServiceSlug } from "@/lib/services"
+import { services, type Service, type ServiceSlug } from "@/lib/services"
 import { ArrowRight, Check, Monitor, ShoppingBag, Smartphone, Workflow, type LucideIcon } from "lucide-react"
 import Link from "next/link"
 
@@ -113,23 +113,19 @@ export function ServiceDetail({ service }: { service: Service }) {
           <div className="rounded-3xl bg-white px-6 py-8 ring-1 ring-[#e8e8e3] sm:px-10 sm:py-10">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs font-semibold tracking-[0.18em] text-brand">PRIJS</p>
+                <p className="text-xs font-semibold tracking-[0.18em] text-brand">OFFERTE</p>
                 <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-                  Eerst de prijs, dan het werk
+                  Vraag een offerte
                 </h2>
               </div>
               <p className="max-w-md text-sm leading-6 text-mist">
-                Dit zijn startprijzen. Na een kort gesprek krijg je een vaste prijs voor jouw
+                Na een kort gesprek schrijven we op wat erin zit. Je krijgt een offerte voor jouw
                 situatie, voordat er gebouwd wordt.
               </p>
             </div>
             <div className="mt-8 grid gap-8 border-t border-[#eee] pt-8 lg:grid-cols-2 lg:gap-0">
               <div className="flex h-full flex-col lg:pr-12">
-                <p className="text-sm text-mist">Start</p>
-                <p className="mt-2 text-4xl font-semibold tracking-tight">
-                  {formatFromPrice(service.fromPrice)}
-                </p>
-                <ul className="mt-6 space-y-3">
+                <ul className="space-y-3">
                   {service.outcomes.map((outcome) => (
                     <li key={outcome} className="flex gap-3 text-sm leading-6 text-ink">
                       <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
@@ -139,21 +135,21 @@ export function ServiceDetail({ service }: { service: Service }) {
                 </ul>
                 <div className="mt-auto pt-7">
                   <BrandButton href={`/contact?dienst=${service.slug}`}>
-                    Vraag deze start aan
+                    Vraag een offerte
                     <ArrowRight className="size-4" />
                   </BrandButton>
                 </div>
               </div>
               <div className="flex h-full flex-col border-t border-[#eee] pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-12">
                 <p className="text-sm text-mist">Groter traject</p>
-                <p className="mt-2 text-4xl font-semibold tracking-tight">Op aanvraag</p>
+                <p className="mt-2 text-2xl font-semibold tracking-tight">Ook in de offerte</p>
                 <p className="mt-6 text-sm leading-7 text-mist">
                   Meerdere talen, een groter assortiment, extra koppelingen of een systeem dat al
-                  draait en mee moet. We schrijven eerst op wat erin zit, en daarna pas de prijs.
+                  draait en mee moet. We schrijven dat mee, en je krijgt het in dezelfde offerte.
                 </p>
                 <div className="mt-auto pt-7">
                   <BrandButton href={`/contact?dienst=${service.slug}`} variant="outline">
-                    Bespreek je situatie
+                    Vraag een offerte
                   </BrandButton>
                 </div>
               </div>
