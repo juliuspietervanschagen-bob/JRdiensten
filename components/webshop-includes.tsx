@@ -239,8 +239,19 @@ function OrdersPicture() {
                   <text x="8" y="13" fill="#141414" fontSize="7" fontWeight="650">
                     Apex Pro Wireless
                   </text>
+                  <clipPath id="orders-apex-photo">
+                    <rect x="7" y="18" width="104" height="44" rx="2" />
+                  </clipPath>
                   <rect x="7" y="18" width="104" height="44" rx="2" fill="#141414" />
-                  <RainbowKeys />
+                  <image
+                    href="/webshop/apex-pro-wireless.png"
+                    x="7"
+                    y="18"
+                    width="104"
+                    height="44"
+                    preserveAspectRatio="xMidYMid slice"
+                    clipPath="url(#orders-apex-photo)"
+                  />
                 </g>
               </g>
               <g className="orders-drop orders-drop-2" filter="url(#orders-card)">
@@ -325,21 +336,6 @@ function OrdersPicture() {
         </div>
       </div>
     </div>
-  )
-}
-
-function RainbowKeys() {
-  const colors = ["#ff4d4d", "#ff9f1a", "#ffe14a", "#3ddc6e", "#3ec6ff", "#4d7cff", "#b06bff"]
-  return (
-    <g>
-      {colors.map((color, i) => (
-        <rect key={`a-${color}`} x={12 + i * 13} y="24" width="10" height="6" rx="1" fill={color} />
-      ))}
-      {colors.slice(0, 6).map((color, i) => (
-        <rect key={`b-${color}`} x={16 + i * 13} y="33" width="10" height="6" rx="1" fill={color} opacity="0.9" />
-      ))}
-      <rect x="16" y="43" width="48" height="5" rx="1" fill="#3a3a3a" />
-    </g>
   )
 }
 
