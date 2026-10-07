@@ -489,7 +489,6 @@ function ConfirmationPicture() {
           </div>
           <Seal id="jr-seal-card" className="confirm-stamp absolute right-2 bottom-2 size-16 sm:size-[4.5rem]" />
         </article>
-        <Seal id="jr-seal-side" className="confirm-stamp confirm-stamp-side pointer-events-none absolute top-16 left-[calc(50%+11.5rem)] hidden size-24 sm:block" />
       </div>
     </div>
   )
