@@ -3,7 +3,7 @@
 import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
 import { cn } from "cn"
-import { Bell, Smartphone, TabletSmartphone } from "lucide-react"
+import { Bell } from "lucide-react"
 import { useEffect, useState } from "react"
 
 const screens = [
@@ -279,6 +279,28 @@ function Account() {
   )
 }
 
+function AppleLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.8-.4 6.9 1.1 9.1.8 1.1 1.7 2.3 2.9 2.3 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-.1 2.8-2.3c.9-1.3 1.2-2.5 1.3-2.6 0 0-2.4-.9-2.5-3.5zM14.7 6.2c.6-.8 1.1-1.8.9-2.9-1 .1-2.1.6-2.7 1.4-.6.7-1.1 1.8-.9 2.8 1.1.1 2.1-.5 2.7-1.3z"
+      />
+    </svg>
+  )
+}
+
+function AndroidLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M6.4 9.5 5 6.7a.4.4 0 0 1 .7-.4l1.4 2.5a7 7 0 0 1 9.8 0l1.4-2.5a.4.4 0 0 1 .7.4l-1.4 2.8A6.5 6.5 0 0 1 19 13.5V18a1 1 0 0 1-1 1h-1v3.2a1.3 1.3 0 0 1-2.6 0V19H9.6v3.2a1.3 1.3 0 0 1-2.6 0V19H6a1 1 0 0 1-1-1v-4.5a6.5 6.5 0 0 1 1.4-4zM9 14.2a.9.9 0 1 0 0-1.8.9.9 0 0 0 0 1.8zm6 0a.9.9 0 1 0 0-1.8.9.9 0 0 0 0 1.8z"
+      />
+    </svg>
+  )
+}
+
 function Preview({ kind }: { kind: (typeof previews)[string] }) {
   if (kind === "stores") {
     return (
@@ -299,9 +321,9 @@ function Preview({ kind }: { kind: (typeof previews)[string] }) {
   }
   if (kind === "devices") {
     return (
-      <div className="flex items-end gap-3 text-ink" aria-hidden>
-        <Smartphone className="size-6" />
-        <TabletSmartphone className="size-7 text-brand" />
+      <div className="flex items-center gap-3" aria-hidden>
+        <AppleLogo className="size-6 text-ink" />
+        <AndroidLogo className="size-7 text-brand" />
       </div>
     )
   }
