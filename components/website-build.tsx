@@ -204,7 +204,23 @@ export function WebsiteBuild({ service }: { service: Service }) {
         <h1 className="mt-4 max-w-2xl text-4xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.05]">
           {service.title}
         </h1>
-        <p className="mt-5 max-w-xl text-lg leading-8 text-mist">{service.summary}</p>
+        <div className="mt-5 max-w-2xl space-y-4 text-lg leading-8 text-mist">
+          <p>
+            Een website die uitlegt wie je bent, wat je doet, en wat de bezoeker daarna kan doen.
+            JR Intelligence bouwt die site voor je: home, diensten, over en contact, in jullie merk.
+          </p>
+          <p>
+            Home opent met wat het bedrijf doet en waar het werkt, en wijst met één knop door. Op
+            diensten staat per taak wat er gebeurt, voor wie het is, en hoe iemand start. Over laat
+            zien wie er langskomt. Contact vraagt naam, onderwerp en telefoon, en zet dat bericht in
+            de inbox die jullie al lezen.
+          </p>
+          <p>
+            De pagina's blijven leesbaar op een telefoon en op een groot scherm. De bezoeker wisselt
+            zelf van taal, en van een lichte of donkere stand. De kop, de knop en het formulier volgen
+            die keuze.
+          </p>
+        </div>
 
         <div className="mt-14 flex flex-col">
           <Depth
