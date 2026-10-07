@@ -3,7 +3,7 @@
 import { BrandButton } from "@/components/brand-button"
 import { Container } from "@/components/container"
 import type { Service } from "@/lib/services"
-import { ArrowRight, FileText, Search, Users, Wrench, type LucideIcon } from "lucide-react"
+import { ArrowRight, BadgeCheck, Boxes, FileText, Inbox, Search, ShoppingBag, Users, Wrench, type LucideIcon } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useRef, type ReactNode } from "react"
 
@@ -130,26 +130,30 @@ const stepDetail: Record<string, string> = {
   Overdracht: "Je team weet welke stappen automatisch lopen, en wanneer iemand moet ingrijpen.",
 }
 
-const replacements = [
+const replacements: { title: string; manual: string; auto: string; icon: LucideIcon }[] = [
   {
     title: "Aanvraag",
     manual: "Handmatig wordt het formulier overgenomen in de mail.",
     auto: "Automatisch wordt de aanvraag doorgezet naar de inbox.",
+    icon: Inbox,
   },
   {
     title: "Order",
     manual: "Handmatig wordt de bestelling overgenomen in de voorraad.",
     auto: "Automatisch komt de order bij de voorraad binnen.",
+    icon: ShoppingBag,
   },
   {
     title: "Voorraad",
     manual: "Handmatig wordt de stand bijgewerkt.",
     auto: "Automatisch schrijft een mutatie de stand terug naar de shop.",
+    icon: Boxes,
   },
   {
     title: "Status",
     manual: "Handmatig wordt de status overgenomen.",
     auto: "Automatisch wordt de status bijgewerkt, zonder opnieuw typen.",
+    icon: BadgeCheck,
   },
 ]
 
@@ -275,13 +279,19 @@ export function AutomationMind({ service }: { service: Service }) {
             <p className="text-xs font-semibold tracking-[0.18em] text-brand">HET WERK</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight">Van handmatig naar automatisch</h2>
             <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-              {replacements.map((item) => (
+              {replacements.map((item) => {
+                const ItemIcon = item.icon
+                return (
                 <li key={item.title} className={`${outline} px-5 py-4`}>
-                  <h3 className="text-[15px] font-semibold tracking-tight">{item.title}</h3>
+                  <h3 className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
+                    <ItemIcon className="size-4 shrink-0 text-brand" aria-hidden />
+                    {item.title}
+                  </h3>
                   <p className="mt-3 text-sm leading-6 text-mist">{item.manual}</p>
                   <p className="mt-2 border-t border-[#e7eee9] pt-2 text-sm leading-6 text-ink">{item.auto}</p>
                 </li>
-              ))}
+                )
+              })}
             </ul>
           </div>
         </Container>
